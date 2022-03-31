@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    "removeComments": true,
+    "target": "es2017",
+    "baseUrl": "./src/",
+    "strict": true
+  },
+  "include": [
+    "./**/*"
+  ]
+}
