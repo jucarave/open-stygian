@@ -2,7 +2,7 @@ import { Renderer } from 'engine/Renderer';
 
 class Game {
   constructor() {
-    const canvas = document.getElementById('openAbyssCanvas') as HTMLCanvasElement;
+    const canvas = document.getElementById('openStygianCanvas') as HTMLCanvasElement;
     
     const renderer = new Renderer(canvas);
     renderer.clear();
