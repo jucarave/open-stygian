@@ -13,7 +13,11 @@ export class Renderer {
   private _shaders: ShadersMap;
   private _shader: Shader;
 
+  public static instance: Renderer;
+
   constructor(canvas: HTMLCanvasElement) {
+    Renderer.instance = this;
+
     this._canvas = canvas;
     this._width = canvas.width;
     this._height = canvas.height;
@@ -74,6 +78,14 @@ export class Renderer {
 
     this._shader = this._shaders[shaderName];
     this._shader.useProgram(this._gl);
+  }
+
+  public getShader(shaderName: string) {
+    if (!this._shaders[shaderName]) {
+      throw new Error(`Shader '${shaderName}' was not loaded into the renderer`);
+    }
+
+    return this._shaders[shaderName];
   }
 
   /**
