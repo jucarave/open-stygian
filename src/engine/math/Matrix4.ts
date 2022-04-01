@@ -53,10 +53,10 @@ export class Matrix4 {
 
   public setIdentity(): Matrix4 {
     return this.set(
-        1, 0, 0, 0, 
-        0, 1, 0, 0, 
-        0, 0, 1, 0, 
-        0, 0, 0, 1
+      1, 0, 0, 0, 
+      0, 1, 0, 0, 
+      0, 0, 1, 0, 
+      0, 0, 0, 1
     );
   }
 
@@ -66,10 +66,10 @@ export class Matrix4 {
       S = Math.sin(R);
 
     return this.set(
-       1, 0, 0, 0,
-       0, C, S, 0,
-       0,-S, C, 0,
-       0, 0, 0, 1
+      1, 0, 0, 0,
+      0, C, S, 0,
+      0,-S, C, 0,
+      0, 0, 0, 1
     );
   }
 
@@ -138,6 +138,10 @@ export class Matrix4 {
       this._vector4Dot(R4, C3),
       this._vector4Dot(R4, C4)
     );
+  }
+
+  public clone(): Matrix4 {
+    return Matrix4.createIdentity().copy(this);
   }
 
   public static createIdentity(): Matrix4 {

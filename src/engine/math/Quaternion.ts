@@ -17,8 +17,8 @@ export class Quaternion {
     this._imaginary = imaginary;
 
     this._axisX = Vector3.right;
-    this._axisY = Vector3.down;
-    this._axisZ = Vector3.back;
+    this._axisY = Vector3.up;
+    this._axisZ = Vector3.front;
 
     this.onChange = new Signal();
 
@@ -80,35 +80,51 @@ export class Quaternion {
     return this;
   }
 
+  public setEuler(x: number, y: number, z: number) {
+    this.setIdentity()
+      .rotateX(x)
+      .rotateY(y)
+      .rotateZ(z);
+  }
+
   public rotateX(radians: number): Quaternion {
     const axis = (this.local) ? this._axisX : Vector3.right,
       rotation = Quaternion.createRotationOnAxis(radians, axis);
 
     this.multiplyQuaternion(rotation);
-    this._axisY.rotateOnQuaternion(rotation).normalize();
-    this._axisZ.rotateOnQuaternion(rotation).normalize();
+
+    if (this.local) {
+      this._axisY.rotateOnQuaternion(rotation).normalize();
+      this._axisZ.rotateOnQuaternion(rotation).normalize();
+    }
 
     return this;
   }
 
   public rotateY(radians: number): Quaternion {
-    const axis = (this.local)? this._axisY : Vector3.down,
+    const axis = (this.local) ? this._axisY : Vector3.down,
       rotation = Quaternion.createRotationOnAxis(radians, axis);
 
     this.multiplyQuaternion(rotation);
-    this._axisX.rotateOnQuaternion(rotation).normalize();
-    this._axisZ.rotateOnQuaternion(rotation).normalize();
+
+    if (this.local) {
+      this._axisX.rotateOnQuaternion(rotation).normalize();
+      this._axisZ.rotateOnQuaternion(rotation).normalize();
+    }
 
     return this;
   }
 
   public rotateZ(radians: number): Quaternion {
-    const axis = (this.local)? this._axisZ : Vector3.back,
+    const axis = (this.local) ? this._axisZ : Vector3.back,
       rotation = Quaternion.createRotationOnAxis(radians, axis);
 
     this.multiplyQuaternion(rotation);
-    this._axisX.rotateOnQuaternion(rotation).normalize();
-    this._axisY.rotateOnQuaternion(rotation).normalize();
+
+    if (this.local) {
+      this._axisX.rotateOnQuaternion(rotation).normalize();
+      this._axisY.rotateOnQuaternion(rotation).normalize();
+    }
 
     return this;
   }
@@ -140,8 +156,8 @@ export class Quaternion {
     this._imaginary.set(0, 0, 0);
 
     this._axisX.copy(Vector3.right);
-    this._axisY.copy(Vector3.down);
-    this._axisZ.copy(Vector3.back);
+    this._axisY.copy(Vector3.up);
+    this._axisZ.copy(Vector3.front);
 
     this.onChange.dispatch();
 

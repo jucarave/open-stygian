@@ -8,8 +8,7 @@ export class Camera {
   
   public readonly projectionMatrix: Matrix4;
   public readonly position: Vector3;
-  public readonly rotation: Vector3;
-  public readonly quaternion: Quaternion;
+  public readonly rotation: Quaternion;
 
   constructor(projection: Matrix4) {
     this.projectionMatrix = projection;
@@ -18,13 +17,11 @@ export class Camera {
     this._dirtyViewMatrix = true;
 
     this.position = new Vector3(0, 0, 0);
-    this.rotation = new Vector3(0, 0, 0);
-    this.quaternion = Quaternion.createIdentity();
+    this.rotation = Quaternion.createIdentity();
 
     // Updates the view matrix dirty flag if the position or rotation changes
     this.position.onChange.add(this._setDirtyFlag, this);
     this.rotation.onChange.add(this._setDirtyFlag, this);
-    this.quaternion.onChange.add(this._setDirtyFlag, this);
   }
 
   private _setDirtyFlag() {
@@ -56,15 +53,10 @@ export class Camera {
       return this._viewMatrix;
     }
 
-    this.quaternion.setIdentity()
-      .rotateX(this.rotation.x)
-      .rotateY(this.rotation.y)
-      .rotateZ(this.rotation.z);
-
     this._viewMatrix
       .setIdentity()
       .translate(this.position.x, this.position.y, this.position.z, false)
-      .multiply(this.quaternion.getRotationMatrix());
+      .multiply(this.rotation.getRotationMatrix());
 
     this._dirtyViewMatrix = false;
 

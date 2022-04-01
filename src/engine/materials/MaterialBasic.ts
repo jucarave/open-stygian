@@ -1,5 +1,6 @@
 import { Camera } from 'engine/Camera';
 import { FLOAT_SIZE, VERTICE_SIZE } from 'engine/Constants';
+import { Entity } from 'engine/entities/Entity';
 import { Geometry } from 'engine/geometries/Geometry';
 import { Renderer } from 'engine/Renderer';
 import { Shader } from 'engine/shaders/Shader';
@@ -26,7 +27,13 @@ export class MaterialBasic extends Material {
     this._shader = this._renderer.getShader('basic');
   }
 
-  private _uploadVertexData(geometry: Geometry) {
+  /**
+   * Upload the vertex data of a geometry, it uploads:
+   *  - vertex position
+   * 
+   * @param geometry 
+   */
+  private _uploadGeometryData(geometry: Geometry) {
     const gl = this._gl;
 
     gl.bindBuffer(gl.ARRAY_BUFFER, geometry.vertexBuffer);
@@ -35,20 +42,33 @@ export class MaterialBasic extends Material {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geometry.indexBuffer);
   }
 
-  private _uploadCameraData(camera: Camera) {
+  /**
+   * Uploads the view matrix and projection matrix to the GPU
+   * 
+   * @param entity to calculate the world matrix
+   * @param camera containing the projection matrix
+   */
+  private _uploadCameraData(entity: Entity, camera: Camera) {
     const gl = this._gl;
 
     gl.uniformMatrix4fv(this._shader.uniforms['uProjection'], false, camera.projectionMatrix.data);
-    gl.uniformMatrix4fv(this._shader.uniforms['uView'], false, camera.viewMatrix.data);
+    gl.uniformMatrix4fv(this._shader.uniforms['uView'], false, entity.getWorldMatrix(camera).data);
   }
 
-  public override render(camera: Camera, geometry: Geometry) {
+  /**
+   * Renders a geometry from an entity position and a camera perspective
+   * 
+   * @param entity Entity where the geometry is
+   * @param camera Point of view to render the geometry
+   * @param geometry Geometry to render
+   */
+  public override render(entity: Entity, camera: Camera, geometry: Geometry) {
     const gl = this._gl;
 
     this._renderer.useShader('basic');
 
-    this._uploadVertexData(geometry);
-    this._uploadCameraData(camera);
+    this._uploadGeometryData(geometry);
+    this._uploadCameraData(entity, camera);
 
     gl.drawElements(gl.TRIANGLES, geometry.indicesLength, gl.UNSIGNED_SHORT, 0);
   }

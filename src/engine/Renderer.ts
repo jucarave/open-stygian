@@ -39,6 +39,8 @@ export class Renderer {
       throw new Error('Couldn\'t create webgl context');
     }
 
+    gl.enable(gl.CULL_FACE);
+
     gl.viewport(0, 0, this._width, this._height);
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
