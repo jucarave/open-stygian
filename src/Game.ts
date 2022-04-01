@@ -1,3 +1,4 @@
+import { Camera } from 'engine/Camera';
 import { Geometry } from 'engine/geometries/Geometry';
 import { MaterialBasic } from 'engine/materials/MaterialBasic';
 import { Renderer } from 'engine/Renderer';
@@ -20,7 +21,10 @@ class Game {
 
     const material = new MaterialBasic();
 
-    material.render(geometry);
+    const camera = Camera.createPerspective(60, canvas.width / canvas.height, 0.1, 100);
+    camera.position.set(0, 0, -5);
+
+    material.render(camera, geometry);
   }
 }
 

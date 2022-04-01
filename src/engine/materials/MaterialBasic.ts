@@ -1,3 +1,4 @@
+import { Camera } from 'engine/Camera';
 import { FLOAT_SIZE, VERTICE_SIZE } from 'engine/Constants';
 import { Geometry } from 'engine/geometries/Geometry';
 import { Renderer } from 'engine/Renderer';
@@ -34,12 +35,20 @@ export class MaterialBasic extends Material {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geometry.indexBuffer);
   }
 
-  public override render(geometry: Geometry) {
+  private _uploadCameraData(camera: Camera) {
+    const gl = this._gl;
+
+    gl.uniformMatrix4fv(this._shader.uniforms['uProjection'], false, camera.projectionMatrix.data);
+    gl.uniformMatrix4fv(this._shader.uniforms['uView'], false, camera.viewMatrix.data);
+  }
+
+  public override render(camera: Camera, geometry: Geometry) {
     const gl = this._gl;
 
     this._renderer.useShader('basic');
 
     this._uploadVertexData(geometry);
+    this._uploadCameraData(camera);
 
     gl.drawElements(gl.TRIANGLES, geometry.indicesLength, gl.UNSIGNED_SHORT, 0);
   }
