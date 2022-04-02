@@ -18,6 +18,8 @@ export class Stygian {
    */
   public loadLevel() {
     this._scene = new SceneDungeon();
+
+    return this._scene as SceneDungeon;
   }
 
   /**

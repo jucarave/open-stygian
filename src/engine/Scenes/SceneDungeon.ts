@@ -1,9 +1,9 @@
 import { Camera } from 'engine/Camera';
-import { PlayerSmoothMovement } from 'engine/Components/PlayerSmoothMovement';
 import { Entity } from 'engine/entities/Entity';
 import { Geometry } from 'engine/geometries/Geometry';
 import { MaterialBasic } from 'engine/materials/MaterialBasic';
 import { Vector3 } from 'engine/math/Vector3';
+import { PlayerSetup } from 'engine/PlayerSetup';
 import { Renderer } from 'engine/Renderer';
 import { Texture } from 'engine/Texture';
 import { Scene } from './Scene';
@@ -11,12 +11,16 @@ import { Scene } from './Scene';
 export class SceneDungeon extends Scene {
   private _player: Entity;
 
+  public readonly playerSetup: PlayerSetup;
+
   constructor() {
     super();
 
     this._loadDungeon();
     this._loadCamera();
     this._loadPLayer();
+
+    this.playerSetup = new PlayerSetup(this._player, this._camera);
   }
 
   private _loadDungeon() {
@@ -90,7 +94,6 @@ export class SceneDungeon extends Scene {
 
   private _loadPLayer() {
     this._player = new Entity(new Vector3(0, 0, 5));
-    this._player.addComponent(new PlayerSmoothMovement(this._camera));
 
     this.addEntity(this._player);
   }

@@ -8,7 +8,12 @@ class Game {
     const canvas = document.getElementById('openStygianCanvas') as HTMLCanvasElement;
     
     const stygian = new Stygian(canvas);
-    stygian.loadLevel();
+    
+    const level = stygian.loadLevel();
+    level.playerSetup
+      .addSmoothMovement();
+
+
     stygian.play();
   }
 }

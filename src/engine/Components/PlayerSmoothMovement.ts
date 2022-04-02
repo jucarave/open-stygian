@@ -3,6 +3,7 @@ import { getAngleBetwen2DVectors } from 'engine/math/Math';
 import { Input } from 'engine/system/Input';
 import { SignalCallbackType } from 'engine/system/Signal';
 import { Component } from './Component';
+import { Config } from '../Config';
 
 /**
  * This component manages the movement of the character
@@ -35,10 +36,10 @@ export class PlayerSmoothMovement extends Component {
    */
   private _handleKey(ev: KeyboardEvent, keyInput: number) {
     switch (ev.key.toLowerCase()) {
-      case 'w': this._input.UP = keyInput; break;
-      case 'a': this._input.LEFT = keyInput; break;
-      case 's': this._input.DOWN = keyInput; break;
-      case 'd': this._input.RIGHT = keyInput; break;
+      case Config.input.up: this._input.UP = keyInput; break;
+      case Config.input.left: this._input.LEFT = keyInput; break;
+      case Config.input.down: this._input.DOWN = keyInput; break;
+      case Config.input.right: this._input.RIGHT = keyInput; break;
     }
   }
 
