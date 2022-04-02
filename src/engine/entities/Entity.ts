@@ -51,6 +51,7 @@ export class Entity {
    */
   public addComponent(component: Component) {
     this._components.push(component);
+    component.entity = this;
 
     if (this._initialized) {
       component.init();

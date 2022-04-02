@@ -1,4 +1,5 @@
-type CallbackFunction = () => void;
+export type SignalCallbackType = number | string | boolean | object;
+type CallbackFunction = (args?: SignalCallbackType) => void;
 
 interface Callback {
   callback: CallbackFunction;
@@ -26,12 +27,12 @@ export class Signal {
     }
   }
 
-  public dispatch(): void {
+  public dispatch(args?: SignalCallbackType): void {
     const len = this._listeners.length;
 
     for (let i = 0; i < len; i++) {
       const listener = this._listeners[i];
-      listener.callback.bind(listener.context)();
+      listener.callback.bind(listener.context)(args);
     }
   }
 }

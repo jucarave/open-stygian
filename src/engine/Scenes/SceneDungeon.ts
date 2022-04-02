@@ -1,18 +1,22 @@
 import { Camera } from 'engine/Camera';
+import { PlayerSmoothMovement } from 'engine/Components/PlayerSmoothMovement';
 import { Entity } from 'engine/entities/Entity';
 import { Geometry } from 'engine/geometries/Geometry';
 import { MaterialBasic } from 'engine/materials/MaterialBasic';
+import { Vector3 } from 'engine/math/Vector3';
 import { Renderer } from 'engine/Renderer';
 import { Texture } from 'engine/Texture';
 import { Scene } from './Scene';
 
 export class SceneDungeon extends Scene {
+  private _player: Entity;
+
   constructor() {
     super();
 
     this._loadDungeon();
     this._loadCamera();
-    
+    this._loadPLayer();
   }
 
   private _loadDungeon() {
@@ -81,6 +85,13 @@ export class SceneDungeon extends Scene {
   private _loadCamera() {
     const renderer = Renderer.instance;
     this._camera = Camera.createPerspective(60, renderer.gl.canvas.width / renderer.gl.canvas.height, 0.1, 100);
-    this._camera.position.set(0, 0, -5);
+    this._camera.position.set(0, 0, 0);
+  }
+
+  private _loadPLayer() {
+    this._player = new Entity(new Vector3(0, 0, 5));
+    this._player.addComponent(new PlayerSmoothMovement(this._camera));
+
+    this.addEntity(this._player);
   }
 }

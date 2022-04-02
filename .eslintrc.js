@@ -13,7 +13,8 @@ module.exports = {
   rules: {
     'prefer-const': 'error',
     'no-var': 'error',
-    'quotes': ['error', 'single']
+    'quotes': ['error', 'single'],
+    '@typescript-eslint/no-empty-function': 0
   },
   env: {
     node: true

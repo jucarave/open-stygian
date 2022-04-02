@@ -55,7 +55,7 @@ export class Camera {
 
     this._viewMatrix
       .setIdentity()
-      .translate(this.position.x, this.position.y, this.position.z, false)
+      .translate(-this.position.x, -this.position.y, -this.position.z, false)
       .multiply(this.rotation.getRotationMatrix());
 
     this._dirtyViewMatrix = false;

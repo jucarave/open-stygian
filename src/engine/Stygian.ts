@@ -1,6 +1,7 @@
 import { Renderer } from './Renderer';
 import { Scene } from './Scenes/Scene';
 import { SceneDungeon } from './Scenes/SceneDungeon';
+import { Input } from './system/Input';
 import { Texture } from './Texture';
 
 export class Stygian {
@@ -9,6 +10,7 @@ export class Stygian {
 
   constructor(canvas: HTMLCanvasElement) {
     this._renderer = new Renderer(canvas);
+    new Input(canvas);
   }
 
   /**
