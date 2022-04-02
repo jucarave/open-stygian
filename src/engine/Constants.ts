@@ -1,4 +1,5 @@
 export const VERTICE_SIZE = 3;
+export const TEXCOORD_SIZE = 2;
 
 // 4 Bytes
 export const FLOAT_SIZE = 4;

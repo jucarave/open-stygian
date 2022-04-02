@@ -17,6 +17,12 @@ export class Geometry {
     return this;
   }
 
+  public addTexCoord(u: number, v: number): Geometry {
+    this._vertexData.push(u, v);
+
+    return this;
+  }
+
   public addTriangle(vertex1: number, vertex2: number, vertex3: number): Geometry {
     this._indexData.push(vertex1, vertex2, vertex3);
 
