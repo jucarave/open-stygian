@@ -67,6 +67,8 @@ class Game {
       .build();
 
     const material = new MaterialBasic(new Texture('texture', 'img/texture.png'));
+    material.v4UV = [0.5,0,0.5,1];
+    material.v2Repeat = [4, 4];
 
     const camera = Camera.createPerspective(60, canvas.width / canvas.height, 0.1, 100);
     camera.position.set(0, 0, -5);

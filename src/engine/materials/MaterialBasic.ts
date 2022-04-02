@@ -21,6 +21,9 @@ export class MaterialBasic extends Material {
   private _renderer: Renderer;
   private _texture: Texture;
 
+  public v4UV: number[];
+  public v2Repeat: number[];
+
   constructor(texture: Texture) {
     super();
 
@@ -30,6 +33,9 @@ export class MaterialBasic extends Material {
     this._shader = this._renderer.getShader('basic');
 
     this._texture = texture;
+
+    this.v4UV = [0, 0, 1, 1];
+    this.v2Repeat = [1, 1];
   }
 
   /**
@@ -63,6 +69,9 @@ export class MaterialBasic extends Material {
 
   private _uploadTexture() {
     this._renderer.bindTexture(this._texture, this._shader.uniforms['uTexture']);
+
+    this._gl.uniform4fv(this._shader.uniforms['uUV'], this.v4UV);
+    this._gl.uniform2fv(this._shader.uniforms['uRepeat'], this.v2Repeat);
   }
 
   /**

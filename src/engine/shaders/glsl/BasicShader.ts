@@ -24,12 +24,16 @@ export const BasicShader: ShaderStruct = {
   fragmentShader: `
     precision mediump float;
 
+    uniform vec4 uUV;
+    uniform vec2 uRepeat;
     uniform sampler2D uTexture;
 
     varying vec2 vTexCoord;
 
     void main(void) {
-      gl_FragColor = texture2D(uTexture, vTexCoord);
+      vec2 coords = mod(vTexCoord.xy * uRepeat.xy, 1.0) * uUV.zw + uUV.xy;
+
+      gl_FragColor = texture2D(uTexture, coords);
     }
   `
 };
