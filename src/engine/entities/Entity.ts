@@ -1,4 +1,5 @@
 import { Camera } from 'engine/Camera';
+import { Component } from 'engine/Components/Component';
 import { Geometry } from 'engine/geometries/Geometry';
 import { Material } from 'engine/materials/Material';
 import { Matrix4 } from 'engine/math/Matrix4';
@@ -9,6 +10,8 @@ export class Entity {
   private _transform: Matrix4;
   private _worldMatrix: Matrix4;
   private _dirtyTransformMatrix: boolean;
+  private _components: Component[];
+  private _initialized: boolean;
   
   public readonly position: Vector3;
   public readonly rotation: Quaternion;
@@ -19,6 +22,8 @@ export class Entity {
   constructor(position?: Vector3) {
     this._transform = Matrix4.createIdentity();
     this._worldMatrix = Matrix4.createIdentity();
+    this._components = [];
+    this._initialized = false;
 
     this.position = position ? position : Vector3.zero;
     this.rotation = Quaternion.createIdentity();
@@ -30,8 +35,72 @@ export class Entity {
     this.rotation.onChange.add(this._setDirtyFlag, this);
   }
 
+  /**
+   * Signals that the transform matrix needs to be updated during
+   * the rendering process
+   */
   private _setDirtyFlag() {
     this._dirtyTransformMatrix = true;
+  }
+
+  /**
+   * Adds a component to the entity, if the entity had been initialized
+   * beforehand then it calls the init method of the component
+   * 
+   * @param component 
+   */
+  public addComponent(component: Component) {
+    this._components.push(component);
+
+    if (this._initialized) {
+      component.init();
+    }
+  }
+
+  /**
+   * Removes a component from the entity and calls its destroy method
+   * 
+   * @param component 
+   */
+  public removeComponent(component: Component) {
+    const index = this._components.indexOf(component);
+    if (index !== -1) {
+      this._components.splice(index, 1);
+    }
+
+    component.destroy();
+  }
+
+  /**
+   * Iterates through each component and calls their init method, it marks
+   * the entity as initialized
+   */
+  public initComponents() {
+    this._components.forEach((component: Component) => {
+      component.init();
+    });
+
+    this._initialized = true;
+  }
+
+  /**
+   * Call each component's update method once during each frame of the game loop
+   */
+  public updateComponents() {
+    this._components.forEach((component: Component) => {
+      component.update();
+    });
+  }
+
+  /**
+   * Destroy and removes all the components the entity
+   */
+  public destroy() {
+    this._components.forEach((component: Component) => {
+      component.destroy();
+    });
+
+    this._components = [];
   }
 
   /**

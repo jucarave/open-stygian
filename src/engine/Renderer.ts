@@ -8,8 +8,6 @@ interface ShadersMap {
 
 export class Renderer {
   private _canvas: HTMLCanvasElement;
-  private _width: number;
-  private _height: number;
   private _gl: WebGLRenderingContext;
   private _shaders: ShadersMap;
   private _shader: Shader;
@@ -21,8 +19,6 @@ export class Renderer {
     Renderer.instance = this;
 
     this._canvas = canvas;
-    this._width = canvas.width;
-    this._height = canvas.height;
     this._currentTexture = '';
 
     this._initGL();
@@ -44,7 +40,7 @@ export class Renderer {
 
     gl.enable(gl.CULL_FACE);
 
-    gl.viewport(0, 0, this._width, this._height);
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
     this._gl = gl;
@@ -85,6 +81,13 @@ export class Renderer {
     this._shader.useProgram(this._gl);
   }
 
+  /**
+   * Search a shader by it's name, if it doesn't exists then it throws
+   * an Error
+   * 
+   * @param shaderName 
+   * @returns Shader instance
+   */
   public getShader(shaderName: string) {
     if (!this._shaders[shaderName]) {
       throw new Error(`Shader '${shaderName}' was not loaded into the renderer`);
@@ -100,6 +103,12 @@ export class Renderer {
     this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
   }
 
+  /**
+   * Upload a texture to the GPU only if it's not currently there
+   * 
+   * @param texture Texture to upload
+   * @param uniform uniform location to send the texture
+   */
   public bindTexture(texture: Texture, uniform: WebGLUniformLocation) {
     if (this._currentTexture === texture.key) {
       return;

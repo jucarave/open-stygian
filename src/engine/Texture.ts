@@ -23,6 +23,10 @@ export class Texture {
     Texture.textures[key] = this;
   }
 
+  /**
+   * Processes an HTML image into a WebGL Texture.
+   * it uses neigbor nearest filter for mipmap scalling.
+   */
   private _processTexture() {
     const renderer = Renderer.instance;
     const gl = renderer.gl;
@@ -48,6 +52,12 @@ export class Texture {
     return this._texture;
   }
 
+  /**
+   * Look for all the created textures to see if all the images
+   * are loaded into the webpage
+   * 
+   * @returns bool
+   */
   public static areTexturesReady() {
     for (const key in Texture.textures) {
       if (!Texture.textures[key]._ready) {
@@ -58,6 +68,13 @@ export class Texture {
     return true;
   }
 
+  /**
+   * Search for a texture using its created key, if it doesn't
+   * finds it then it throws an Error.
+   * 
+   * @param key texture key
+   * @returns Texture instance
+   */
   public static getTexture(key: string) {
     if (!Texture.textures[key]) {
       throw new Error(`Texture '${key}' not found`);

@@ -67,6 +67,10 @@ export class MaterialBasic extends Material {
     gl.uniformMatrix4fv(this._shader.uniforms['uView'], false, entity.getWorldMatrix(camera).data);
   }
 
+  /**
+   * Upload the texture to the GPU. It also sends UV and Repeat settings, 
+   * this will allow a single face in a texturemap to be repeated as needed.
+   */
   private _uploadTexture() {
     this._renderer.bindTexture(this._texture, this._shader.uniforms['uTexture']);
 
