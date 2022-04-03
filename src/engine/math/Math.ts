@@ -13,5 +13,5 @@ export function getAngleBetwen2DVectors(x1: number, y1: number, x2: number, y2: 
   const dot = x1 * x2 + y1 * y2;
   const det = y1 * x2 - x1 * y2;
 
-  return Math.atan2(det, dot);
+  return Math.atan2(-det, dot);
 }

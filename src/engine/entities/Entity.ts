@@ -13,8 +13,11 @@ export class Entity {
   private _components: Component[];
   private _initialized: boolean;
   
+  
   public readonly position: Vector3;
   public readonly rotation: Quaternion;
+  public forward: Vector3;
+  public right: Vector3;
 
   public material: Material;
   public geometry: Geometry;
@@ -27,6 +30,8 @@ export class Entity {
 
     this.position = position ? position : Vector3.zero;
     this.rotation = Quaternion.createIdentity();
+    this.forward = Vector3.forward;
+    this.right = Vector3.right;
 
     this._dirtyTransformMatrix = true;
 

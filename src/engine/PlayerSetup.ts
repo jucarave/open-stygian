@@ -1,6 +1,8 @@
 import { Camera } from './Camera';
+import { PlayerKeyboardRotation } from './Components/PlayerKeyboardRotation';
 import { PlayerSmoothMovement } from './Components/PlayerSmoothMovement';
 import { Entity } from './entities/Entity';
+import { Vector2 } from './math/Vector2';
 
 export class PlayerSetup {
   private _player: Entity;
@@ -26,6 +28,15 @@ export class PlayerSetup {
     this._player.addComponent(smoothMovement);
 
     this._movement = smoothMovement;
+
+    return this;
+  }
+
+  addKeyboardFirsPersonLook(sensitivity: Vector2 = {x: 0.03, y: 0.03}) {
+    const rotation = new PlayerKeyboardRotation(this._camera);
+    rotation.sensitivity = sensitivity;
+
+    this._player.addComponent(rotation);
 
     return this;
   }

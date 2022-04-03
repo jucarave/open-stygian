@@ -9,7 +9,7 @@ export class Quaternion {
   private _axisY: Vector3;
   private _axisZ: Vector3;
   
-  public readonly onChange: Signal;
+  public readonly onChange: Signal<void>;
   public local: boolean;
 
   constructor(scalar = 1, imaginary: Vector3 = new Vector3(0, 0, 0)) {
@@ -18,7 +18,7 @@ export class Quaternion {
 
     this._axisX = Vector3.right;
     this._axisY = Vector3.up;
-    this._axisZ = Vector3.front;
+    this._axisZ = Vector3.forward;
 
     this.onChange = new Signal();
 
@@ -157,7 +157,7 @@ export class Quaternion {
 
     this._axisX.copy(Vector3.right);
     this._axisY.copy(Vector3.up);
-    this._axisZ.copy(Vector3.front);
+    this._axisZ.copy(Vector3.forward);
 
     this.onChange.dispatch();
 

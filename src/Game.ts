@@ -11,8 +11,8 @@ class Game {
     
     const level = stygian.loadLevel();
     level.playerSetup
-      .addSmoothMovement();
-
+      .addSmoothMovement()
+      .addKeyboardFirsPersonLook();
 
     stygian.play();
   }

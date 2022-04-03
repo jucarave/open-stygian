@@ -6,7 +6,7 @@ export class Vector3 {
   private _y: number;
   private _z: number;
 
-  public readonly onChange: Signal;
+  public readonly onChange: Signal<void>;
 
   constructor(x: number, y: number, z: number) {
     this.onChange = new Signal();
@@ -155,7 +155,7 @@ export class Vector3 {
     return new Vector3(1, 0, 0);
   }
 
-  public static get front(): Vector3 { 
+  public static get forward(): Vector3 { 
     return new Vector3(0, 0, 1);
   }
 

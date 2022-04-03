@@ -4,8 +4,8 @@ export class Input {
   private _canvas: HTMLCanvasElement;
   private _focused: boolean;
 
-  public onKeyDown: Signal;
-  public onKeyUp: Signal;
+  public onKeyDown: Signal<KeyboardEvent>;
+  public onKeyUp: Signal<KeyboardEvent>;
   
   public static instance: Input;
 

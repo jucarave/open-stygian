@@ -3,6 +3,12 @@ export const Config = {
     up: 'w',
     left: 'a',
     down: 's',
-    right: 'd'
+    right: 'd',
+
+    rotateLeft: 'q',
+    rotateRight: 'e',
+    lookUp: '1',
+    lookCenter: '2',
+    lookDown: '3',
   }
 };

@@ -1,7 +1,6 @@
 import { Camera } from 'engine/Camera';
 import { getAngleBetwen2DVectors } from 'engine/math/Math';
 import { Input } from 'engine/system/Input';
-import { SignalCallbackType } from 'engine/system/Signal';
 import { Component } from './Component';
 import { Config } from '../Config';
 
@@ -34,7 +33,7 @@ export class PlayerSmoothMovement extends Component {
    * @param ev 
    * @param keyInput Is the key being pressed (1)? or relased (0)?
    */
-  private _handleKey(ev: KeyboardEvent, keyInput: number) {
+  private _handleKeyInput(ev: KeyboardEvent, keyInput: number) {
     switch (ev.key.toLowerCase()) {
       case Config.input.up: this._input.UP = keyInput; break;
       case Config.input.left: this._input.LEFT = keyInput; break;
@@ -43,16 +42,25 @@ export class PlayerSmoothMovement extends Component {
     }
   }
 
+  private _handleKeyDown(ev: KeyboardEvent) {
+    this._handleKeyInput(ev, 1);
+  }
+
+  private _handleKeyUp(ev: KeyboardEvent) {
+    this._handleKeyInput(ev, 0);
+  }
+
   /**
    * Gets the angle of the movement based on the key pressed and
    * moves the player in that direction
    */
   private updateMovement() {
     const ver = this._input.UP - this._input.DOWN;
-    const hor = this._input.RIGHT - this._input.LEFT;
+    const hor = this._input.LEFT - this._input.RIGHT;
 
     if (hor != 0 || ver != 0) {
-      const angle = getAngleBetwen2DVectors(1, 0, hor, ver);
+      const dir = this._entity.forward.clone().multiplyScalar(ver).sum(this._entity.right.clone().multiplyScalar(hor));
+      const angle = getAngleBetwen2DVectors(1, 0, dir.x, dir.z);
 
       this._entity.position.x += Math.cos(angle) * this.movementSpeed;
       this._entity.position.z += Math.sin(angle) * this.movementSpeed;
@@ -60,8 +68,8 @@ export class PlayerSmoothMovement extends Component {
   }
 
   public init(): void {
-    Input.instance.onKeyDown.add((args: SignalCallbackType) => this._handleKey(args as KeyboardEvent, 1), this);
-    Input.instance.onKeyUp.add((args: SignalCallbackType) => this._handleKey(args as KeyboardEvent, 0), this);
+    Input.instance.onKeyDown.add(this._handleKeyDown, this);
+    Input.instance.onKeyUp.add(this._handleKeyUp, this);
   }
 
   public update(): void {
@@ -71,5 +79,8 @@ export class PlayerSmoothMovement extends Component {
     this._camera.position.copy(this._entity.position);
   }
   
-  public destroy(): void {}
+  public destroy(): void {
+    Input.instance.onKeyDown.remove(this._handleKeyDown);
+    Input.instance.onKeyUp.remove(this._handleKeyUp);
+  }
 }
