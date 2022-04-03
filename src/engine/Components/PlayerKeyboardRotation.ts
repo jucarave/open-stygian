@@ -7,13 +7,6 @@ import { Component } from './Component';
 
 export class PlayerKeyboardRotation extends Component {
   private _camera: Camera;
-  private _input = {
-    LEFT: 0,
-    RIGHT: 0,
-    UP: 0,
-    DOWN: 0,
-    CENTER: 0
-  }
 
   public sensitivity: Vector2;
 
@@ -23,28 +16,10 @@ export class PlayerKeyboardRotation extends Component {
     this._camera = camera;
   }
 
-  private _handleKeyInput(ev: KeyboardEvent, keyInput: number) {
-    switch (ev.key) {
-      case Config.input.rotateLeft: this._input.LEFT = keyInput; break;
-      case Config.input.rotateRight: this._input.RIGHT = keyInput; break;
-    }
-  }
-
-  private _handleKeyDown(ev: KeyboardEvent) {
-    this._handleKeyInput(ev, 1);
-  }
-
-  private _handleKeyUp(ev: KeyboardEvent) {
-    this._handleKeyInput(ev, 0);
-  }
-
-  public init(): void {
-    Input.instance.onKeyDown.add(this._handleKeyDown, this);
-    Input.instance.onKeyUp.add(this._handleKeyUp, this);
-  }
+  public init(): void { }
 
   public update(): void {
-    const hor = this._input.LEFT - this._input.RIGHT;
+    const hor = Input.isKeyDown(Config.input.lookLeft) - Input.isKeyDown(Config.input.lookRight);
 
     if (hor != 0) {
       // Update the player and camera rotation so that I don't have to do parenting just for the rotation
@@ -57,8 +32,5 @@ export class PlayerKeyboardRotation extends Component {
     }
   }
 
-  public destroy(): void {
-    Input.instance.onKeyDown.remove(this._handleKeyDown);
-    Input.instance.onKeyUp.remove(this._handleKeyUp);
-  }
+  public destroy(): void { }
 }

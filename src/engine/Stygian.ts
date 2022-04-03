@@ -46,6 +46,8 @@ export class Stygian {
     this._scene.update();
     this._scene.render();
 
+    Input.instance.update();
+
     requestAnimationFrame(() => this._gameLoop());
   }
 }

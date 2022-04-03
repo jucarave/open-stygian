@@ -1,14 +1,16 @@
+import { KEY_CODES } from './system/KeyCodes';
+
 export const Config = {
   input: {
-    up: 'w',
-    left: 'a',
-    down: 's',
-    right: 'd',
+    up: KEY_CODES.W,
+    left: KEY_CODES.A,
+    down: KEY_CODES.S,
+    right: KEY_CODES.D,
 
-    rotateLeft: 'q',
-    rotateRight: 'e',
-    lookUp: '1',
-    lookCenter: '2',
-    lookDown: '3',
+    lookLeft: KEY_CODES.Q,
+    lookRight: KEY_CODES.E,
+    lookUp: KEY_CODES.Digit1,
+    lookCenter: KEY_CODES.Digit2,
+    lookDown: KEY_CODES.Digit3,
   }
 };

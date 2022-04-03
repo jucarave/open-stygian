@@ -1,8 +1,8 @@
 import { Camera } from 'engine/Camera';
+import { Config } from 'engine/Config';
 import { getAngleBetwen2DVectors } from 'engine/math/Math';
 import { Input } from 'engine/system/Input';
 import { Component } from './Component';
-import { Config } from '../Config';
 
 /**
  * This component manages the movement of the character
@@ -10,12 +10,6 @@ import { Config } from '../Config';
  */
 export class PlayerSmoothMovement extends Component {
   private _camera: Camera;
-  private _input = {
-    UP: 0,
-    RIGHT: 0,
-    LEFT: 0,
-    DOWN: 0
-  };
 
   // Movement speed in units/frame
   public movementSpeed = 0.1;
@@ -27,36 +21,12 @@ export class PlayerSmoothMovement extends Component {
   }
 
   /**
-   * Handles the player's input to control the movement with
-   * the configured keys
-   * 
-   * @param ev 
-   * @param keyInput Is the key being pressed (1)? or relased (0)?
-   */
-  private _handleKeyInput(ev: KeyboardEvent, keyInput: number) {
-    switch (ev.key.toLowerCase()) {
-      case Config.input.up: this._input.UP = keyInput; break;
-      case Config.input.left: this._input.LEFT = keyInput; break;
-      case Config.input.down: this._input.DOWN = keyInput; break;
-      case Config.input.right: this._input.RIGHT = keyInput; break;
-    }
-  }
-
-  private _handleKeyDown(ev: KeyboardEvent) {
-    this._handleKeyInput(ev, 1);
-  }
-
-  private _handleKeyUp(ev: KeyboardEvent) {
-    this._handleKeyInput(ev, 0);
-  }
-
-  /**
    * Gets the angle of the movement based on the key pressed and
    * moves the player in that direction
    */
   private updateMovement() {
-    const ver = this._input.UP - this._input.DOWN;
-    const hor = this._input.LEFT - this._input.RIGHT;
+    const ver = Input.isKeyDown(Config.input.up) - Input.isKeyDown(Config.input.down);
+    const hor = Input.isKeyDown(Config.input.left) - Input.isKeyDown(Config.input.right);
 
     if (hor != 0 || ver != 0) {
       const dir = this._entity.forward.clone().multiplyScalar(ver).sum(this._entity.right.clone().multiplyScalar(hor));
@@ -68,8 +38,6 @@ export class PlayerSmoothMovement extends Component {
   }
 
   public init(): void {
-    Input.instance.onKeyDown.add(this._handleKeyDown, this);
-    Input.instance.onKeyUp.add(this._handleKeyUp, this);
   }
 
   public update(): void {
@@ -80,7 +48,5 @@ export class PlayerSmoothMovement extends Component {
   }
   
   public destroy(): void {
-    Input.instance.onKeyDown.remove(this._handleKeyDown);
-    Input.instance.onKeyUp.remove(this._handleKeyUp);
   }
 }
