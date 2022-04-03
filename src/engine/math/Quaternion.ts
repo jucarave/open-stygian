@@ -8,6 +8,7 @@ export class Quaternion {
   private _axisX: Vector3;
   private _axisY: Vector3;
   private _axisZ: Vector3;
+  private _m4: Matrix4;
   
   public readonly onChange: Signal<void>;
   public local: boolean;
@@ -15,6 +16,7 @@ export class Quaternion {
   constructor(scalar = 1, imaginary: Vector3 = new Vector3(0, 0, 0)) {
     this._s = scalar;
     this._imaginary = imaginary;
+    this._m4 = Matrix4.createIdentity();
 
     this._axisX = Vector3.right;
     this._axisY = Vector3.up;
@@ -50,6 +52,13 @@ export class Quaternion {
     return this;
   }
 
+  /**
+   * Multiplying two quaternions results in the addition of
+   * both rotations
+   * 
+   * @param q Quaternion
+   * @returns same quaternion for chaining
+   */
   public multiplyQuaternion(q: Quaternion): Quaternion {
     const sA = this.s,
       sB = q.s,
@@ -80,6 +89,10 @@ export class Quaternion {
     return this;
   }
 
+  /**
+   * Rotates the quaternion using an euler angles rotating them
+   * in order xyz
+   */
   public setEuler(x: number, y: number, z: number) {
     this.setIdentity()
       .rotateX(x)
@@ -87,6 +100,27 @@ export class Quaternion {
       .rotateZ(z);
   }
 
+  /**
+   * Rotates the quaternion along any 3d axis
+   * 
+   * @param radians angles in radians to rotate
+   * @param axis axis to rotate along
+   * @returns same quaternion for chaining
+   */
+  public rotate(radians: number, axis: Vector3) {
+    this.multiplyQuaternion(Quaternion.createRotationOnAxis(radians, axis));
+
+    return this;
+  }
+
+  /**
+   * Rotates the quaternion along a right axis, if the
+   * quaternion is local then it does it using it's local right axis
+   * otherwise uses Vector3.right
+   * 
+   * @param radians angles in radians to rotate
+   * @returns same quaternion for chaining
+   */
   public rotateX(radians: number): Quaternion {
     const axis = (this.local) ? this._axisX : Vector3.right,
       rotation = Quaternion.createRotationOnAxis(radians, axis);
@@ -101,6 +135,14 @@ export class Quaternion {
     return this;
   }
 
+  /**
+   * Rotates the quaternion along an up axis, if the
+   * quaternion is local then it does it using it's local up axis
+   * otherwise uses Vector3.up
+   * 
+   * @param radians angles in radians to rotate
+   * @returns same quaternion for chaining
+   */
   public rotateY(radians: number): Quaternion {
     const axis = (this.local) ? this._axisY : Vector3.down,
       rotation = Quaternion.createRotationOnAxis(radians, axis);
@@ -115,8 +157,16 @@ export class Quaternion {
     return this;
   }
 
+  /**
+   * Rotates the quaternion along a forward axis, if the
+   * quaternion is local then it does it using it's local forward axis
+   * otherwise uses Vector3.forward
+   * 
+   * @param radians angles in radians to rotate
+   * @returns same quaternion for chaining
+   */
   public rotateZ(radians: number): Quaternion {
-    const axis = (this.local) ? this._axisZ : Vector3.back,
+    const axis = (this.local) ? this._axisZ : Vector3.forward,
       rotation = Quaternion.createRotationOnAxis(radians, axis);
 
     this.multiplyQuaternion(rotation);
@@ -129,10 +179,13 @@ export class Quaternion {
     return this;
   }
 
+  /**
+   * Transforms the quaternion into a 4x4 rotation matrix
+   * 
+   * @returns Matrix4
+   */
   public getRotationMatrix(): Matrix4 {
-    const ret = Matrix4.createIdentity(),
-    
-      qx = this._imaginary.x,
+    const qx = this._imaginary.x,
       qy = this._imaginary.y,
       qz = this._imaginary.z,
       qw = this._s,
@@ -141,29 +194,35 @@ export class Quaternion {
       m21 = 2*qx*qy + 2*qz*qw,            m22 = 1 - 2*qx*qx - 2*qz*qz,    m23 = 2*qy*qz - 2*qx*qw,
       m31 = 2*qx*qz - 2*qy*qw,            m32 = 2*qy*qz + 2*qx*qw,        m33 = 1 - 2*qx*qx - 2*qy*qy;
 
-    ret.set(
+    this._m4.set(
       m11, m12, m13, 0,
       m21, m22, m23, 0,
       m31, m32, m33, 0,
         0,   0,   0, 1
     );
 
-    return ret;
+    return this._m4;
   }
 
   public setIdentity(): Quaternion {
     this._s = 1;
     this._imaginary.set(0, 0, 0);
 
-    this._axisX.copy(Vector3.right);
-    this._axisY.copy(Vector3.up);
-    this._axisZ.copy(Vector3.forward);
+    this._axisX = Vector3.right;
+    this._axisY = Vector3.up;
+    this._axisZ = Vector3.forward;
 
     this.onChange.dispatch();
 
     return this;
   }
   
+  /**
+   * Creates a quaternion rotating along the 'y' and then 'x' axis
+   * to look at a direction using 0,1,0 as the up vector
+   * 
+   * @param direction 
+   */
   public lookToDirection(direction: Vector3): void {
     const directionNormal = direction.clone().normalize();
 
