@@ -1,7 +1,11 @@
-import { expect } from 'chai';
+import * as chai from 'chai';
 import { Vector3 } from '../../../src/engine/math/Vector3';
-import 'mocha';
 import { Quaternion } from '../../../src/engine/math/Quaternion';
+import * as spies from 'chai-spies';
+import 'mocha';
+
+const expect = chai.expect;
+chai.use(spies);
 
 describe('Vector3 class', () => {
   it('Creates a class with the given values', () => {
@@ -15,8 +19,7 @@ describe('Vector3 class', () => {
   it('Can set vector values', () => {
     const vector = new Vector3(0, 0, 0);
 
-    vector.set(1, 2, 3);
-
+    expect(vector.set(1, 2, 3)).to.eql(vector);
     expect(vector.x).to.eql(1);
     expect(vector.y).to.eql(2);
     expect(vector.z).to.eql(3);
@@ -27,9 +30,7 @@ describe('Vector3 class', () => {
     const length = Math.sqrt(5 * 5 + 6 * 6 + 7 * 7);
 
     expect(vector.length).to.eql(length);
-
-    vector.normalize();
-
+    expect(vector.normalize()).to.eql(vector);
     expect(vector.x).to.eql(5 / length);
     expect(vector.y).to.eql(6 / length);
     expect(vector.z).to.eql(7 / length);
@@ -39,8 +40,7 @@ describe('Vector3 class', () => {
     const vectorA = new Vector3(13, 43, 21);
     const vectorB = new Vector3(61, 55, 14);
 
-    vectorA.sum(vectorB);
-
+    expect(vectorA.sum(vectorB)).to.eql(vectorA);
     expect(vectorA.x).to.eql(13 + 61);
     expect(vectorA.y).to.eql(43 + 55);
     expect(vectorA.z).to.eql(21 + 14);
@@ -50,8 +50,7 @@ describe('Vector3 class', () => {
     const vectorA = new Vector3(4, 2, 6);
     const vectorB = new Vector3(3, 8, 9);
 
-    vectorA.multiply(vectorB);
-
+    expect(vectorA.multiply(vectorB)).to.eql(vectorA);
     expect(vectorA.x).to.eql(4 * 3);
     expect(vectorA.y).to.eql(2 * 8);
     expect(vectorA.z).to.eql(6 * 9);
@@ -60,8 +59,7 @@ describe('Vector3 class', () => {
   it('Can be multiplied by a scalar', () => {
     const vector = new Vector3(2, 4, 6);
 
-    vector.multiplyScalar(2);
-
+    expect(vector.multiplyScalar(2)).to.eql(vector);
     expect(vector.x).to.eql(2 * 2);
     expect(vector.y).to.eql(4 * 2);
     expect(vector.z).to.eql(6 * 2);
@@ -81,8 +79,7 @@ describe('Vector3 class', () => {
     const vectorA = new Vector3(1, 2, 3);
     const vectorB = new Vector3(4, 5, 6);
 
-    vectorA.copy(vectorB);
-
+    expect(vectorA.copy(vectorB)).to.eql(vectorA);
     expect(vectorA.x).to.eql(vectorB.x);
     expect(vectorA.y).to.eql(vectorB.y);
     expect(vectorA.z).to.eql(vectorB.z);
@@ -92,8 +89,7 @@ describe('Vector3 class', () => {
     const vector = new Vector3(1, 0, 0);
     const quaternion = Quaternion.createRotationOnAxis(Math.PI / 2, Vector3.up);
 
-    vector.rotateOnQuaternion(quaternion);
-
+    expect(vector.rotateOnQuaternion(quaternion)).to.eql(vector);
     expect(vector.x).to.eql(2.220446049250313e-16); // Basically 0
     expect(vector.y).to.eql(0);
     expect(vector.z).to.eql(1);
@@ -121,5 +117,19 @@ describe('Vector3 class', () => {
     expect(vector.x).to.eql(0);
     expect(vector.y).to.eql(1);
     expect(vector.z).to.eql(0);
+  });
+
+  it('Can dispatch a signal on changes', () => {
+    const vector = new Vector3(0, 0, 0);
+    const spy = chai.spy.on(vector.onChange, 'dispatch');
+    
+    vector.x = 1;
+    expect(spy).to.have.been.called.exactly(1);
+
+    vector.y = 1;
+    expect(spy).to.have.been.called.exactly(2);
+
+    vector.z = 1;
+    expect(spy).to.have.been.called.exactly(3);
   });
 });

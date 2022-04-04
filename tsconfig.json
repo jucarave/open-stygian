@@ -8,7 +8,6 @@
     "strictPropertyInitialization": false,
     "strictNullChecks": false,
     "target": "es2017",
-    "baseUrl": "./",
     "strict": true
   },
   "include": [
