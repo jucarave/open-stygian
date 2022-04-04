@@ -1,7 +1,7 @@
-import { Camera } from 'engine/Camera';
-import { Config } from 'engine/Config';
-import { getAngleBetwen2DVectors } from 'engine/math/Math';
-import { Input } from 'engine/system/Input';
+import { Camera } from '../Camera';
+import { Config } from '../Config';
+import { getAngleBetwen2DVectors } from '../math/Math';
+import { Input } from '../system/Input';
 import { Component } from './Component';
 
 /**

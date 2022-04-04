@@ -1,6 +1,6 @@
 import { Vector3 } from './Vector3';
 import { Matrix4 } from './Matrix4';
-import { Signal } from 'engine/system/Signal';
+import { Signal } from '../system/Signal';
 
 export class Quaternion {
   private _s: number;

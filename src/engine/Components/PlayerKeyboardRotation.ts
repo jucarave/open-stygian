@@ -1,9 +1,9 @@
-import { Camera } from 'engine/Camera';
-import { Config } from 'engine/Config';
-import { degToRad } from 'engine/math/Math';
-import { Vector2 } from 'engine/math/Vector2';
-import { Vector3 } from 'engine/math/Vector3';
-import { Input } from 'engine/system/Input';
+import { Camera } from '../Camera';
+import { Config } from '../Config';
+import { degToRad } from '../math/Math';
+import { Vector2 } from '../math/Vector2';
+import { Vector3 } from '../math/Vector3';
+import { Input } from '../system/Input';
 import { Component } from './Component';
 
 export class PlayerKeyboardRotation extends Component {

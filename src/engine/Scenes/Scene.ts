@@ -1,5 +1,5 @@
-import { Camera } from 'engine/Camera';
-import { Entity } from 'engine/entities/Entity';
+import { Camera } from '../Camera';
+import { Entity } from '../entities/Entity';
 
 export class Scene {
   protected _entities: Entity[];

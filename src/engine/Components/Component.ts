@@ -1,4 +1,4 @@
-import { Entity } from 'engine/entities/Entity';
+import { Entity } from '../entities/Entity';
 
 export abstract class Component {
   protected _entity: Entity;

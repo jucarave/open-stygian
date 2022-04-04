@@ -1,5 +1,5 @@
-import { Stygian } from 'engine/Stygian';
-import { Texture } from 'engine/Texture';
+import { Stygian } from './engine/Stygian';
+import { Texture } from './engine/Texture';
 
 class Game {
   constructor() {

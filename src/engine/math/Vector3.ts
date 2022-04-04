@@ -1,4 +1,4 @@
-import { Signal } from 'engine/system/Signal';
+import { Signal } from '../system/Signal';
 import { Quaternion } from './Quaternion';
 
 export class Vector3 {

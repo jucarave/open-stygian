@@ -1,10 +1,10 @@
-import { Camera } from 'engine/Camera';
-import { FLOAT_SIZE, TEXCOORD_SIZE, VERTICE_SIZE } from 'engine/Constants';
-import { Entity } from 'engine/entities/Entity';
-import { Geometry } from 'engine/geometries/Geometry';
-import { Renderer } from 'engine/Renderer';
-import { Shader } from 'engine/shaders/Shader';
-import { Texture } from 'engine/Texture';
+import { Camera } from '../Camera';
+import { FLOAT_SIZE, TEXCOORD_SIZE, VERTICE_SIZE } from '../Constants';
+import { Entity } from '../entities/Entity';
+import { Geometry } from '../geometries/Geometry';
+import { Renderer } from '../Renderer';
+import { Shader } from '../shaders/Shader';
+import { Texture } from '../Texture';
 import { Material } from './Material';
 
 const VERTEX_OFFSET = 0;

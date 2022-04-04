@@ -9,7 +9,7 @@
     "watch": "node ./scripts/watch.js",
     "build-debug": "node ./scripts/build.js debug",
     "watch-debug": "node ./scripts/watch.js debug",
-    "lint": "eslint ./src/*.ts",
+    "lint": "eslint ./src/**/*.ts ./tests/**/*.spec.ts",
     "test": "mocha -r ts-node/register tests/**/*.spec.ts"
   },
   "license": "MIT",

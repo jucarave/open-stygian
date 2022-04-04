@@ -1,11 +1,11 @@
-import { Camera } from 'engine/Camera';
-import { Entity } from 'engine/entities/Entity';
-import { Geometry } from 'engine/geometries/Geometry';
-import { MaterialBasic } from 'engine/materials/MaterialBasic';
-import { Vector3 } from 'engine/math/Vector3';
-import { PlayerSetup } from 'engine/PlayerSetup';
-import { Renderer } from 'engine/Renderer';
-import { Texture } from 'engine/Texture';
+import { Camera } from '../Camera';
+import { Entity } from '../entities/Entity';
+import { Geometry } from '../geometries/Geometry';
+import { MaterialBasic } from '../materials/MaterialBasic';
+import { Vector3 } from '../math/Vector3';
+import { PlayerSetup } from '../PlayerSetup';
+import { Renderer } from '../Renderer';
+import { Texture } from '../Texture';
 import { Scene } from './Scene';
 
 export class SceneDungeon extends Scene {

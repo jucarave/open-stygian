@@ -1,10 +1,10 @@
-import { Camera } from 'engine/Camera';
-import { Component } from 'engine/Components/Component';
-import { Geometry } from 'engine/geometries/Geometry';
-import { Material } from 'engine/materials/Material';
-import { Matrix4 } from 'engine/math/Matrix4';
-import { Quaternion } from 'engine/math/Quaternion';
-import { Vector3 } from 'engine/math/Vector3';
+import { Camera } from '../Camera';
+import { Component } from '../Components/Component';
+import { Geometry } from '../geometries/Geometry';
+import { Material } from '../materials/Material';
+import { Matrix4 } from '../math/Matrix4';
+import { Quaternion } from '../math/Quaternion';
+import { Vector3 } from '../math/Vector3';
 
 export class Entity {
   private _transform: Matrix4;
