@@ -1,3 +1,5 @@
+import { Vector2 } from '../math/Vector2';
+
 interface KeysMap {
   [index: string]: number;
 }
@@ -7,8 +9,11 @@ export class Input {
   private _focused: boolean;
   private _keys: KeysMap;
   private _needsUpdate: boolean;
+  private _isPointerLocked: boolean;
+  private _mouseMovement: Vector2;
 
   public static instance: Input;
+
 
   constructor(canvas: HTMLCanvasElement) {
     Input.instance = this;
@@ -18,8 +23,18 @@ export class Input {
     this._keys = {};
     this._needsUpdate = false;
 
+    this._mouseMovement = { x: 0, y: 0 };
+
+    document.addEventListener('pointerlockchange', this._handlePointerLockChange.bind(this));
+    document.addEventListener('mozfullscreenchange', this._handlePointerLockChange.bind(this));
+    document.addEventListener('webkitfullscreenchange', this._handlePointerLockChange.bind(this));
+
     document.addEventListener('click', (ev: MouseEvent) => {
       this._focused = ev.target === this._canvas;
+
+      if (this._focused && this._canvas.requestPointerLock) {
+        this._canvas.requestPointerLock();
+      }
     })
 
     document.body.addEventListener('keydown', (ev: KeyboardEvent) => {
@@ -36,6 +51,27 @@ export class Input {
 
       this._keys[ev.code] = 0;
     });
+
+    document.body.addEventListener('mousemove', (ev: MouseEvent) =>  {
+      if (!this._focused || !this._isPointerLocked) { return; }
+
+      this._mouseMovement.x = ev.movementX;
+      this._mouseMovement.y = ev.movementY;
+    })
+  }
+
+  private _handlePointerLockChange(): void {
+    if (
+      document.pointerLockElement === this._canvas ||
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (<any>document).mozfullscreenchange === this._canvas ||
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (<any>document).webkitPointerLockElement === this._canvas
+    ) {
+      this._isPointerLocked = true;
+    } else {
+      this._isPointerLocked = false;
+    }
   }
 
   /**
@@ -57,6 +93,10 @@ export class Input {
 
   public update() {
     this._updateKeysStatus();
+
+    // Cancel last frame mouse movement
+    this._mouseMovement.x = 0;
+    this._mouseMovement.y = 0;
   }
 
   /**
@@ -87,5 +127,9 @@ export class Input {
    */
   public static isKeyUp(key: string) {
     return (Input.instance._keys[key] === 0 || Input.instance._keys[key] === undefined) ? 1 : 0;
+  }
+
+  public static get mouseMovement() {
+    return Input.instance._mouseMovement;
   }
 }

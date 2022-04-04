@@ -1,12 +1,11 @@
 import { Camera } from '../Camera';
-import { Config } from '../Config';
 import { degToRad } from '../math/Math';
 import { Vector2 } from '../math/Vector2';
 import { Vector3 } from '../math/Vector3';
 import { Input } from '../system/Input';
 import { Component } from './Component';
 
-export class PlayerKeyboardRotation extends Component {
+export class PlayerMouseRotation extends Component {
   private _camera: Camera;
   private _verticalAngle: number;
   private _maxVerticalAngle: number;
@@ -23,12 +22,12 @@ export class PlayerKeyboardRotation extends Component {
   public init(): void { }
 
   private _updateHorizontalRotation() {
-    const hor = Input.isKeyDown(Config.input.lookLeft) - Input.isKeyDown(Config.input.lookRight);
+    const hor = Input.mouseMovement.x;
 
     if (hor !== 0) {
       // Update the player and camera rotation so that I don't have to do parenting just for the rotation
-      this._entity.rotation.rotateY(hor * this.sensitivity.x);
-      this._camera.rotation.rotateY(hor * this.sensitivity.x);
+      this._entity.rotation.rotateY(-hor * this.sensitivity.x);
+      this._camera.rotation.rotateY(-hor * this.sensitivity.x);
 
       // Rotates the player's forward and right vector to help with the movement
       this._entity.forward = Vector3.forward.rotateOnQuaternion(this._entity.rotation).normalize();
@@ -37,10 +36,10 @@ export class PlayerKeyboardRotation extends Component {
   }
 
   private _updateVerticalRotation() {
-    const ver = Input.isKeyDown(Config.input.lookUp) - Input.isKeyDown(Config.input.lookDown);
+    const ver = Input.mouseMovement.y;
 
     if (ver !== 0) {
-      let angle = ver * this.sensitivity.y;
+      let angle = -ver * this.sensitivity.y;
 
       // Clamps the rotation to -maxVerticalAngle and maxVerticalAngle
       if (this._verticalAngle + angle >= this._maxVerticalAngle) {
@@ -55,13 +54,6 @@ export class PlayerKeyboardRotation extends Component {
 
         this._verticalAngle += angle;
       }
-    }
-
-    if (Input.isKeyPressed(Config.input.lookCenter)) {
-      // Center the camera looking along the player forward axis
-      this._camera.rotation.lookToDirection(this._entity.forward);
-
-      this._verticalAngle = 0;
     }
   }
 

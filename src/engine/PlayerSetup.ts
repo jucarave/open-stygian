@@ -1,5 +1,6 @@
 import { Camera } from './Camera';
 import { PlayerKeyboardRotation } from './Components/PlayerKeyboardRotation';
+import { PlayerMouseRotation } from './Components/PlayerMouseRotation';
 import { PlayerSmoothMovement } from './Components/PlayerSmoothMovement';
 import { Entity } from './entities/Entity';
 import { Vector2 } from './math/Vector2';
@@ -32,9 +33,20 @@ export class PlayerSetup {
     return this;
   }
 
-  addKeyboardFirsPersonLook(sensitivity: Vector2 = {x: 0.03, y: 0.03}) {
+  addKeyboardFirsPersonLook(sensitivity: Vector2 = {x: 0.03, y: 0.03}, maxVerticalAngle = 60) {
     const rotation = new PlayerKeyboardRotation(this._camera);
     rotation.sensitivity = sensitivity;
+    rotation.maxVerticalAngle = maxVerticalAngle;
+
+    this._player.addComponent(rotation);
+
+    return this;
+  }
+
+  addMouseFirstPersonLook(sensitivity: Vector2 = {x: 0.01, y: 0.01}, maxVerticalAngle = 60) {
+    const rotation = new PlayerMouseRotation(this._camera);
+    rotation.sensitivity = sensitivity;
+    rotation.maxVerticalAngle = maxVerticalAngle;
 
     this._player.addComponent(rotation);
 
