@@ -33,7 +33,7 @@ export const DungeonShader: ShaderStruct = {
     varying vec4 vUVs;
 
     void main(void) {
-      vec2 coords = vTexCoord.xy * vUVs.zw + vUVs.xy;
+      vec2 coords = (mod(vTexCoord.xy, 1.0)) * vUVs.zw + vUVs.xy;
 
       gl_FragColor = texture2D(uTexture, coords);
     }
