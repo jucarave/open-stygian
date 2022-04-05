@@ -1,6 +1,6 @@
 import { DungeonMap } from './engine/DungeonMap';
 import { Stygian } from './engine/Stygian';
-import { Texture } from './engine/Texture';
+import { Texture } from './engine/core/Texture';
 
 class Game {
   constructor() {

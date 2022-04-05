@@ -1,4 +1,4 @@
-import { Camera } from '../Camera';
+import { Camera } from '../core/Camera';
 import { degToRad } from '../math/Math';
 import { Vector2 } from '../math/Vector2';
 import { Vector3 } from '../math/Vector3';

@@ -1,4 +1,4 @@
-import { Camera } from '../Camera';
+import { Camera } from '../core/Camera';
 import { Entity } from '../entities/Entity';
 
 export class Scene {

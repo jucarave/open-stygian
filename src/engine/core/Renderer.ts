@@ -1,5 +1,5 @@
-import { Shader, ShaderStruct } from './shaders/Shader';
-import { DungeonShader } from './shaders/glsl/DungeonShader';
+import { Shader, ShaderStruct } from '../shaders/Shader';
+import { DungeonShader } from '../shaders/glsl/DungeonShader';
 import { Texture } from './Texture';
 
 interface ShadersMap {

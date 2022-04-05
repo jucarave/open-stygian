@@ -1,10 +1,10 @@
-import { Camera } from '../Camera';
+import { Camera } from '../core/Camera';
 import { DungeonMap } from '../DungeonMap';
 import { Dungeon } from '../entities/Dungeon';
 import { Entity } from '../entities/Entity';
 import { Vector3 } from '../math/Vector3';
 import { PlayerSetup } from '../PlayerSetup';
-import { Renderer } from '../Renderer';
+import { Renderer } from '../core/Renderer';
 import { Scene } from './Scene';
 
 export class SceneDungeon extends Scene {

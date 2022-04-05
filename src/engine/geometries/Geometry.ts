@@ -1,4 +1,4 @@
-import { Renderer } from '../Renderer';
+import { Renderer } from '../core/Renderer';
 
 export class Geometry {
   private _vertexData: number[];

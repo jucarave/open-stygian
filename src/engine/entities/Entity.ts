@@ -1,5 +1,5 @@
-import { Camera } from '../Camera';
-import { Component } from '../Components/Component';
+import { Camera } from '../core/Camera';
+import { Component } from '../components/Component';
 import { Geometry } from '../geometries/Geometry';
 import { Material } from '../materials/Material';
 import { Matrix4 } from '../math/Matrix4';

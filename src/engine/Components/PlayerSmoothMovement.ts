@@ -1,5 +1,5 @@
-import { Camera } from '../Camera';
-import { Config } from '../Config';
+import { Camera } from '../core/Camera';
+import { Config } from '../system/Config';
 import { getAngleBetwen2DVectors } from '../math/Math';
 import { Input } from '../system/Input';
 import { Component } from './Component';

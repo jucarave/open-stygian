@@ -1,7 +1,7 @@
 import { DungeonMap } from '../DungeonMap';
 import { Geometry } from '../geometries/Geometry';
 import { MaterialDungeon } from '../materials/MaterialDungeon';
-import { Texture } from '../Texture';
+import { Texture } from '../core/Texture';
 import { Entity } from './Entity';
 
 /**

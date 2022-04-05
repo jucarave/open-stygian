@@ -1,4 +1,4 @@
-import { KEY_CODES } from './system/KeyCodes';
+import { KEY_CODES } from './KeyCodes';
 
 export const Config = {
   input: {

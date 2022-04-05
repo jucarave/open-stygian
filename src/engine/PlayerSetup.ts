@@ -1,7 +1,7 @@
-import { Camera } from './Camera';
-import { PlayerKeyboardRotation } from './Components/PlayerKeyboardRotation';
-import { PlayerMouseRotation } from './Components/PlayerMouseRotation';
-import { PlayerSmoothMovement } from './Components/PlayerSmoothMovement';
+import { Camera } from './core/Camera';
+import { PlayerKeyboardRotation } from './components/PlayerKeyboardRotation';
+import { PlayerMouseRotation } from './components/PlayerMouseRotation';
+import { PlayerSmoothMovement } from './components/PlayerSmoothMovement';
 import { Entity } from './entities/Entity';
 import { Vector2 } from './math/Vector2';
 

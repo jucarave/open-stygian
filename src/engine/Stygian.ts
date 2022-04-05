@@ -1,9 +1,9 @@
 import { DungeonMap } from './DungeonMap';
-import { Renderer } from './Renderer';
-import { Scene } from './Scenes/Scene';
-import { SceneDungeon } from './Scenes/SceneDungeon';
+import { Renderer } from './core/Renderer';
+import { Scene } from './scenes/Scene';
+import { SceneDungeon } from './scenes/SceneDungeon';
 import { Input } from './system/Input';
-import { Texture } from './Texture';
+import { Texture } from './core/Texture';
 
 export class Stygian {
   private _renderer: Renderer;

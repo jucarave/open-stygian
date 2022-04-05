@@ -1,5 +1,5 @@
-import { Camera } from '../Camera';
-import { Config } from '../Config';
+import { Camera } from '../core/Camera';
+import { Config } from '../system/Config';
 import { degToRad } from '../math/Math';
 import { Vector2 } from '../math/Vector2';
 import { Vector3 } from '../math/Vector3';
