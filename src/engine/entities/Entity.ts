@@ -64,6 +64,23 @@ export class Entity {
   }
 
   /**
+   * Returns the first component with the componentType if it exists
+   * otherwise returns null
+   * 
+   * @param componentType name of the component to search
+   * @returns Component or null
+   */
+  public getComponent<T extends Component>(componentType: string): T {
+    for (let i=0;i<this._components.length;i++) {
+      if (this._components[i].type === componentType) {
+        return this._components[i] as T;
+      }
+    }
+
+    return null;
+  }
+
+  /**
    * Removes a component from the entity and calls its destroy method
    * 
    * @param component 

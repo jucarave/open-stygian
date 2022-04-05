@@ -7,6 +7,8 @@ export abstract class Component {
   public abstract update(): void;
   public abstract destroy(): void;
 
+  public abstract readonly type: string;
+
   public set entity(entity: Entity) {
     this._entity = entity;
   }

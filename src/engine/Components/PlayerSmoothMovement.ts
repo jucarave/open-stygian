@@ -14,6 +14,8 @@ export class PlayerSmoothMovement extends Component {
   // Movement speed in units/frame
   public movementSpeed = 0.1;
 
+  public readonly type = 'PlayerSmoothMovement';
+
   constructor(camera: Camera) {
     super();
 

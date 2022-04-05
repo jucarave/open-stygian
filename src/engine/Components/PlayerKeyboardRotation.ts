@@ -1,6 +1,6 @@
 import { Camera } from '../core/Camera';
 import { Config } from '../system/Config';
-import { degToRad } from '../math/Math';
+import { degToRad, radToDeg } from '../math/Math';
 import { Vector2 } from '../math/Vector2';
 import { Vector3 } from '../math/Vector3';
 import { Input } from '../system/Input';
@@ -12,6 +12,8 @@ export class PlayerKeyboardRotation extends Component {
   private _maxVerticalAngle: number;
 
   public sensitivity: Vector2;
+
+  public readonly type = 'PlayerKeyboardRotation';
 
   constructor(camera: Camera) {
     super();
@@ -74,5 +76,9 @@ export class PlayerKeyboardRotation extends Component {
 
   public set maxVerticalAngle(degrees: number) {
     this._maxVerticalAngle = degToRad(degrees);
+  }
+
+  public get maxVerticalAngle() {
+    return radToDeg(this._maxVerticalAngle);
   }
 }
