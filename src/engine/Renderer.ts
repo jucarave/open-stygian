@@ -1,5 +1,5 @@
 import { Shader, ShaderStruct } from './shaders/Shader';
-import { BasicShader } from './shaders/glsl/BasicShader';
+import { DungeonShader } from './shaders/glsl/DungeonShader';
 import { Texture } from './Texture';
 
 interface ShadersMap {
@@ -24,7 +24,7 @@ export class Renderer {
     this._initGL();
     this._initShaders();
 
-    this.useShader('basic');
+    this.useShader('dungeon');
   }
 
   /**
@@ -39,6 +39,9 @@ export class Renderer {
     }
 
     gl.enable(gl.CULL_FACE);
+    gl.enable(gl.DEPTH_TEST);
+
+    gl.cullFace(gl.BACK);
 
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -51,7 +54,7 @@ export class Renderer {
    */
   private _initShaders() {
     this._shaders = {};
-    this.loadShader('basic', BasicShader);
+    this.loadShader('dungeon', DungeonShader);
   }
 
   /**

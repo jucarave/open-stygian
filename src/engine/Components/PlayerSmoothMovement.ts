@@ -45,6 +45,7 @@ export class PlayerSmoothMovement extends Component {
 
     // Positions the camera at the player's position
     this._camera.position.copy(this._entity.position);
+    this._camera.position.y += 0.5;
   }
   
   public destroy(): void {

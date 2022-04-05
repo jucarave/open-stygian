@@ -1,5 +1,5 @@
 import { Camera } from '../Camera';
-import { FLOAT_SIZE, TEXCOORD_SIZE, VERTICE_SIZE } from '../Constants';
+import { FLOAT_SIZE, TEXCOORD_SIZE, UVS_SIZE, VERTICE_SIZE } from '../Constants';
 import { Entity } from '../entities/Entity';
 import { Geometry } from '../geometries/Geometry';
 import { Renderer } from '../Renderer';
@@ -8,14 +8,17 @@ import { Texture } from '../Texture';
 import { Material } from './Material';
 
 const VERTEX_OFFSET = 0;
-const TEXCOORD_OFFSET = 3 * FLOAT_SIZE;
-const STRIDE = (VERTICE_SIZE + TEXCOORD_SIZE) * FLOAT_SIZE;
+const TEXCOORD_OFFSET = VERTICE_SIZE * FLOAT_SIZE;
+const UVS_OFFSET = (VERTICE_SIZE + TEXCOORD_SIZE) * FLOAT_SIZE;
+const STRIDE = (VERTICE_SIZE + TEXCOORD_SIZE + UVS_SIZE) * FLOAT_SIZE;
+const SHADER_KEY = 'dungeon';
 
 /**
- * MaterialBasic renders a geometry using vertices with: position
- * it uses the 'basic' shader
+ * MaterialDungeon renders a level geometry using 
+ * vertices with: position, texcoords and uvs
+ * it uses the 'dungeon' shader
  */
-export class MaterialBasic extends Material {
+export class MaterialDungeon extends Material {
   private _gl: WebGLRenderingContext;
   private _shader: Shader;
   private _renderer: Renderer;
@@ -30,7 +33,7 @@ export class MaterialBasic extends Material {
     this._renderer = Renderer.instance;
 
     this._gl = this._renderer.gl;
-    this._shader = this._renderer.getShader('basic');
+    this._shader = this._renderer.getShader(SHADER_KEY);
 
     this._texture = texture;
 
@@ -41,6 +44,8 @@ export class MaterialBasic extends Material {
   /**
    * Upload the vertex data of a geometry, it uploads:
    *  - vertex position
+   *  - texture coordinates
+   *  - triangles UVs
    * 
    * @param geometry 
    */
@@ -50,6 +55,7 @@ export class MaterialBasic extends Material {
     gl.bindBuffer(gl.ARRAY_BUFFER, geometry.vertexBuffer);
     gl.vertexAttribPointer(this._shader.attributes['aPosition'], VERTICE_SIZE, gl.FLOAT, false, STRIDE, VERTEX_OFFSET);
     gl.vertexAttribPointer(this._shader.attributes['aTexCoord'], TEXCOORD_SIZE, gl.FLOAT, false, STRIDE, TEXCOORD_OFFSET);
+    gl.vertexAttribPointer(this._shader.attributes['aUVs'], UVS_SIZE, gl.FLOAT, false, STRIDE, UVS_OFFSET);
     
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geometry.indexBuffer);
   }
@@ -68,14 +74,10 @@ export class MaterialBasic extends Material {
   }
 
   /**
-   * Upload the texture to the GPU. It also sends UV and Repeat settings, 
-   * this will allow a single face in a texturemap to be repeated as needed.
+   * Upload the texture to the GPU.
    */
   private _uploadTexture() {
     this._renderer.bindTexture(this._texture, this._shader.uniforms['uTexture']);
-
-    this._gl.uniform4fv(this._shader.uniforms['uUV'], this.v4UV);
-    this._gl.uniform2fv(this._shader.uniforms['uRepeat'], this.v2Repeat);
   }
 
   /**
@@ -88,7 +90,7 @@ export class MaterialBasic extends Material {
   public override render(entity: Entity, camera: Camera, geometry: Geometry) {
     const gl = this._gl;
 
-    this._renderer.useShader('basic');
+    this._renderer.useShader(SHADER_KEY);
 
     this._uploadGeometryData(geometry);
     this._uploadCameraData(entity, camera);

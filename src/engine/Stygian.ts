@@ -1,3 +1,4 @@
+import { DungeonMap } from './DungeonMap';
 import { Renderer } from './Renderer';
 import { Scene } from './Scenes/Scene';
 import { SceneDungeon } from './Scenes/SceneDungeon';
@@ -16,8 +17,8 @@ export class Stygian {
   /**
    * Loads a playable dungeon level
    */
-  public loadLevel() {
-    this._scene = new SceneDungeon();
+  public loadLevel(dungeon: DungeonMap) {
+    this._scene = new SceneDungeon(dungeon);
 
     return this._scene as SceneDungeon;
   }

@@ -7,11 +7,11 @@ import { Quaternion } from '../math/Quaternion';
 import { Vector3 } from '../math/Vector3';
 
 export class Entity {
-  private _transform: Matrix4;
-  private _worldMatrix: Matrix4;
-  private _dirtyTransformMatrix: boolean;
-  private _components: Component[];
-  private _initialized: boolean;
+  protected _transform: Matrix4;
+  protected _worldMatrix: Matrix4;
+  protected _dirtyTransformMatrix: boolean;
+  protected _components: Component[];
+  protected _initialized: boolean;
   
   
   public readonly position: Vector3;
