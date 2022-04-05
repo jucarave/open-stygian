@@ -10,7 +10,7 @@ export class Quaternion {
   private _axisZ: Vector3;
   private _m4: Matrix4;
   
-  public readonly onChange: Signal<void>;
+  public readonly onChange: Signal;
   public local: boolean;
 
   constructor(scalar = 1, imaginary: Vector3 = new Vector3(0, 0, 0)) {

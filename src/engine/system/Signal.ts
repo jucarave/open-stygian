@@ -1,23 +1,23 @@
-export type SignalCallbackType = number | string | boolean | object | void;
-type CallbackFunction<T extends SignalCallbackType> = (args?: T) => void;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type CallbackFunction = (...args: any[]) => void;
 
-interface Callback<T extends SignalCallbackType> {
-  callback: CallbackFunction<T>;
+interface Callback {
+  callback: CallbackFunction;
   context: object;
 }
 
-export class Signal<T extends SignalCallbackType> {
-  private _listeners: Array<Callback<T>>;
+export class Signal {
+  private _listeners: Array<Callback>;
 
   constructor() {
     this._listeners = [];
   }
 
-  public add(callback: CallbackFunction<T>, context: object): void {
+  public add(callback: CallbackFunction, context: object): void {
     this._listeners.push({ callback, context });
   }
 
-  public remove(callback: CallbackFunction<T>): void {
+  public remove(callback: CallbackFunction): void {
     const len = this._listeners.length;
     for (let i = 0; i < len; i++) {
       if (this._listeners[i].callback === callback) {
@@ -27,12 +27,13 @@ export class Signal<T extends SignalCallbackType> {
     }
   }
 
-  public dispatch(args?: T): void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public dispatch(...args: any[]): void {
     const len = this._listeners.length;
 
     for (let i = 0; i < len; i++) {
       const listener = this._listeners[i];
-      listener.callback.bind(listener.context)(args);
+      listener.callback.bind(listener.context)(...args);
     }
   }
 }

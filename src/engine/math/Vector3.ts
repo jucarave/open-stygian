@@ -6,7 +6,7 @@ export class Vector3 {
   private _y: number;
   private _z: number;
 
-  public readonly onChange: Signal<void>;
+  public readonly onChange: Signal;
 
   constructor(x: number, y: number, z: number) {
     this.onChange = new Signal();
