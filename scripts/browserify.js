@@ -22,8 +22,8 @@ function onError(error) {
 }
 
 function getDestinyPath() {
-    return './build/js';
-  }
+  return './build/js';
+}
 
 module.exports = {
   getBrowserify: (debug) => {
@@ -42,6 +42,10 @@ module.exports = {
   },
 
   build: function (bundle) {
+    if (!fs.existsSync(getDestinyPath())) {
+      fs.mkdirSync(getDestinyPath(), { recursive: true });
+    }
+
     bundle
       .bundle()
       .pipe(fs.createWriteStream(getDestinyPath() + '/game.js'))

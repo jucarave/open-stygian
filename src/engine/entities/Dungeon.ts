@@ -337,6 +337,48 @@ export class Dungeon extends Entity {
     }
   } 
 
+  private _addDiagonalWall(x: number, y1: number, z: number, y2: number, diagonal: 'tl' | 'tr' | 'bl' | 'br', uv: number[]) {
+    switch (diagonal) {
+      case 'tl':
+        this.geometry
+          .addVertice(x, y1, z + 1).addTexCoord(0, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
+          .addVertice(x + 1, y1, z).addTexCoord(1, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
+          .addVertice(x, y2, z + 1).addTexCoord(0, y2).addUVs(uv[0], uv[1], uv[2], uv[3])
+          .addVertice(x + 1, y2, z).addTexCoord(1, y2).addUVs(uv[0], uv[1], uv[2], uv[3]);
+        break;
+
+      case 'tr':
+        this.geometry
+          .addVertice(x, y1, z).addTexCoord(0, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
+          .addVertice(x + 1, y1, z + 1).addTexCoord(1, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
+          .addVertice(x, y2, z).addTexCoord(0, y2).addUVs(uv[0], uv[1], uv[2], uv[3])
+          .addVertice(x + 1, y2, z + 1).addTexCoord(1, y2).addUVs(uv[0], uv[1], uv[2], uv[3]);
+        break;
+
+      case 'bl':
+        this.geometry
+          .addVertice(x + 1, y1, z + 1).addTexCoord(0, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
+          .addVertice(x, y1, z).addTexCoord(1, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
+          .addVertice(x + 1, y2, z + 1).addTexCoord(0, y2).addUVs(uv[0], uv[1], uv[2], uv[3])
+          .addVertice(x, y2, z).addTexCoord(1, y2).addUVs(uv[0], uv[1], uv[2], uv[3]);
+        break;
+
+      case 'br':
+        this.geometry
+          .addVertice(x + 1, y1, z).addTexCoord(0, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
+          .addVertice(x, y1, z + 1).addTexCoord(1, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
+          .addVertice(x + 1, y2, z).addTexCoord(0, y2).addUVs(uv[0], uv[1], uv[2], uv[3])
+          .addVertice(x, y2, z + 1).addTexCoord(1, y2).addUVs(uv[0], uv[1], uv[2], uv[3]);
+        break;
+    }
+
+    // 6 indices per face, 4 vertices per face
+    const index = this.geometry.indicesLength / 6 * 4;
+    this.geometry
+      .addTriangle(index, index + 1, index + 2)
+      .addTriangle(index + 1, index + 3, index + 2);
+  }
+
   /**
    * Iterates through each tile and creates the geometry of 
    * each tile. If the tile is 0 then nothing is generated
@@ -359,8 +401,10 @@ export class Dungeon extends Entity {
           this._addCeiling(x, tile.y2, z, tile.ceiling.uv);
         }
 
-        if (tile.wall) {
+        if (tile.wall && !tile.wall.diagonal) {
           this._addWall(x, tile.y1, z, tile.y2, tile.wall.uv, this._getNeighborWalls(map, x, z));
+        } else if (tile.wall && tile.wall.diagonal) {
+          this._addDiagonalWall(x, tile.y1, z, tile.y2, tile.wall.diagonal, tile.wall.uv);
         }
 
         this._addLowerWalls(map, x, z);
