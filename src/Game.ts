@@ -20,27 +20,41 @@ class Game {
   }
 
   private _getLevel(): DungeonMap {
+    const UVs = {
+      dirt: [1/256,1/256,30/256,30/256],
+      stoneWall: [33/256,1/256,30/256,30/256],
+      ceiling: [65/256,1/256,30/256,30/256]
+    };
     return {
       texture: 'texture',
       tiles: [
-        { y1: 0, y2: 1, floor: { uv: [1/256,1/256,30/256,30/256] }, ceiling: { uv: [65/256,1/256,30/256,30/256] } },
-        { y1: 0, y2: 1, wall: { uv: [33/256,1/256,30/256,30/256] } },
-        { y1: -0.2, y2: 1.5, floor: { uv: [1/256,1/256,30/256,30/256], lowWallUV: [33/256,1/256,30/256,30/256] }, ceiling: { uv: [65/256,1/256,30/256,30/256], highWallUV: [33/256,1/256,30/256,30/256] } },
-        { y1: 0.2, y2: 0.8, floor: { lowWallUV: [65/256,1/256,30/256,30/256] }, wall: { uv: [33/256,1/256,30/256,30/256] } },
-        { y1: 0, y2: 1, wall: { diagonal: 'tl', uv: [33/256,1/256,30/256,30/256] }, floor: { uv: [1/256,1/256,30/256,30/256] }, ceiling: { uv: [65/256,1/256,30/256,30/256] } },
-        { y1: 0, y2: 1, wall: { diagonal: 'tr', uv: [33/256,1/256,30/256,30/256] }, floor: { uv: [1/256,1/256,30/256,30/256] }, ceiling: { uv: [65/256,1/256,30/256,30/256] } },
-        { y1: 0.3, y2: 1, wall: { diagonal: 'bl', uv: [33/256,1/256,30/256,30/256] }, floor: { uv: [1/256,1/256,30/256,30/256], lowWallUV: [33/256,1/256,30/256,30/256] }, ceiling: { uv: [65/256,1/256,30/256,30/256] } },
-        { y1: 0, y2: 1, wall: { diagonal: 'br', uv: [33/256,1/256,30/256,30/256] }, floor: { uv: [1/256,1/256,30/256,30/256] }, ceiling: { uv: [65/256,1/256,30/256,30/256] } },
+        { y1: 0, y2: 1, floor: { uv: UVs.dirt }, ceiling: { uv: UVs.ceiling } },
+        { y1: 0, y2: 1, wall: { uv: UVs.stoneWall } },
+        { y1: -0.2, y2: 1.5, floor: { uv: UVs.dirt, lowWallUV: UVs.stoneWall }, ceiling: { uv: UVs.ceiling, highWallUV: UVs.stoneWall } },
+        { y1: 0.2, y2: 0.8, floor: { lowWallUV: UVs.ceiling }, wall: { uv: UVs.stoneWall } },
+        { y1: 0, y2: 1, wall: { diagonal: 'tl', uv: UVs.stoneWall }, floor: { uv: UVs.dirt }, ceiling: { uv: UVs.ceiling } },
+        { y1: 0, y2: 1, wall: { diagonal: 'tr', uv: UVs.stoneWall }, floor: { uv: UVs.dirt }, ceiling: { uv: UVs.ceiling } },
+        { y1: 0.3, y2: 1, wall: { diagonal: 'bl', uv: UVs.stoneWall }, floor: { uv: UVs.dirt, lowWallUV: UVs.stoneWall }, ceiling: { uv: UVs.ceiling } },
+        { y1: 0, y2: 1, wall: { diagonal: 'br', uv: UVs.stoneWall }, floor: { uv: UVs.dirt }, ceiling: { uv: UVs.ceiling } },
+
+        { y1: 0, y2: 3, floor: { uv: UVs.dirt }, ceiling: { uv: UVs.ceiling } },
+        { y1: 0, y2: 3, wall: { uv: UVs.stoneWall } },
+        { y1: 0, y2: 3, floor: { slope: 'b', uv: UVs.dirt, lowWallUV: UVs.stoneWall }, ceiling: { uv: UVs.ceiling } },
       ],
       map: [
-        [ 2, 2, 2, 2, 2, 2, 2, 2, 2 ],
-        [ 2, 5, 1, 1, 1, 1, 1, 6, 2 ],
-        [ 2, 1, 1, 1, 1, 1, 1, 3, 2 ],
-        [ 2, 4, 1, 1, 1, 1, 1, 3, 2 ],
-        [ 2, 1, 1, 1, 1, 1, 1, 1, 2 ],
-        [ 2, 1, 1, 1, 1, 1, 1, 1, 2 ],
-        [ 2, 7, 1, 1, 1, 1, 1, 8, 2 ],
-        [ 2, 2, 2, 1, 2, 2, 2, 2, 2 ]
+        [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+        [  2,  5,  1,  1,  1,  1,  1,  1,  6,  2 ],
+        [  2,  1,  1,  1,  1,  1,  1,  1,  3,  2 ],
+        [  2,  4,  1,  8,  7,  1,  1,  1,  3,  2 ],
+        [  2,  1,  1,  6,  5,  1,  1,  1,  1,  2 ],
+        [  2,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+        [  2,  7,  1,  1,  1,  1,  1,  1,  8,  2 ],
+        [  2,  2,  2,  2,  1,  1,  2,  2,  2,  2 ],
+        [  0,  0,  0, 10, 11,  9, 10,  0,  0,  0 ],
+        [  0,  0,  0, 10,  9,  9, 10,  0,  0,  0 ],
+        [  0,  0,  0, 10,  9,  9, 10,  0,  0,  0 ],
+        [  0,  0,  0, 10,  9,  9, 10,  0,  0,  0 ],
+        [  0,  0,  0, 10,  9,  9, 10,  0,  0,  0 ]
       ]
     };
   }

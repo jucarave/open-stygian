@@ -68,4 +68,8 @@ export class Geometry {
   public get indicesLength() {
     return this._indexData.length;
   }
+
+  public get vertexLength() {
+    return this._vertexData.length;
+  }
 }

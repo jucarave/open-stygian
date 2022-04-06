@@ -3,6 +3,7 @@ import { Geometry } from '../geometries/Geometry';
 import { MaterialDungeon } from '../materials/MaterialDungeon';
 import { Texture } from '../core/Texture';
 import { Entity } from './Entity';
+import { TEXCOORD_SIZE, UVS_SIZE, VERTICE_SIZE } from '../system/Constants';
 
 /**
  * Used for detecting neighboring tiles, it is used to render
@@ -42,17 +43,13 @@ export class Dungeon extends Entity {
    * @param uv 
    */
   private _addFloor(x: number, y: number, z: number, uv: number[]) {
-    // 6 indices per face, 4 vertices per face
-    const index = this.geometry.indicesLength / 6 * 4;
-
     this.geometry
       .addVertice(x, y, z+1).addTexCoord(0, 1).addUVs(uv[0], uv[1], uv[2], uv[3])
       .addVertice(x+1, y, z+1).addTexCoord(1, 1).addUVs(uv[0], uv[1], uv[2], uv[3])
       .addVertice(x, y, z).addTexCoord(0, 0).addUVs(uv[0], uv[1], uv[2], uv[3])
-      .addVertice(x+1, y, z).addTexCoord(1, 0).addUVs(uv[0], uv[1], uv[2], uv[3])
+      .addVertice(x+1, y, z).addTexCoord(1, 0).addUVs(uv[0], uv[1], uv[2], uv[3]);
 
-      .addTriangle(index, index + 1, index + 2)
-      .addTriangle(index + 1, index + 3, index + 2);
+    this._addQuad()
   }
 
   /**
@@ -64,17 +61,13 @@ export class Dungeon extends Entity {
    * @param uv 
    */
   private _addCeiling(x: number, y: number, z: number, uv: number[]) {
-    // 6 indices per face, 4 vertices per face
-    const index = this.geometry.indicesLength / 6 * 4;
-
     this.geometry
       .addVertice(x, y, z).addTexCoord(0, 0).addUVs(uv[0], uv[1], uv[2], uv[3])
       .addVertice(x+1, y, z).addTexCoord(1, 0).addUVs(uv[0], uv[1], uv[2], uv[3])
       .addVertice(x, y, z+1).addTexCoord(0, 1).addUVs(uv[0], uv[1], uv[2], uv[3])
-      .addVertice(x+1, y, z+1).addTexCoord(1, 1).addUVs(uv[0], uv[1], uv[2], uv[3])
-
-      .addTriangle(index, index + 1, index + 2)
-      .addTriangle(index + 1, index + 3, index + 2);
+      .addVertice(x+1, y, z+1).addTexCoord(1, 1).addUVs(uv[0], uv[1], uv[2], uv[3]);
+    
+    this._addQuad();
   }
 
   /**
@@ -87,16 +80,13 @@ export class Dungeon extends Entity {
    * @param uv 
    */
   private _addFrontWall(x: number, y1: number, z: number, y2: number, uv: number[]) {
-    // 6 indices per face, 4 vertices per face
-    const index = this.geometry.indicesLength / 6 * 4;
     this.geometry
         .addVertice(x, y1, z + 1).addTexCoord(0, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
         .addVertice(x + 1, y1, z + 1).addTexCoord(1, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
         .addVertice(x, y2, z + 1).addTexCoord(0, y2).addUVs(uv[0], uv[1], uv[2], uv[3])
-        .addVertice(x + 1, y2, z + 1).addTexCoord(1, y2).addUVs(uv[0], uv[1], uv[2], uv[3]) 
-        
-        .addTriangle(index, index + 1, index + 2)
-        .addTriangle(index + 1, index + 3, index + 2);
+        .addVertice(x + 1, y2, z + 1).addTexCoord(1, y2).addUVs(uv[0], uv[1], uv[2], uv[3]);
+
+    this._addQuad();
   }
 
   /**
@@ -109,16 +99,13 @@ export class Dungeon extends Entity {
    * @param uv 
    */
   private _addBackWall(x: number, y1: number, z: number, y2: number, uv: number[]) {
-    // 6 indices per face, 4 vertices per face
-    const index = this.geometry.indicesLength / 6 * 4;
     this.geometry
         .addVertice(x + 1, y1, z).addTexCoord(0, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
         .addVertice(x, y1, z).addTexCoord(1, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
         .addVertice(x + 1, y2, z).addTexCoord(0, y2).addUVs(uv[0], uv[1], uv[2], uv[3])
-        .addVertice(x, y2, z).addTexCoord(1, y2).addUVs(uv[0], uv[1], uv[2], uv[3]) 
-        
-        .addTriangle(index, index + 1, index + 2)
-        .addTriangle(index + 1, index + 3, index + 2);
+        .addVertice(x, y2, z).addTexCoord(1, y2).addUVs(uv[0], uv[1], uv[2], uv[3]);
+
+    this._addQuad();
   }
 
   /**
@@ -131,16 +118,13 @@ export class Dungeon extends Entity {
    * @param uv 
    */
   private _addLeftWall(x: number, y1: number, z: number, y2: number, uv: number[]) {
-    // 6 indices per face, 4 vertices per face
-    const index = this.geometry.indicesLength / 6 * 4;
     this.geometry
         .addVertice(x, y1, z).addTexCoord(0, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
         .addVertice(x, y1, z + 1).addTexCoord(1, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
         .addVertice(x, y2, z).addTexCoord(0, y2).addUVs(uv[0], uv[1], uv[2], uv[3]) 
-        .addVertice(x, y2, z + 1).addTexCoord(1, y2).addUVs(uv[0], uv[1], uv[2], uv[3])
-        
-        .addTriangle(index, index + 1, index + 2)
-        .addTriangle(index + 1, index + 3, index + 2);
+        .addVertice(x, y2, z + 1).addTexCoord(1, y2).addUVs(uv[0], uv[1], uv[2], uv[3]);
+    
+    this._addQuad();
   }
 
   /**
@@ -153,16 +137,13 @@ export class Dungeon extends Entity {
    * @param uv 
    */
   private _addRightWall(x: number, y1: number, z: number, y2: number, uv: number[]) {
-    // 6 indices per face, 4 vertices per face
-    const index = this.geometry.indicesLength / 6 * 4;
     this.geometry
         .addVertice(x + 1, y1, z + 1).addTexCoord(0, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
         .addVertice(x + 1, y1, z).addTexCoord(1, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
         .addVertice(x + 1, y2, z + 1).addTexCoord(0, y2).addUVs(uv[0], uv[1], uv[2], uv[3]) 
-        .addVertice(x + 1, y2, z).addTexCoord(1, y2).addUVs(uv[0], uv[1], uv[2], uv[3])
-        
-        .addTriangle(index, index + 1, index + 2)
-        .addTriangle(index + 1, index + 3, index + 2);
+        .addVertice(x + 1, y2, z).addTexCoord(1, y2).addUVs(uv[0], uv[1], uv[2], uv[3]);
+
+    this._addQuad();
   }
 
   /**
@@ -337,9 +318,22 @@ export class Dungeon extends Entity {
     }
   } 
 
-  private _addDiagonalWall(x: number, y1: number, z: number, y2: number, diagonal: 'tl' | 'tr' | 'bl' | 'br', uv: number[]) {
+  /**
+   * Adds a diagonal wall looking at a specified direction with regular walls behind it
+   * 
+   * @param x 
+   * @param y1 
+   * @param z 
+   * @param y2 
+   * @param diagonal 
+   * @param uv 
+   */
+  private _addDiagonalWall(x: number, y1: number, z: number, y2: number, diagonal: 'tl' | 'tr' | 'bl' | 'br', uv: number[], neighbors: NeighborTiles) {
     switch (diagonal) {
       case 'tl':
+        if (!neighbors.t) { this._addBackWall(x, y1, z, y2, uv); }
+        if (!neighbors.l) { this._addLeftWall(x, y1, z, y2, uv); }
+
         this.geometry
           .addVertice(x, y1, z + 1).addTexCoord(0, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
           .addVertice(x + 1, y1, z).addTexCoord(1, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
@@ -348,6 +342,9 @@ export class Dungeon extends Entity {
         break;
 
       case 'tr':
+        if (!neighbors.t) { this._addBackWall(x, y1, z, y2, uv); }
+        if (!neighbors.r) { this._addRightWall(x, y1, z, y2, uv); }
+
         this.geometry
           .addVertice(x, y1, z).addTexCoord(0, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
           .addVertice(x + 1, y1, z + 1).addTexCoord(1, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
@@ -356,6 +353,9 @@ export class Dungeon extends Entity {
         break;
 
       case 'bl':
+        if (!neighbors.b) { this._addFrontWall(x, y1, z, y2, uv); }
+        if (!neighbors.l) { this._addLeftWall(x, y1, z, y2, uv); }
+
         this.geometry
           .addVertice(x + 1, y1, z + 1).addTexCoord(0, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
           .addVertice(x, y1, z).addTexCoord(1, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
@@ -364,6 +364,9 @@ export class Dungeon extends Entity {
         break;
 
       case 'br':
+        if (!neighbors.b) { this._addFrontWall(x, y1, z, y2, uv); }
+        if (!neighbors.r) { this._addRightWall(x, y1, z, y2, uv); }
+
         this.geometry
           .addVertice(x + 1, y1, z).addTexCoord(0, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
           .addVertice(x, y1, z + 1).addTexCoord(1, y1).addUVs(uv[0], uv[1], uv[2], uv[3])
@@ -372,11 +375,51 @@ export class Dungeon extends Entity {
         break;
     }
 
-    // 6 indices per face, 4 vertices per face
-    const index = this.geometry.indicesLength / 6 * 4;
+    this._addQuad();
+  }
+
+  private _addTriangle() {
+    const index = this._vertexIndex - 3;
+    this.geometry.addTriangle(index, index + 1, index + 2);
+  }
+
+  private _addQuad() {
+    const index = this._vertexIndex - 4;
     this.geometry
       .addTriangle(index, index + 1, index + 2)
       .addTriangle(index + 1, index + 3, index + 2);
+  }
+
+  private _addSlope(x: number, y: number, z: number, slope: 't' | 'b' | 'l' | 'r', uv: number[], wallUV: number[]) {
+    switch (slope) {
+      case 'b':
+        // Right Wall
+        this.geometry
+          .addVertice(x + 1, y, z + 1).addTexCoord(0, 1).addUVs(wallUV[0], wallUV[1], wallUV[2], wallUV[3])
+          .addVertice(x + 1, y, z).addTexCoord(1, 1).addUVs(wallUV[0], wallUV[1], wallUV[2], wallUV[3])
+          .addVertice(x + 1, y + 0.5, z + 1).addTexCoord(0, 0).addUVs(wallUV[0], wallUV[1], wallUV[2], wallUV[3]);
+        this._addTriangle();
+
+        // Left Wall
+        this.geometry
+          .addVertice(x, y, z).addTexCoord(1, 1).addUVs(wallUV[0], wallUV[1], wallUV[2], wallUV[3])
+          .addVertice(x, y, z + 1).addTexCoord(0, 1).addUVs(wallUV[0], wallUV[1], wallUV[2], wallUV[3])
+          .addVertice(x, y + 0.5, z + 1).addTexCoord(0, 0).addUVs(wallUV[0], wallUV[1], wallUV[2], wallUV[3]);
+        this._addTriangle();
+
+        // Front Wall
+        this._addFrontWall(x, y, z, y + 0.5, wallUV);
+
+        // Ramp
+        this.geometry
+          .addVertice(x, y + 0.5, z + 1).addTexCoord(0, 1).addUVs(uv[0], uv[1], uv[2], uv[3])
+          .addVertice(x + 1, y + 0.5, z + 1).addTexCoord(1, 1).addUVs(uv[0], uv[1], uv[2], uv[3])
+          .addVertice(x, y, z).addTexCoord(0, 0).addUVs(uv[0], uv[1], uv[2], uv[3])
+          .addVertice(x + 1, y, z).addTexCoord(1, 0).addUVs(uv[0], uv[1], uv[2], uv[3]);
+        break;
+    }
+
+    this._addQuad();
   }
 
   /**
@@ -393,8 +436,10 @@ export class Dungeon extends Entity {
         if (tileId === -1) { continue; }
 
         const tile = map.tiles[tileId];
-        if (tile.floor?.uv) {
+        if (tile.floor?.uv && !tile.floor.slope) {
           this._addFloor(x, tile.y1, z, tile.floor.uv);
+        } else if (tile.floor?.uv && tile.floor.slope) {
+          this._addSlope(x, tile.y1, z, tile.floor.slope, tile.floor.uv, tile.floor.lowWallUV || tile.floor.uv);
         }
 
         if (tile.ceiling?.uv) {
@@ -404,12 +449,17 @@ export class Dungeon extends Entity {
         if (tile.wall && !tile.wall.diagonal) {
           this._addWall(x, tile.y1, z, tile.y2, tile.wall.uv, this._getNeighborWalls(map, x, z));
         } else if (tile.wall && tile.wall.diagonal) {
-          this._addDiagonalWall(x, tile.y1, z, tile.y2, tile.wall.diagonal, tile.wall.uv);
+          this._addDiagonalWall(x, tile.y1, z, tile.y2, tile.wall.diagonal, tile.wall.uv, this._getNeighborWalls(map, x, z));
         }
 
         this._addLowerWalls(map, x, z);
         this._addTopWalls(map, x, z);
       }
     }
+  }
+
+  private get _vertexIndex() {
+    return this.geometry.vertexLength / (VERTICE_SIZE + TEXCOORD_SIZE + UVS_SIZE);
+    //return this.geometry.indicesLength / 6 * 4;
   }
 }

@@ -3,6 +3,7 @@ export interface Tile {
   y2: number;
 
   floor?: { 
+    slope?: 't' | 'b' | 'l' | 'r',
     uv?: number[];
     lowWallUV?: number[]
   };
