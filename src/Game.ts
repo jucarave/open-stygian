@@ -39,22 +39,25 @@ class Game {
 
         { y1: 0, y2: 3, floor: { uv: UVs.dirt }, ceiling: { uv: UVs.ceiling } },
         { y1: 0, y2: 3, wall: { uv: UVs.stoneWall } },
-        { y1: 0, y2: 3, floor: { slope: 'b', uv: UVs.dirt, lowWallUV: UVs.stoneWall }, ceiling: { uv: UVs.ceiling } },
+        { y1: 0.5, y2: 3, floor: { slope: 'l', uv: UVs.dirt, lowWallUV: UVs.stoneWall }, ceiling: { uv: UVs.ceiling } },
+        { y1: 0, y2: 3, floor: { slope: 'l', uv: UVs.dirt, lowWallUV: UVs.stoneWall }, ceiling: { uv: UVs.ceiling } },
+
+        { y1: 0.4, y2: 3, floor: { uv: UVs.dirt }, ceiling: { uv: UVs.ceiling } },
       ],
       map: [
         [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
         [  2,  5,  1,  1,  1,  1,  1,  1,  6,  2 ],
         [  2,  1,  1,  1,  1,  1,  1,  1,  3,  2 ],
-        [  2,  4,  1,  8,  7,  1,  1,  1,  3,  2 ],
+        [  2,  4,  1,  7,  8,  1,  1,  1,  3,  2 ],
         [  2,  1,  1,  6,  5,  1,  1,  1,  1,  2 ],
         [  2,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
         [  2,  7,  1,  1,  1,  1,  1,  1,  8,  2 ],
         [  2,  2,  2,  2,  1,  1,  2,  2,  2,  2 ],
-        [  0,  0,  0, 10, 11,  9, 10,  0,  0,  0 ],
-        [  0,  0,  0, 10,  9,  9, 10,  0,  0,  0 ],
-        [  0,  0,  0, 10,  9,  9, 10,  0,  0,  0 ],
-        [  0,  0,  0, 10,  9,  9, 10,  0,  0,  0 ],
-        [  0,  0,  0, 10,  9,  9, 10,  0,  0,  0 ]
+        [  0, 10, 10,  1,  9,  9, 10,  0,  0,  0 ],
+        [  0, 10, 13, 11, 12,  9, 10,  0,  0,  0 ],
+        [  0, 10, 10,  9,  9,  9, 10,  0,  0,  0 ],
+        [  0,  0, 10,  9,  9,  9, 10,  0,  0,  0 ],
+        [  0,  0, 10,  9,  9,  9, 10,  0,  0,  0 ]
       ]
     };
   }
