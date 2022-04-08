@@ -151,4 +151,27 @@ describe('Matrix4 class', () => {
 
     expect(Matrix4.createPerspective(fov, ratio, znear, zfar).data).to.deep.equal(data);
   });
+
+  it('Can calculate the determinant of a Matrix', () => {
+    const matrix = Matrix4.createIdentity()
+      .setRotationY(45)
+      .multiply(Matrix4.createIdentity().setRotationZ(37));
+    const determinant = matrix.determinant;
+
+    expect(determinant).to.eql(0.9999999999999998);
+  });
+
+  it('Can be inversed', () => {
+    const matrix = Matrix4.createIdentity()
+      .setRotationY(45)
+      .multiply(Matrix4.createIdentity().setRotationZ(37));
+
+    const inverted = Matrix4.createIdentity()
+      .setRotationZ(-37)
+      .multiply(Matrix4.createIdentity().setRotationY(-45));
+
+    for (let i=0;i<16;i++) {
+      expect(matrix.inverse.data[i]).closeTo(inverted.data[i], 0.0000000000000005);
+    }
+  });
 });
