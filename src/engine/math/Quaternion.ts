@@ -144,7 +144,7 @@ export class Quaternion {
    * @returns same quaternion for chaining
    */
   public rotateY(radians: number): Quaternion {
-    const axis = (this.local) ? this._axisY : Vector3.down,
+    const axis = (this.local) ? this._axisY : Vector3.up,
       rotation = Quaternion.createRotationOnAxis(radians, axis);
 
     this.multiplyQuaternion(rotation);

@@ -161,8 +161,8 @@ export class Entity {
 
     this._transform
       .setIdentity()
-      .translate(this.position.x, this.position.y, this.position.z, false)
-      .multiply(this.rotation.getRotationMatrix());
+      .multiply(this.rotation.getRotationMatrix())
+      .multiply(Matrix4.createIdentity().translate(this.position.x, this.position.y, this.position.z, false));
 
     this._dirtyTransformMatrix = false;
 

@@ -64,7 +64,7 @@ describe('Player Setup Helper Functions', () => {
     
     expect(component).to.be.instanceOf(PlayerKeyboardRotation);
     expect(component.sensitivity).to.deep.equal(sensitivity);
-    expect(component.maxVerticalAngle).to.eql(maxAngle);
+    expect(camera.maxVerticalAngle).to.eql(maxAngle);
   });
 
   it('Can add a mouse first person rotation component with parameters', () => {
@@ -82,7 +82,7 @@ describe('Player Setup Helper Functions', () => {
     
     expect(component).to.be.instanceOf(PlayerMouseRotation);
     expect(component.sensitivity).to.deep.equal(sensitivity);
-    expect(component.maxVerticalAngle).to.eql(maxAngle);
+    expect(camera.maxVerticalAngle).to.eql(maxAngle);
   });
 
   it('Can add multiple first person rotation components', () => {

@@ -26,12 +26,13 @@ export class SceneDungeon extends Scene {
     const renderer = Renderer.instance;
     this._camera = Camera.createPerspective(60, renderer.gl.canvas.width / renderer.gl.canvas.height, 0.1, 100);
     this._camera.position.set(0, 0, 0);
-    this._camera.rotation.lookToDirection(Vector3.forward);
   }
 
   private _loadPLayer() {
     this._player = new Entity(new Vector3(0, 0, -5));
 
     this.addEntity(this._player);
+
+    this._camera.parent = this._player;
   }
 }

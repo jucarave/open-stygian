@@ -36,7 +36,7 @@ export class PlayerSetup {
   addKeyboardFirsPersonLook(sensitivity: Vector2 = {x: 0.03, y: 0.03}, maxVerticalAngle = 60) {
     const rotation = new PlayerKeyboardRotation(this._camera);
     rotation.sensitivity = sensitivity;
-    rotation.maxVerticalAngle = maxVerticalAngle;
+    this._camera.maxVerticalAngle = maxVerticalAngle;
 
     this._player.addComponent(rotation);
 
@@ -46,7 +46,7 @@ export class PlayerSetup {
   addMouseFirstPersonLook(sensitivity: Vector2 = {x: 0.01, y: 0.01}, maxVerticalAngle = 60) {
     const rotation = new PlayerMouseRotation(this._camera);
     rotation.sensitivity = sensitivity;
-    rotation.maxVerticalAngle = maxVerticalAngle;
+    this._camera.maxVerticalAngle = maxVerticalAngle;
 
     this._player.addComponent(rotation);
 
