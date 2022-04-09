@@ -131,12 +131,25 @@ export class SolidMap {
         if (tileId === 0) { continue; }
 
         const tile = this._getTileAt(x, z, dungeon);
-        if (tile.wall) {
-          const backTile = this._getTileAt(x, z - 1, dungeon);
-          this._parseWall(x, z, tile, back, backTile, {x: 1, y: 0});
 
-          const frontTile = this._getTileAt(x, z + 1, dungeon);
-          this._parseWall(x, z + 1, tile, front, frontTile, {x: 1, y: 0});
+        if (tile.wall) {
+          let addedWalls = 0;
+          if (!tile.wall.diagonal || tile.wall.diagonal === 'tl' || tile.wall.diagonal === 'tr') {
+            const backTile = this._getTileAt(x, z - 1, dungeon);
+            this._parseWall(x, z, tile, back, backTile, {x: 1, y: 0});
+            addedWalls++;
+          }
+
+          if (!tile.wall.diagonal || tile.wall.diagonal === 'bl' || tile.wall.diagonal === 'br') {
+            const frontTile = this._getTileAt(x, z + 1, dungeon);
+            this._parseWall(x, z + 1, tile, front, frontTile, {x: 1, y: 0});
+            addedWalls++;
+          }
+
+          if (!addedWalls) {
+            if (front.width !== -1) { this._registerWall(front, {x: 1, y: 0}); }
+            if (back.width !== -1) { this._registerWall(back, {x: 1, y: 0}); }
+          }
         } else {
           if (front.width !== -1) { this._registerWall(front, {x: 1, y: 0}); }
           if (back.width !== -1) { this._registerWall(back, {x: 1, y: 0}); }
@@ -168,11 +181,23 @@ export class SolidMap {
 
         const tile = this._getTileAt(x, z, dungeon);
         if (tile.wall) {
-          const leftTile = this._getTileAt(x - 1, z, dungeon);
-          this._parseWall(x, z, tile, left, leftTile, {x: 0, y: 1});
+          let addedWalls = 0;
+          if (!tile.wall.diagonal || tile.wall.diagonal === 'tl' || tile.wall.diagonal === 'bl') {
+            const leftTile = this._getTileAt(x - 1, z, dungeon);
+            this._parseWall(x, z, tile, left, leftTile, {x: 0, y: 1});
+            addedWalls++;
+          }
 
-          const rightTile = this._getTileAt(x + 1, z, dungeon);
-          this._parseWall(x + 1, z, tile, right, rightTile, {x: 0, y: 1});
+          if (!tile.wall.diagonal || tile.wall.diagonal === 'tr' || tile.wall.diagonal === 'br') {
+            const rightTile = this._getTileAt(x + 1, z, dungeon);
+            this._parseWall(x + 1, z, tile, right, rightTile, {x: 0, y: 1});
+            addedWalls++;
+          }
+
+          if (!addedWalls) {
+            if (left.width !== -1) { this._registerWall(left, {x: 0, y: 1}); }
+            if (right.width !== -1) { this._registerWall(right, {x: 0, y: 1}); }
+          }
         } else {
           if (left.width !== -1) { this._registerWall(left, {x: 0, y: 1}); }
           if (right.width !== -1) { this._registerWall(right, {x: 0, y: 1}); }
