@@ -5,6 +5,7 @@ import { Vector3 } from '../math/Vector3';
 import { SolidWall } from './SolidWall';
 
 interface Wall {
+  grid: Vector2;
   x: number;
   z: number;
   width: number;
@@ -22,6 +23,7 @@ export class SolidMap {
     this._initMap(dungeon.map);
     this._parseHorizontalWalls(dungeon);
     this._parseVerticalWalls(dungeon);
+    this._parseDiagonalWalls(dungeon);
   }
 
   private _initMap(map: number[][]) {
@@ -71,7 +73,7 @@ export class SolidMap {
     this._walls.push(solidWall);
 
     for (let i=0;i<wall.width;i++) {
-      this._map[wall.z + offset.y * i][wall.x + offset.x * i].push(wallIndex);
+      this._map[wall.grid.y + offset.y * i][wall.grid.x + offset.x * i].push(wallIndex);
     }
 
     wall.width = -1;
@@ -85,12 +87,13 @@ export class SolidMap {
    * 
    * @param x 
    * @param z 
+   * @param gridPosition
    * @param tile 
    * @param wallInfo 
    * @param neighborTile 
    * @param offset 
    */
-  private _parseWall(x: number, z: number, tile: Tile, wallInfo: Wall, neighborTile: Tile, offset: Vector2) {
+  private _parseWall(x: number, z: number, gridPosition: Vector2, tile: Tile, wallInfo: Wall, neighborTile: Tile, offset: Vector2) {
     if (neighborTile !== null && !neighborTile.wall) {
       if (wallInfo.width !== -1) {
         if (tile.y1 === wallInfo.y1 && tile.y2 === wallInfo.y2) {
@@ -106,6 +109,7 @@ export class SolidMap {
         wallInfo.z = z;
         wallInfo.y1 = tile.y1;
         wallInfo.y2 = tile.y2;
+        wallInfo.grid = gridPosition;
       }
     } else if (wallInfo.width !== -1) {
       this._registerWall(wallInfo, offset);
@@ -122,27 +126,29 @@ export class SolidMap {
     const height = dungeon.map.length;
     const width = dungeon.map[0].length;
 
-    const back: Wall = { x: 0, z: 0, width: -1, y1: 0, y2: 0, normal: Vector3.back };
-    const front: Wall = { x: 0, z: 0, width: -1, y1: 0, y2: 0, normal: Vector3.forward };
+    const back: Wall = { x: 0, z: 0, width: -1, y1: 0, y2: 0, normal: Vector3.back, grid: {x: 0, y: 0} };
+    const front: Wall = { x: 0, z: 0, width: -1, y1: 0, y2: 0, normal: Vector3.forward, grid: {x: 0, y: 0} };
 
     for (let z=0;z<height;z++) {
       for (let x=0;x<width;x++) {
         const tileId = dungeon.map[z][x];
         if (tileId === 0) { continue; }
-
+        
         const tile = this._getTileAt(x, z, dungeon);
-
+        
         if (tile.wall) {
+          const gridPosition = { x: x, y: z };
           let addedWalls = 0;
+
           if (!tile.wall.diagonal || tile.wall.diagonal === 'tl' || tile.wall.diagonal === 'tr') {
             const backTile = this._getTileAt(x, z - 1, dungeon);
-            this._parseWall(x, z, tile, back, backTile, {x: 1, y: 0});
+            this._parseWall(x, z, gridPosition, tile, back, backTile, {x: 1, y: 0});
             addedWalls++;
           }
 
           if (!tile.wall.diagonal || tile.wall.diagonal === 'bl' || tile.wall.diagonal === 'br') {
             const frontTile = this._getTileAt(x, z + 1, dungeon);
-            this._parseWall(x, z + 1, tile, front, frontTile, {x: 1, y: 0});
+            this._parseWall(x, z + 1, gridPosition, tile, front, frontTile, {x: 1, y: 0});
             addedWalls++;
           }
 
@@ -171,8 +177,8 @@ export class SolidMap {
     const height = dungeon.map.length;
     const width = dungeon.map[0].length;
 
-    const left: Wall = { x: 0, z: 0, width: -1, y1: 0, y2: 0, normal: Vector3.left };
-    const right: Wall = { x: 0, z: 0, width: -1, y1: 0, y2: 0, normal: Vector3.right };
+    const left: Wall = { x: 0, z: 0, width: -1, y1: 0, y2: 0, normal: Vector3.left, grid: {x: 0, y: 0} };
+    const right: Wall = { x: 0, z: 0, width: -1, y1: 0, y2: 0, normal: Vector3.right, grid: {x: 0, y: 0} };
 
     for (let x=0;x<width;x++) {
       for (let z=0;z<height;z++) {
@@ -181,16 +187,18 @@ export class SolidMap {
 
         const tile = this._getTileAt(x, z, dungeon);
         if (tile.wall) {
+          const gridPosition = { x: x, y: z };
           let addedWalls = 0;
+
           if (!tile.wall.diagonal || tile.wall.diagonal === 'tl' || tile.wall.diagonal === 'bl') {
             const leftTile = this._getTileAt(x - 1, z, dungeon);
-            this._parseWall(x, z, tile, left, leftTile, {x: 0, y: 1});
+            this._parseWall(x, z, gridPosition, tile, left, leftTile, {x: 0, y: 1});
             addedWalls++;
           }
 
           if (!tile.wall.diagonal || tile.wall.diagonal === 'tr' || tile.wall.diagonal === 'br') {
             const rightTile = this._getTileAt(x + 1, z, dungeon);
-            this._parseWall(x + 1, z, tile, right, rightTile, {x: 0, y: 1});
+            this._parseWall(x + 1, z, gridPosition, tile, right, rightTile, {x: 0, y: 1});
             addedWalls++;
           }
 
@@ -206,6 +214,91 @@ export class SolidMap {
 
       if (left.width !== -1) { this._registerWall(left, {x: 0, y: 1}); }
       if (right.width !== -1) { this._registerWall(right, {x: 0, y: 1}); }
+    }
+  }
+
+  /**
+   * Parses a diagonal wall searching for adjacent diagonal walls
+   * of the same type
+   * 
+   * @param wall 
+   * @param tile 
+   * @param dungeon 
+   * @param diagonal 
+   * @param direction 
+   */
+  private _parseDiagonalWall(wall: Wall, tile: Tile, dungeon: DungeonMap, diagonal: 'tl' | 'tr' | 'bl' | 'br', direction: Vector2) {
+    wall.width = 1;
+    wall.y1 = tile.y1;
+    wall.y2 = tile.y2;
+
+    let i = 2;
+    let nextTile = this._getTileAt(wall.grid.x + direction.x, wall.grid.y + direction.y, dungeon);
+    while (nextTile != null && nextTile.wall && nextTile.wall.diagonal === diagonal) {
+      wall.width += 1;
+      nextTile = this._getTileAt(wall.grid.x + direction.x * i, wall.grid.y + direction.y * i, dungeon);
+      i++;
+    }
+
+    this._registerWall(wall, direction);
+  }
+
+  /**
+   * Scans the map for diagonal solid walls and registers them with normals
+   * on the +x+z, -x+z, +x-z and -x-z axis
+   * 
+   * @param dungeon 
+   */
+  private _parseDiagonalWalls(dungeon: DungeonMap) {
+    const height = dungeon.map.length;
+    const width = dungeon.map[0].length;
+
+    const front: Wall = { x: 0, z: 0, width: -1, y1: 0, y2: 0, normal: Vector3.zero, grid: {x: 0, y: 0} };
+
+    for (let z=0;z<height;z++) {
+      for (let x=0;x<width;x++) {
+        const tileId = dungeon.map[z][x];
+        if (tileId === 0) { continue; }
+
+        const tile = this._getTileAt(x, z, dungeon);
+        let prevTile = this._getTileAt(x + 1, z - 1, dungeon);
+        if (tile.wall && tile.wall.diagonal === 'tl' && (!prevTile || prevTile.wall?.diagonal !== 'tl')) {
+          front.x = x + 1;
+          front.z = z;
+          front.grid = { x: x, y: z };
+          front.normal = (new Vector3(1,0,1)).normalize();
+
+          this._parseDiagonalWall(front, tile, dungeon, 'tl', {x: -1, y: 1})
+        }
+
+        if (tile.wall && tile.wall.diagonal === 'br' && (!prevTile || prevTile.wall?.diagonal !== 'br')) {
+          front.x = x + 1;
+          front.z = z;
+          front.grid = { x: x, y: z };
+          front.normal = (new Vector3(-1,0,-1)).normalize();
+
+          this._parseDiagonalWall(front, tile, dungeon, 'br', {x: -1, y: 1})
+        }
+
+        prevTile = this._getTileAt(x - 1, z - 1, dungeon);
+        if (tile.wall && tile.wall.diagonal === 'tr' && (!prevTile || prevTile.wall?.diagonal !== 'tr')) {
+          front.x = x;
+          front.z = z;
+          front.grid = { x: x, y: z };
+          front.normal = (new Vector3(-1,0,1)).normalize();
+
+          this._parseDiagonalWall(front, tile, dungeon, 'tr', {x: 1, y: 1})
+        }
+
+        if (tile.wall && tile.wall.diagonal === 'bl' && (!prevTile || prevTile.wall?.diagonal !== 'bl')) {
+          front.x = x;
+          front.z = z;
+          front.grid = { x: x, y: z };
+          front.normal = (new Vector3(1,0,-1)).normalize();
+
+          this._parseDiagonalWall(front, tile, dungeon, 'bl', {x: 1, y: 1})
+        }
+      }
     }
   }
 
