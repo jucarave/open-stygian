@@ -6,16 +6,21 @@ import { Vector3 } from '../math/Vector3';
 import { PlayerSetup } from '../PlayerSetup';
 import { Renderer } from '../core/Renderer';
 import { Scene } from './Scene';
+import { CharacterMovement } from '../components/CharacterMovement';
+import { Config } from '../system/Config';
 
 export class SceneDungeon extends Scene {
   private _player: Entity;
+  private _dungeon: Dungeon;
 
   public readonly playerSetup: PlayerSetup;
 
   constructor(dungeon: DungeonMap) {
     super();
 
-    this.addEntity(new Dungeon(dungeon));
+    this._dungeon = new Dungeon(dungeon);
+
+    this.addEntity(this._dungeon);
     this._loadCamera();
     this._loadPLayer();
 
@@ -29,10 +34,15 @@ export class SceneDungeon extends Scene {
   }
 
   private _loadPLayer() {
-    this._player = new Entity(new Vector3(0, 0, -5));
+    this._player = new Entity(new Vector3(5, 0, 2));
+    this._player.addComponent(new CharacterMovement(Config.player.radius));
 
     this.addEntity(this._player);
 
     this._camera.parent = this._player;
+  }
+
+  public getDungeon() {
+    return this._dungeon;
   }
 }

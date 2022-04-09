@@ -3,6 +3,7 @@ import { Config } from '../system/Config';
 import { getAngleBetwen2DVectors } from '../math/Math';
 import { Input } from '../system/Input';
 import { Component } from './Component';
+import { CharacterMovement } from './CharacterMovement';
 
 /**
  * This component manages the movement of the character
@@ -10,6 +11,7 @@ import { Component } from './Component';
  */
 export class PlayerSmoothMovement extends Component {
   private _camera: Camera;
+  private _characterMovement: CharacterMovement;
 
   // Movement speed in units/frame
   public movementSpeed = 0.1;
@@ -35,12 +37,12 @@ export class PlayerSmoothMovement extends Component {
       const dir = this._entity.forward.clone().multiplyScalar(ver).sum(this._entity.right.clone().multiplyScalar(hor));
       const angle = getAngleBetwen2DVectors(1, 0, dir.x, dir.z);
 
-      this._entity.position.x += Math.cos(angle) * this.movementSpeed;
-      this._entity.position.z += Math.sin(angle) * this.movementSpeed;
+      this._characterMovement.moveTo(Math.cos(angle) * this.movementSpeed, Math.sin(angle) * this.movementSpeed, 0)
     }
   }
 
   public init(): void {
+    this._characterMovement = this._entity.getComponent<CharacterMovement>('CharacterMovement');
   }
 
   public update(): void {

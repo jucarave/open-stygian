@@ -20,6 +20,8 @@ export class Scene {
   public addEntity(entity: Entity) {
     this._entities.push(entity);
     
+    entity.scene = this;
+    
     if (this._initialized) {
       entity.initComponents();
     }
@@ -36,6 +38,7 @@ export class Scene {
       this._entities.splice(index, 1);
     }
 
+    entity.scene = null;
     entity.destroy();
   }
 

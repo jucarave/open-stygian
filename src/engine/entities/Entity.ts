@@ -5,6 +5,7 @@ import { Material } from '../materials/Material';
 import { Matrix4 } from '../math/Matrix4';
 import { Quaternion } from '../math/Quaternion';
 import { Vector3 } from '../math/Vector3';
+import { Scene } from '../scenes/Scene';
 
 export class Entity {
   protected _transform: Matrix4;
@@ -12,7 +13,7 @@ export class Entity {
   protected _dirtyTransformMatrix: boolean;
   protected _components: Component[];
   protected _initialized: boolean;
-  
+  protected _scene: Scene;
   
   public readonly position: Vector3;
   public readonly rotation: Quaternion;
@@ -167,5 +168,13 @@ export class Entity {
     this._dirtyTransformMatrix = false;
 
     return this._transform;
+  }
+
+  public set scene(scene: Scene) {
+    this._scene = scene;
+  }
+
+  public get scene() {
+    return this._scene;
   }
 }

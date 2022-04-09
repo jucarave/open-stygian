@@ -12,5 +12,9 @@ export const Config = {
     lookUp: KEY_CODES.Digit1,
     lookCenter: KEY_CODES.Digit2,
     lookDown: KEY_CODES.Digit3,
+  },
+
+  player: {
+    radius: 0.3
   }
 };
