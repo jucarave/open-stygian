@@ -1,26 +1,30 @@
-export interface Tile {
+import { Vector3 } from './math/Vector3';
+
+export interface Wall {
+  x1: number;
   y1: number;
+  h1: number;
+  z1: number;
+  x2: number;
   y2: number;
+  h2: number;
+  z2: number;
+}
+export interface Mesh {
+  vertices: number[];
+  texCoords: number[]
+  indices: number[];
+}
 
-  floor?: { 
-    slope?: 't' | 'b' | 'l' | 'r',
-    uv?: number[];
-    lowWallUV?: number[]
-  };
-
-  ceiling?: {
-    uv?: number[];
-    highWallUV?: number[]
-  };
-
-  wall?: {
-    diagonal?: 'tl' | 'tr' | 'bl' | 'br';
-    uv: number[];
-  };
+export interface MeshInstance {
+  meshInd: number;
+  position: Vector3;
+  rotationY: number;
 }
 
 export interface DungeonMap {
   texture: string;
-  tiles: Tile[];
-  map: number[][];
+  meshes: Mesh[];
+  instances: MeshInstance[];
+  solidWalls: Wall[];
 }

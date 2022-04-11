@@ -5,7 +5,7 @@ import { Vector3 } from '../math/Vector3';
 import { SceneDungeon } from '../scenes/SceneDungeon';
 import { Component } from './Component';
 
-const VERY_CLOSE_DISTANCE = 0.8;
+const VERY_CLOSE_DISTANCE = 0.01;
 
 export class CharacterMovement extends Component {
   private _movementBBox: Cube;

@@ -23,12 +23,6 @@ export class Geometry {
     return this;
   }
 
-  public addUVs(x: number, y: number, w: number, h: number): Geometry {
-    this._vertexData.push(x, y, w, h);
-
-    return this;
-  }
-
   public addTriangle(vertex1: number, vertex2: number, vertex3: number): Geometry {
     this._indexData.push(vertex1, vertex2, vertex3);
 

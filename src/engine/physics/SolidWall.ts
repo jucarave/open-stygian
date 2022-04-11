@@ -75,7 +75,7 @@ export class SolidWall {
     const x = (b2 * c1 - b1 * c2) / determinant;
     const y = (a1 * c2 - a2 * c1) / determinant;
 
-    return { x: parseFloat(x.toFixed(4)), y: parseFloat(y.toFixed(4)) };
+    return { x, y };
   }
 
   /**

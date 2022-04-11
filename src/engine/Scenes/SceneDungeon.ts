@@ -34,7 +34,7 @@ export class SceneDungeon extends Scene {
   }
 
   private _loadPLayer() {
-    this._player = new Entity(new Vector3(5, 0, 2));
+    this._player = new Entity(new Vector3(3, 0, 2));
     this._player.addComponent(new CharacterMovement(Config.player.radius));
 
     this.addEntity(this._player);
