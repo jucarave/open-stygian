@@ -6,7 +6,13 @@ import { TEXCOORD_SIZE, VERTICE_SIZE } from '../system/Constants';
 import { Geometry } from './Geometry';
 
 export class DungeonBuilder extends Geometry {
-  private _parseWalls(dungeon: DungeonMap) {
+  /**
+   * Parses all the added meshes to the dungeon
+   * rotating them along the Y axis as needed
+   * 
+   * @param dungeon 
+   */
+  private _parseMeshes(dungeon: DungeonMap) {
     dungeon.instances.forEach((instance: MeshInstance) => {
       const mesh = dungeon.meshes[instance.meshInd];
       const vertexLength = mesh.vertices.length / 3;
@@ -35,7 +41,7 @@ export class DungeonBuilder extends Geometry {
   }
 
   public parseMap(dungeon: DungeonMap) {
-    this._parseWalls(dungeon);
+    this._parseMeshes(dungeon);
   }
 
   public get trianglesLength() {
