@@ -4,6 +4,7 @@ import { getAngleBetwen2DVectors } from '../math/Math';
 import { Input } from '../system/Input';
 import { Component } from './Component';
 import { CharacterMovement } from './CharacterMovement';
+import { KEY_CODES } from '../system/KeyCodes';
 
 /**
  * This component manages the movement of the character
@@ -41,12 +42,23 @@ export class PlayerSmoothMovement extends Component {
     }
   }
 
+  // For debugging collisions
+  // TODO: Remove
+  private _updateFloat() {
+    const ver = Input.isKeyPressed(KEY_CODES.U) - Input.isKeyPressed(KEY_CODES.J);
+
+    if (ver != 0) {
+      this._entity.position.y += 0.1 * ver;
+    }
+  }
+
   public init(): void {
     this._characterMovement = this._entity.getComponent<CharacterMovement>('CharacterMovement');
   }
 
   public update(): void {
     this.updateMovement();
+    this._updateFloat();
   }
   
   public destroy(): void {

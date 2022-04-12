@@ -13,13 +13,15 @@ export class CharacterMovement extends Component {
   private _scene: SceneDungeon;
 
   public radius: number;
+  public height: number;
 
   public readonly type = 'CharacterMovement';
   
-  constructor(radius = 0.3) {
+  constructor(radius = 0.3, height: number) {
     super();
 
     this.radius = radius;
+    this.height = height;
     this._movementBBox = { x1: 0, x2: 0, y1: 0, y2: 0, z1: 0, z2: 0 };
     this._movementLine = { x1: 0, x2: 0, y1: 0, y2: 0 };
   }
@@ -38,7 +40,7 @@ export class CharacterMovement extends Component {
     this._movementBBox.y1 = p.y;
     this._movementBBox.z1 = Math.min(p.z - r, p.z - r + movement.y);
     this._movementBBox.x2 = Math.max(p.x + r, p.x + r + movement.x);
-    this._movementBBox.y2 = p.y + 0.6;
+    this._movementBBox.y2 = p.y + this.height;
     this._movementBBox.z2 = Math.max(p.z + r, p.z + r + movement.y);
   }
 

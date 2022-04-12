@@ -5,6 +5,7 @@ import { SolidWall } from './SolidWall';
 
 // In how many sections is the map going to be partitioned
 const PARTITION_SIZE = 4;
+const SLOPE_HEIGHT = 0.2;
 
 export class SolidMap {
   private _walls: SolidWall[];
@@ -118,8 +119,11 @@ export class SolidMap {
     for (let x=Math.min(x1,x2);x<=Math.max(x1,x2);x++) {
       for (let z=Math.min(z1,z2);z<=Math.max(z1,z2);z++) {
         if (this._solidMap[z] && this._solidMap[z][x]) this._solidMap[z][x].forEach((wallIndex: number) => {
-          if (walls.indexOf(this._walls[wallIndex]) === -1) {
-            walls.push(this._walls[wallIndex]);
+          const wall = this._walls[wallIndex];
+          if (walls.indexOf(wall) === -1) {
+            if (wall.y1 < cube.y2 && wall.y2-SLOPE_HEIGHT > cube.y1) { 
+              walls.push(wall);
+            }
           }
         });
       }
