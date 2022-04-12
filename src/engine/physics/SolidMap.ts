@@ -5,7 +5,6 @@ import { SolidWall } from './SolidWall';
 
 // In how many sections is the map going to be partitioned
 const PARTITION_SIZE = 4;
-const SLOPE_HEIGHT = 0.2;
 
 export class SolidMap {
   private _walls: SolidWall[];
@@ -51,14 +50,16 @@ export class SolidMap {
     dungeon.solidWalls.forEach((wall: Wall) => {
       const x1 = wall.x1;
       const y1 = wall.y1;
+      const h1 = wall.h1;
       const z1 = wall.z1;
       const x2 = wall.x2;
-      const y2 = wall.y1 + wall.h1;
+      const y2 = wall.y2;
+      const h2 = wall.h2;
       const z2 = wall.z2;
 
-      this._updateBoundingBox(x1, y1, z1, x2, y2, z2);
+      this._updateBoundingBox(x1, Math.min(y1, y2), z1, x2, Math.max(y1+h1, y2+h2), z2);
 
-      const w = new SolidWall(x1, y1, z1, x2, y2, z2);
+      const w = new SolidWall(x1, y1, h1, z1, x2, y2, h2, z2);
       w.calculateNormal();
 
       this._walls.push(w);
@@ -121,7 +122,7 @@ export class SolidMap {
         if (this._solidMap[z] && this._solidMap[z][x]) this._solidMap[z][x].forEach((wallIndex: number) => {
           const wall = this._walls[wallIndex];
           if (walls.indexOf(wall) === -1) {
-            if (wall.y1 < cube.y2 && wall.y2-SLOPE_HEIGHT > cube.y1) { 
+            if (wall.collidesWithCube(cube)) { 
               walls.push(wall);
             }
           }

@@ -1,23 +1,41 @@
+import { Cube } from '../math/Cube';
 import { Line } from '../math/Line';
 import { Vector2, vector2DDot, vector2DLength } from '../math/Vector2';
 import { Vector3 } from '../math/Vector3';
 
+const SLOPE_HEIGHT = 0.2;
+
 export class SolidWall {
+  private _boundingBox: Cube;
+
   public x1: number;
   public y1: number;
+  public h1: number;
   public z1: number;
   public x2: number;
   public y2: number;
+  public h2: number;
   public z2: number;
   public normal: Vector3;
 
-  constructor(x1: number, y1: number, z1: number, x2: number, y2: number, z2: number) {
+  constructor(x1: number, y1: number, h1: number, z1: number, x2: number, y2: number, h2: number, z2: number) {
     this.x1 = x1;
     this.y1 = y1;
+    this.h1 = h1;
     this.z1 = z1;
     this.x2 = x2;
     this.y2 = y2;
+    this.h2 = h2;
     this.z2 = z2;
+
+    this._boundingBox = {
+      x1: Math.min(x1, x2),
+      y1: Math.min(y1, y2),
+      z1: Math.min(z1, z2),
+      x2: Math.max(x1, x2),
+      y2: Math.max(y1+h1, y2+h2),
+      z2: Math.max(z1, z2)
+    };
   }
 
   /**
@@ -25,7 +43,7 @@ export class SolidWall {
    */
   public calculateNormal() {
     const va = (new Vector3(this.x2-this.x1, 0, this.z2-this.z1)).normalize();
-    const vb = (new Vector3(0, this.y2-this.y1, 0)).normalize();
+    const vb = Vector3.up;
     this.normal = (Vector3.cross(va, vb)).normalize();
   }
 
@@ -114,5 +132,53 @@ export class SolidWall {
     }
 
     return vtcDotrd - Math.sqrt(d);
+  }
+
+  private _getHeightAtPoint(point: Vector2) {
+    const vectorA: Vector2 = { x: this.x2-this.x1, y: this.z2-this.z1 };
+    const vectorB: Vector2 = { x: point.x-this.x1, y: point.y-this.z1 };
+
+    const squaredDistance = vector2DDot(vectorA, vectorA);
+    const dot = vector2DDot(vectorA, vectorB) / squaredDistance;
+
+    return (this.h2-this.h1) * dot + this.h1 + this.y1;
+  }
+
+  private _getYAtPoint(point: Vector2) {
+    const vectorA: Vector2 = { x: this.x2-this.x1, y: this.z2-this.z1 };
+    const vectorB: Vector2 = { x: point.x-this.x1, y: point.y-this.z1 };
+
+    const squaredDistance = vector2DDot(vectorA, vectorA);
+    const dot = vector2DDot(vectorA, vectorB) / squaredDistance;
+
+    return (this.y2-this.y1) * dot + this.y1;
+  }
+
+  private _isOutsideBoundingBox(cube: Cube) {
+    return (cube.x1 >= this._boundingBox.x2 || cube.x2 < this._boundingBox.x1 || cube.y1 >= this._boundingBox.y2 || cube.y2 < this._boundingBox.y1 || cube.z1 >= this._boundingBox.z2 || cube.z2 < this._boundingBox.z1);
+  }
+
+  public collidesWithCube(cube: Cube) {
+    if (this._isOutsideBoundingBox(cube)) { return false; }
+
+    const y1 = Math.min(
+      this._getYAtPoint({x: cube.x1, y: cube.z1}),
+      this._getYAtPoint({x: cube.x1, y: cube.z2}),
+      this._getYAtPoint({x: cube.x2, y: cube.z1}),
+      this._getYAtPoint({x: cube.x2, y: cube.z2})
+    );
+
+    const y2 = Math.max(
+      this._getHeightAtPoint({x: cube.x1, y: cube.z1}),
+      this._getHeightAtPoint({x: cube.x1, y: cube.z2}),
+      this._getHeightAtPoint({x: cube.x2, y: cube.z1}),
+      this._getHeightAtPoint({x: cube.x2, y: cube.z2})
+    );
+
+    if (y1 < cube.y2 && y2-SLOPE_HEIGHT > cube.y1) {
+      return true;
+    }
+
+    return false;
   }
 }
