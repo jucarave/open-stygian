@@ -307,6 +307,14 @@ class Game {
         {x1:2,x2:3,y1:1,h1:2,y2:1,h2:2,z1:6,z2:6},
         {x1:2,x2:2,y1:0,h1:1,y2:0,h2:0,z1:9,z2:7},
         {x1:1,x2:2,y1:0,h1:1,y2:0,h2:1,z1:9,z2:9},
+      ],
+      solidFloors: [
+        { tl: new Vector3(0,0,0), tr: new Vector3(5,0,0), bl: new Vector3(0,0,5), br: new Vector3(5,0,5) },
+        { tl: new Vector3(4,0.2,2), tr: new Vector3(5,0.2,2), bl: new Vector3(4,0.2,4), br: new Vector3(5,0.2,4) },
+        { tl: new Vector3(0,0.3,4), tr: new Vector3(1,0.3,4), bl: new Vector3(0,0.3,5), br: new Vector3(1,0.3,5) },
+        { tl: new Vector3(2,0,5), tr: new Vector3(3,0,5), bl: new Vector3(2,0,6), br: new Vector3(3,0,6) },
+        { tl: new Vector3(1,0,6), tr: new Vector3(3,0,6), bl: new Vector3(1,0,10), br: new Vector3(3,0,10) },
+        { tl: new Vector3(1,0,7), tr: new Vector3(2,0,7), bl: new Vector3(1,1,9), br: new Vector3(2,1,9) },
       ]
     };
   }

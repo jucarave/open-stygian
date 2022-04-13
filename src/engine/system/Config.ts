@@ -17,5 +17,7 @@ export const Config = {
   player: {
     radius: 0.3,
     height: 0.6
-  }
+  },
+
+  gravity: -0.003
 };

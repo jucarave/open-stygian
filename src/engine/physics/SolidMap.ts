@@ -1,6 +1,8 @@
-import { DungeonMap, Wall } from '../DungeonMap';
+import { DungeonMap, Floor, Wall } from '../DungeonMap';
 import { Cube } from '../math/Cube';
 import { Vector2 } from '../math/Vector2';
+import { Vector3 } from '../math/Vector3';
+import { SolidFloor } from './SolidFloor';
 import { SolidWall } from './SolidWall';
 
 // In how many sections is the map going to be partitioned
@@ -8,15 +10,18 @@ const PARTITION_SIZE = 4;
 
 export class SolidMap {
   private _walls: SolidWall[];
+  private _floors: SolidFloor[];
   private _solidMap: number[][][];
   private _boundingBox: Cube;
   private _size: Vector2;
 
   constructor(dungeon: DungeonMap) {
     this._walls = [];
+    this._floors = [];
     this._boundingBox = { x1: 0, x2: 0, y1: 0, y2: 0, z1: 0, z2: 0 };
 
     this._parseWalls(dungeon);
+    this._parseFloors(dungeon);
     this._initSolidMap();
   }
 
@@ -63,6 +68,17 @@ export class SolidMap {
       w.calculateNormal();
 
       this._walls.push(w);
+    });
+  }
+
+  /**
+   * Parses the solid floors of a dungeon
+   * 
+   * @param dungeon 
+   */
+  private _parseFloors(dungeon: DungeonMap) {
+    dungeon.solidFloors.forEach((solidFloor: Floor) => {
+      this._floors.push(new SolidFloor(solidFloor.tl, solidFloor.tr, solidFloor.bl, solidFloor.br));
     });
   }
 
@@ -131,5 +147,25 @@ export class SolidMap {
     }
 
     return walls;
+  }
+
+  /**
+   * Returns the highest floor at a circled area
+   * 
+   * @param position center of the circle
+   * @param radius 
+   * @returns Maximum y or -10
+   */
+  public getFloorHeight(position: Vector3, radius: number) {
+    let y = -10;
+    this._floors.forEach((floor: SolidFloor) => {
+      const floorY = Math.max(y, floor.getYAtPoint(position, radius));
+
+      if (floorY <= position.y+0.2) {
+        y = Math.max(floorY, y);
+      }
+    });
+
+    return y;
   }
 }

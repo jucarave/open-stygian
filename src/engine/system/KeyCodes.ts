@@ -47,4 +47,6 @@ export const KEY_CODES = {
     Numpad8: 'Numpad8',
     Numpad9: 'Numpad9',
     Numpad0: 'Numpad0',
+
+    Space: 'Space'
 };

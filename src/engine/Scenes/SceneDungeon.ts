@@ -8,6 +8,7 @@ import { Renderer } from '../core/Renderer';
 import { Scene } from './Scene';
 import { CharacterMovement } from '../components/CharacterMovement';
 import { Config } from '../system/Config';
+import { FallingEntity } from '../components/FallingEntity';
 
 export class SceneDungeon extends Scene {
   private _player: Entity;
@@ -36,6 +37,7 @@ export class SceneDungeon extends Scene {
   private _loadPLayer() {
     this._player = new Entity(new Vector3(3, 0, 2));
     this._player.addComponent(new CharacterMovement(Config.player.radius, Config.player.height));
+    this._player.addComponent(new FallingEntity(Config.player.radius));
 
     this.addEntity(this._player);
 

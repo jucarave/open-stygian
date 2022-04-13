@@ -10,6 +10,13 @@ export interface Wall {
   h2: number;
   z2: number;
 }
+
+export interface Floor {
+  tl: Vector3;
+  tr: Vector3;
+  bl: Vector3;
+  br: Vector3;
+}
 export interface Mesh {
   vertices: number[];
   texCoords: number[]
@@ -27,4 +34,5 @@ export interface DungeonMap {
   meshes: Mesh[];
   instances: MeshInstance[];
   solidWalls: Wall[];
+  solidFloors: Floor[];
 }
