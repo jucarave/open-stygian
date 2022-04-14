@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import 'mocha';
-import { degToRad } from '../../../src/engine/math/Math';
-import { Matrix4 } from '../../../src/engine/math/Matrix4';
+import { degToRad } from '../../../engine/math/Math';
+import { Matrix4 } from '../../../engine/math/Matrix4';
 
 describe('Matrix4 class', () => {
   it('Creates a class with the given values', () => {

@@ -1,12 +1,12 @@
 import * as chai from 'chai';
 import * as spies from 'chai-spies';
 import 'mocha';
-import { PlayerKeyboardRotation } from '../../src/engine/components/PlayerKeyboardRotation';
-import { PlayerMouseRotation } from '../../src/engine/components/PlayerMouseRotation';
-import { PlayerSmoothMovement } from '../../src/engine/components/PlayerSmoothMovement';
-import { Camera } from '../../src/engine/core/Camera';
-import { Entity } from '../../src/engine/entities/Entity';
-import { PlayerSetup } from '../../src/engine/PlayerSetup';
+import { PlayerKeyboardRotation } from '../../engine/components/PlayerKeyboardRotation';
+import { PlayerMouseRotation } from '../../engine/components/PlayerMouseRotation';
+import { PlayerSmoothMovement } from '../../engine/components/PlayerSmoothMovement';
+import { Camera } from '../../engine/core/Camera';
+import { Entity } from '../../engine/entities/Entity';
+import { PlayerSetup } from '../../engine/PlayerSetup';
 
 const expect = chai.expect;
 chai.use(spies);

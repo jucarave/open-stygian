@@ -1,6 +1,6 @@
 import * as chai from 'chai';
-import { Vector3 } from '../../../src/engine/math/Vector3';
-import { Quaternion } from '../../../src/engine/math/Quaternion';
+import { Vector3 } from '../../../engine/math/Vector3';
+import { Quaternion } from '../../../engine/math/Quaternion';
 import * as spies from 'chai-spies';
 import 'mocha';
 

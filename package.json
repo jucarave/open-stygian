@@ -5,11 +5,11 @@
   "description": "HTML5 Game Engine written in Typescript for creating Games Like Ultima Underworld",
   "main": "index.js",
   "scripts": {
-    "build": "node ./scripts/build.js",
-    "watch": "node ./scripts/watch.js",
-    "build-debug": "node ./scripts/build.js debug",
-    "watch-debug": "node ./scripts/watch.js debug",
-    "lint": "eslint ./src/**/*.ts ./tests/**/*.spec.ts",
+    "build-game": "node ./scripts/build.js --project game",
+    "watch-game": "node ./scripts/watch.js --project game",
+    "build-game-debug": "node ./scripts/build.js debug --project game",
+    "watch-game-debug": "node ./scripts/watch.js debug --project game",
+    "lint": "eslint ./**/*.ts ./tests/**/*.spec.ts",
     "test": "mocha -r ts-node/register tests/**/*.spec.ts"
   },
   "license": "MIT",

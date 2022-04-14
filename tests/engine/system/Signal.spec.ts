@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import * as spies from 'chai-spies';
 import 'mocha';
-import { Signal } from '../../../src/engine/system/Signal';
+import { Signal } from '../../../engine/system/Signal';
 
 const expect = chai.expect;
 chai.use(spies);

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { degToRad, getAngleBetwen2DVectors, radToDeg } from '../../../src/engine/math/Math';
+import { degToRad, getAngleBetwen2DVectors, radToDeg } from '../../../engine/math/Math';
 import 'mocha';
 
 describe('Helper Math functions', () => {

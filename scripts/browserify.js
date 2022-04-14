@@ -5,12 +5,32 @@ const tsify = require('tsify');
 const tsConfig = require('../tsconfig.json');
 const fs = require('fs');
 
+const args = process.argv.slice(2);
+
 function getProjectPath() {
-  return 'src/';
+  const argInd = args.indexOf('--project');
+  if (argInd === -1) { throw new Error('No project specified'); }
+  
+  switch (args[argInd + 1]) {
+    case 'game':
+      return ['./src', './game/src/'];
+
+    default:
+      throw new Error(`Invalid project ${args[argInd + 1]}`);
+  }
 }
   
 function getEntriesPath() {
-  return getProjectPath() + 'Game.ts';
+  const argInd = args.indexOf('--project');
+  if (argInd === -1) { throw new Error('No project specified'); }
+  
+  switch (args[argInd + 1]) {
+    case 'game':
+      return './game/src/Game.ts';
+
+    default:
+      throw new Error(`Invalid project ${args[argInd + 1]}`);
+  }
 }
 
 function getTSConfigFile() {
@@ -22,7 +42,16 @@ function onError(error) {
 }
 
 function getDestinyPath() {
-  return './build/js';
+  const argInd = args.indexOf('--project');
+  if (argInd === -1) { throw new Error('No project specified'); }
+  
+  switch (args[argInd + 1]) {
+    case 'game':
+      return './game/build/js';
+
+    default:
+      throw new Error(`Invalid project ${args[argInd + 1]}`);
+  }
 }
 
 module.exports = {
@@ -31,13 +60,13 @@ module.exports = {
       basedir: '.',
       debug: debug,
       entries: [getEntriesPath()],
-      paths: [getProjectPath()],
+      paths: getProjectPath(),
       files: tsConfig.files,
       cache: {},
       packageCache: {}
     })
       .plugin(tsify, { project: getTSConfigFile() })
-      .add('./src/Game.ts')
+      .add(getEntriesPath())
       .on('error', onError);
   },
 

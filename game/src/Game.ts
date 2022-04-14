@@ -1,7 +1,7 @@
-import { DungeonMap } from './engine/DungeonMap';
-import { Stygian } from './engine/Stygian';
-import { Texture } from './engine/core/Texture';
-import { Vector3 } from './engine/math/Vector3';
+import { DungeonMap } from '../../engine/DungeonMap';
+import { Stygian } from '../../engine/Stygian';
+import { Texture } from '../../engine/core/Texture';
+import { Vector3 } from '../../engine/math/Vector3';
 
 class Game {
   constructor() {

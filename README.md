@@ -12,9 +12,9 @@ npm install
 You can transpile the code using
 
 ```bash
-npm run build
+npm run build-game
 ```
-If everything worked fine then the game: `build/js/game.js` had been generated, you can now run a server in the build directory.
+If everything worked fine then the game: `game/build/js/game.js` had been generated, you can now run a server in the game build directory.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
