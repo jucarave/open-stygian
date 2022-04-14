@@ -1,8 +1,10 @@
+import { Cube } from '../math/Cube';
 import { Line } from '../math/Line';
 import { Vector2, vector2DDot } from '../math/Vector2';
 import { Vector3 } from '../math/Vector3';
 
 const MIN_FLOOR = -1000;
+type FLOOR_TYPE = 'SQUARED_PLANE' | 'POLYGON';
 
 interface FloorVertices {
   tl: Vector3,
@@ -12,12 +14,17 @@ interface FloorVertices {
 }
 
 export class SolidFloor {
+  private _type: FLOOR_TYPE;
   private _vertices: FloorVertices;
   private _tri1: Line[];
   private _tri2: Line[];
+  private _boundingBox: Cube;
 
   constructor(tl: Vector3, tr: Vector3, bl: Vector3, br: Vector3) {
     this._vertices = { tl,tr,bl,br };
+
+    this._detectFloorType();
+    this._calculateBoundingBox();
     
     this._tri1 = [
       this._getLineBetweenVertices(tl, bl),
@@ -30,6 +37,39 @@ export class SolidFloor {
       this._getLineBetweenVertices(tl, tr),
       this._getLineBetweenVertices(tr, br)
     ];
+  }
+
+  private _calculateBoundingBox() {
+    const v = this._vertices;
+    this._boundingBox = {
+      x1: Math.min(v.tl.x, v.tr.x, v.bl.x, v.br.x),
+      y1: Math.min(v.tl.y, v.tr.y, v.bl.y, v.br.y),
+      z1: Math.min(v.tl.z, v.tr.z, v.bl.z, v.br.z),
+      x2: Math.max(v.tl.x, v.tr.x, v.bl.x, v.br.x),
+      y2: Math.max(v.tl.y, v.tr.y, v.bl.y, v.br.y),
+      z2: Math.max(v.tl.z, v.tr.z, v.bl.z, v.br.z),
+    };
+  }
+
+  /**
+   * Detects if the floors is an axis aligned squared 
+   * plane or a polygon
+   */
+  private _detectFloorType() {
+    let type = '';
+    if (this._vertices.tl.x === this._vertices.bl.x && 
+        this._vertices.tl.z === this._vertices.tr.z && 
+        this._vertices.bl.z === this._vertices.br.z && 
+        this._vertices.tr.x === this._vertices.br.x &&
+        this._vertices.tl.y === this._vertices.bl.y && 
+        this._vertices.bl.y === this._vertices.br.y && 
+        this._vertices.br.y === this._vertices.tr.y) {
+      type += 'SQUARED_PLANE';
+    } else {
+      type += 'POLYGON';
+    }
+
+    this._type = type as FLOOR_TYPE;
   }
 
   /**
@@ -111,6 +151,14 @@ export class SolidFloor {
     return MIN_FLOOR;
   }
 
+  /**
+   * Returns the Y position of a point inside a triangle
+   * 
+   * @param v1 
+   * @param v2 
+   * @param toPosition 
+   * @returns 
+   */
   private _getTriangleYAtPoint(v1: Vector3, v2: Vector3, toPosition: Vector2) {
     const edge = { x: v2.x - v1.x, y: v2.z - v1.z };
     const sqrDistance = vector2DDot(edge, edge);
@@ -129,7 +177,7 @@ export class SolidFloor {
    * @param radius 
    * @returns 
    */
-  public getYAtPoint(position: Vector3, radius: number) {
+  private _getPolygonYAtPoint(position: Vector3, radius: number) {
     const tlToP = { x: position.x - this._vertices.tl.x, y: position.z - this._vertices.tl.z };
 
     // Is the point inside one of the triangles
@@ -161,5 +209,35 @@ export class SolidFloor {
     if (rightEdge !== MIN_FLOOR) { return rightEdge; }
 
     return MIN_FLOOR;
+  }
+
+  /**
+   * Checks if the bounding box of the point is within the bounding
+   * box (without the Y coordinate) and if so then return a Y
+   * coordinate from one the vertices of the plane
+   * 
+   * @param position 
+   * @param radius 
+   * @returns 
+   */
+  private _getSquaredPlaneYAtPoint(position: Vector3, radius: number) {
+    if (position.x + radius < this._boundingBox.x1 ||
+        position.z + radius < this._boundingBox.z1 ||
+        position.x - radius >= this._boundingBox.x2 || 
+        position.z - radius >= this._boundingBox.z2) {
+          return MIN_FLOOR;
+    }
+
+    return this._vertices.tl.y;
+  }
+  
+  public getYAtPoint(position: Vector3, radius: number) {
+    switch (this._type) {
+      case 'SQUARED_PLANE':
+        return this._getSquaredPlaneYAtPoint(position, radius);
+
+      case 'POLYGON':
+        return this._getPolygonYAtPoint(position, radius);
+    }
   }
 }
