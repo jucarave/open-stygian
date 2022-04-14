@@ -136,6 +136,19 @@ export class CharacterMovement extends Component {
       }
     }
 
+    // Collision against lower walls
+    if (collisionPoint === null) {
+      const wp = this._entity.position.clone();
+      wp.x += xTo;
+      wp.z += zTo;
+
+      const ceilingY = this._scene.getLowestPlane(wp, this.height/2, this.radius);
+      if (ceilingY-wp.y <= this.height) {
+        // TODO: Slide along the ceiling (maybe?)
+        return;
+      }
+    }
+
     // Collision response
     if (collisionPoint !== null) {
       const remainingEnergy = 1.0 - collisionTime;
