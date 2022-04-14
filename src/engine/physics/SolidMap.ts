@@ -9,10 +9,15 @@ import { SolidWall } from './SolidWall';
 // In how many sections is the map going to be partitioned
 const PARTITION_SIZE = 4;
 
+interface SolidGeometry {
+  walls: number[];
+  floors: number[];
+}
+
 export class SolidMap {
   private _walls: SolidWall[];
   private _floors: SolidFloor[];
-  private _solidMap: number[][][];
+  private _solidMap: SolidGeometry[][];
   private _boundingBox: Cube;
   private _size: Vector2;
 
@@ -79,7 +84,10 @@ export class SolidMap {
    */
   private _parseFloors(dungeon: DungeonMap) {
     dungeon.solidFloors.forEach((solidFloor: Floor) => {
-      this._floors.push(new SolidFloor(solidFloor.tl, solidFloor.tr, solidFloor.bl, solidFloor.br));
+      const f = new SolidFloor(solidFloor.tl, solidFloor.tr, solidFloor.bl, solidFloor.br);
+      const bb = f.boundingBox;
+      this._updateBoundingBox(bb.x1, bb.y1, bb.z1, bb.x2, bb.y2, bb.z2);
+      this._floors.push(f);
     });
   }
 
@@ -97,7 +105,10 @@ export class SolidMap {
     for (let y=0;y<=PARTITION_SIZE;y++) {
       this._solidMap[y] = [];
       for (let x=0;x<=PARTITION_SIZE;x++) {
-        this._solidMap[y][x] = [];
+        this._solidMap[y][x] = {
+          floors: [],
+          walls: []
+        };
       }
     }
 
@@ -110,8 +121,24 @@ export class SolidMap {
 
       for (let x=Math.min(x1,x2);x<=Math.max(x1,x2);x++) {
         for (let z=Math.min(z1,z2);z<=Math.max(z1,z2);z++) {
-          if (this._solidMap[z][x].indexOf(i) === -1) {
-            this._solidMap[z][x].push(i);
+          if (this._solidMap[z][x].walls.indexOf(i) === -1) {
+            this._solidMap[z][x].walls.push(i);
+          }
+        }
+      }
+    }
+
+    for (let i=0;i<this._floors.length;i++) {
+      const bb = this._floors[i].boundingBox;
+      const x1 = Math.floor((bb.x1 - this._boundingBox.x1) / this._size.x);
+      const x2 = Math.floor((bb.x2 - this._boundingBox.x1) / this._size.x);
+      const z1 = Math.floor((bb.z1 - this._boundingBox.z1) / this._size.y);
+      const z2 = Math.floor((bb.z2 - this._boundingBox.z1) / this._size.y);
+
+      for (let x=Math.min(x1,x2);x<=Math.max(x1,x2);x++) {
+        for (let z=Math.min(z1,z2);z<=Math.max(z1,z2);z++) {
+          if (this._solidMap[z][x].floors.indexOf(i) === -1) {
+            this._solidMap[z][x].floors.push(i);
           }
         }
       }
@@ -136,7 +163,7 @@ export class SolidMap {
 
     for (let x=Math.min(x1,x2);x<=Math.max(x1,x2);x++) {
       for (let z=Math.min(z1,z2);z<=Math.max(z1,z2);z++) {
-        if (this._solidMap[z] && this._solidMap[z][x]) this._solidMap[z][x].forEach((wallIndex: number) => {
+        if (this._solidMap[z] && this._solidMap[z][x]) this._solidMap[z][x].walls.forEach((wallIndex: number) => {
           const wall = this._walls[wallIndex];
           if (walls.indexOf(wall) === -1) {
             if (wall.collidesWithCube(cube)) { 
@@ -151,6 +178,36 @@ export class SolidMap {
   }
 
   /**
+   * Returns all the floors that might collide with a circle
+   * centered at a position
+   * 
+   * @param position center of the circle
+   * @param radius 
+   * @returns 
+   */
+  public getOverlappingFloors(position: Vector3, radius: number) {
+    const x1 = Math.floor((position.x - radius - this._boundingBox.x1) / this._size.x);
+    const x2 = Math.floor((position.x + radius - this._boundingBox.x1) / this._size.x);
+    const z1 = Math.floor((position.z - radius - this._boundingBox.z1) / this._size.y);
+    const z2 = Math.floor((position.z + radius - this._boundingBox.z1) / this._size.y);
+
+    const floors: SolidFloor[] = [];
+
+    for (let x=Math.min(x1,x2);x<=Math.max(x1,x2);x++) {
+      for (let z=Math.min(z1,z2);z<=Math.max(z1,z2);z++) {
+        if (this._solidMap[z] && this._solidMap[z][x]) this._solidMap[z][x].floors.forEach((wallIndex: number) => {
+          const floor = this._floors[wallIndex];
+          if (floors.indexOf(floor) === -1) {
+            floors.push(floor);
+          }
+        });
+      }
+    }
+
+    return floors;
+  }
+
+  /**
    * Returns the highest floor at a circled area
    * 
    * @param position center of the circle
@@ -158,8 +215,9 @@ export class SolidMap {
    * @returns Maximum y or -10
    */
   public getFloorHeight(position: Vector3, radius: number) {
+    const floors = this.getOverlappingFloors(position, radius);
     let y = -10;
-    this._floors.forEach((floor: SolidFloor) => {
+    floors.forEach((floor: SolidFloor) => {
       const floorY = Math.max(y, floor.getYAtPoint(position, radius));
 
       if (floorY <= position.y + Config.slopeHeight) {

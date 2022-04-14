@@ -240,4 +240,8 @@ export class SolidFloor {
         return this._getPolygonYAtPoint(position, radius);
     }
   }
+
+  public get boundingBox() {
+    return this._boundingBox;
+  }
 }
