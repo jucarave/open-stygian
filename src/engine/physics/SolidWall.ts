@@ -2,8 +2,7 @@ import { Cube } from '../math/Cube';
 import { Line } from '../math/Line';
 import { Vector2, vector2DDot, vector2DLength } from '../math/Vector2';
 import { Vector3 } from '../math/Vector3';
-
-const SLOPE_HEIGHT = 0.2;
+import { Config } from '../system/Config';
 
 export class SolidWall {
   private _boundingBox: Cube;
@@ -175,7 +174,7 @@ export class SolidWall {
       this._getHeightAtPoint({x: cube.x2, y: cube.z2})
     );
 
-    if (y1 < cube.y2 && y2-SLOPE_HEIGHT > cube.y1) {
+    if (y1 < cube.y2 && y2-Config.slopeHeight > cube.y1) {
       return true;
     }
 

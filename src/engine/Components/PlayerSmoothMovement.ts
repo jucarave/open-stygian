@@ -38,7 +38,7 @@ export class PlayerSmoothMovement extends Component {
       const dir = this._entity.forward.clone().multiplyScalar(ver).sum(this._entity.right.clone().multiplyScalar(hor));
       const angle = getAngleBetwen2DVectors(1, 0, dir.x, dir.z);
 
-      this._characterMovement.moveTo(Math.cos(angle) * this.movementSpeed, Math.sin(angle) * this.movementSpeed, 0)
+      this._characterMovement.moveTo(Math.cos(angle) * this.movementSpeed, Math.sin(angle) * this.movementSpeed);
     }
   }
 

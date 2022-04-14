@@ -1,5 +1,5 @@
 import { Line } from '../math/Line';
-import { vector2DDot } from '../math/Vector2';
+import { Vector2, vector2DDot } from '../math/Vector2';
 import { Vector3 } from '../math/Vector3';
 
 const MIN_FLOOR = -1000;
@@ -59,9 +59,9 @@ export class SolidFloor {
     const py = (line.y2 - line.y1) * fx + line.y1;
 
     if (line.y2 > line.y1)  {
-      return py < point.z;
-    } else {
       return py >= point.z;
+    } else {
+      return py < point.z;
     }
   }
 
@@ -111,6 +111,14 @@ export class SolidFloor {
     return MIN_FLOOR;
   }
 
+  private _getTriangleYAtPoint(v1: Vector3, v2: Vector3, toPosition: Vector2) {
+    const edge = { x: v2.x - v1.x, y: v2.z - v1.z };
+    const sqrDistance = vector2DDot(edge, edge);
+    const dot = vector2DDot(edge, toPosition) / sqrDistance;
+
+    return dot * (v2.y - v1.y);
+  }
+
   /**
    * Checks if a position is inside the floor triangles and returns the height
    * based on it's position. Otherwise checks if the position is colliding with 
@@ -122,23 +130,19 @@ export class SolidFloor {
    * @returns 
    */
   public getYAtPoint(position: Vector3, radius: number) {
+    const tlToP = { x: position.x - this._vertices.tl.x, y: position.z - this._vertices.tl.z };
+
     // Is the point inside one of the triangles
     if (this._isPointInTriangle(this._tri1, position)) {
-      const fz1 = (position.z - this._vertices.tl.z) / (this._vertices.bl.z - this._vertices.tl.z);
-      const fz2 = (position.z - this._vertices.tl.z) / (this._vertices.br.z - this._vertices.tl.z);
-
-      const fy1 = fz1 * (this._vertices.bl.y - this._vertices.tl.y);
-      const fy2 = fz2 * (this._vertices.br.y - this._vertices.tl.y);
+      const fy1 = this._getTriangleYAtPoint(this._vertices.tl, this._vertices.bl, tlToP);
+      const fy2 = this._getTriangleYAtPoint(this._vertices.bl, this._vertices.br, tlToP);
 
       return this._vertices.tl.y + fy1 + fy2;
     }
 
     if (this._isPointInTriangle(this._tri2, position)) {
-      const fx1 = (position.x - this._vertices.tl.x) / (this._vertices.tr.x - this._vertices.tl.x);
-      const fz2 = (position.z - this._vertices.tl.z) / (this._vertices.br.z - this._vertices.tl.z);
-
-      const fy1 = fx1 * (this._vertices.tr.y - this._vertices.tl.y);
-      const fy2 = fz2 * (this._vertices.br.y - this._vertices.tl.y);
+      const fy1 = this._getTriangleYAtPoint(this._vertices.tl, this._vertices.tr, tlToP);
+      const fy2 = this._getTriangleYAtPoint(this._vertices.tr, this._vertices.br, tlToP);
 
       return this._vertices.tl.y + fy1 + fy2;
     }

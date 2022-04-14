@@ -2,6 +2,7 @@ import { DungeonMap, Floor, Wall } from '../DungeonMap';
 import { Cube } from '../math/Cube';
 import { Vector2 } from '../math/Vector2';
 import { Vector3 } from '../math/Vector3';
+import { Config } from '../system/Config';
 import { SolidFloor } from './SolidFloor';
 import { SolidWall } from './SolidWall';
 
@@ -161,7 +162,7 @@ export class SolidMap {
     this._floors.forEach((floor: SolidFloor) => {
       const floorY = Math.max(y, floor.getYAtPoint(position, radius));
 
-      if (floorY <= position.y+0.2) {
+      if (floorY <= position.y + Config.slopeHeight) {
         y = Math.max(floorY, y);
       }
     });

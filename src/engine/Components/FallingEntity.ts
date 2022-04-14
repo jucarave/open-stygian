@@ -60,4 +60,14 @@ export class FallingEntity extends Component {
   public destroy(): void {
     
   }
+
+  public placeOnFloor(): void {
+    if (this._vspeed !== 0) { return; }
+
+    const floorY = this._scene.getDungeon().getFloorHeight(this._entity.position, this._radius);
+
+    if (Math.abs(floorY - this._entity.position.y) <= Config.slopeHeight) {
+      this._entity.position.y = floorY;
+    }
+  }
 }

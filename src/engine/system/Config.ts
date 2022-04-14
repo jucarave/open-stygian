@@ -19,5 +19,6 @@ export const Config = {
     height: 0.6
   },
 
-  gravity: -0.003
+  gravity: -0.003,
+  slopeHeight: 0.2
 };

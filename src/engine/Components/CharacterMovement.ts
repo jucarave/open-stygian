@@ -4,6 +4,7 @@ import { Vector2, vector2DDot, vector2DLength, vector2DNormalize } from '../math
 import { Vector3 } from '../math/Vector3';
 import { SceneDungeon } from '../scenes/SceneDungeon';
 import { Component } from './Component';
+import { FallingEntity } from './FallingEntity';
 
 const VERY_CLOSE_DISTANCE = 0.01;
 
@@ -11,6 +12,7 @@ export class CharacterMovement extends Component {
   private _movementBBox: Cube;
   private _movementLine: Line;
   private _scene: SceneDungeon;
+  private _fallingComponent: FallingEntity;
 
   public radius: number;
   public height: number;
@@ -69,7 +71,7 @@ export class CharacterMovement extends Component {
    * @param iteration 
    * @returns 
    */
-  public moveTo(xTo: number, zTo: number, iteration: number) {
+  private _moveAndCollide(xTo: number, zTo: number, iteration: number) {
     if (iteration > 2) {
       return;
     }
@@ -151,14 +153,20 @@ export class CharacterMovement extends Component {
       const newZTo = (zTo + slideVelZ) * remainingEnergy;
 
       this._entity.position.set(p.x + xTo * collisionTime, p.y, p.z + zTo * collisionTime);
-      this.moveTo(newXTo, newZTo, iteration + 1);
+      this._moveAndCollide(newXTo, newZTo, iteration + 1);
     } else {
       this._entity.position.set(p.x + xTo, p.y, p.z + zTo);
     }
   }
 
+  public moveTo(xTo: number, zTo: number) {
+    this._moveAndCollide(xTo, zTo, 0);
+    this._fallingComponent.placeOnFloor();
+  }
+
   public init(): void {
     this._scene = this._entity.scene as SceneDungeon;
+    this._fallingComponent = this._entity.getComponent<FallingEntity>('FallingEntity');
   }
 
   public update(): void { }
