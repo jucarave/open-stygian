@@ -5,7 +5,6 @@ import { Entity } from './Entity';
 import { DungeonBuilder } from '../geometries/DungeonBuilder';
 import { SolidMap } from '../physics/SolidMap';
 import { Cube } from '../math/Cube';
-import { Vector3 } from '../math/Vector3';
 
 /**
  * Parses a DungeonMap file and generates a 3D dungeon Entity
@@ -35,7 +34,7 @@ export class Dungeon extends Entity {
     return this._solidMap.getOverlappingWalls(cube);
   }
 
-  public getFloorHeight(position: Vector3, radius: number) {
-    return this._solidMap.getFloorHeight(position, radius);
+  public get solidMap() {
+    return this._solidMap;
   }
 }

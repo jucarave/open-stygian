@@ -11,7 +11,7 @@ export interface Wall {
   z2: number;
 }
 
-export interface Floor {
+export interface Plane {
   tl: Vector3;
   tr: Vector3;
   bl: Vector3;
@@ -34,5 +34,5 @@ export interface DungeonMap {
   meshes: Mesh[];
   instances: MeshInstance[];
   solidWalls: Wall[];
-  solidFloors: Floor[];
+  solidPlanes: Plane[];
 }

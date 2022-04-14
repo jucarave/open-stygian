@@ -1,9 +1,9 @@
-import { DungeonMap, Floor, Wall } from '../DungeonMap';
+import { DungeonMap, Plane, Wall } from '../DungeonMap';
 import { Cube } from '../math/Cube';
 import { Vector2 } from '../math/Vector2';
 import { Vector3 } from '../math/Vector3';
 import { Config } from '../system/Config';
-import { SolidFloor } from './SolidFloor';
+import { SolidPlane } from './SolidPlane';
 import { SolidWall } from './SolidWall';
 
 // In how many sections is the map going to be partitioned
@@ -11,23 +11,23 @@ const PARTITION_SIZE = 4;
 
 interface SolidGeometry {
   walls: number[];
-  floors: number[];
+  planes: number[];
 }
 
 export class SolidMap {
   private _walls: SolidWall[];
-  private _floors: SolidFloor[];
+  private _planes: SolidPlane[];
   private _solidMap: SolidGeometry[][];
   private _boundingBox: Cube;
   private _size: Vector2;
 
   constructor(dungeon: DungeonMap) {
     this._walls = [];
-    this._floors = [];
+    this._planes = [];
     this._boundingBox = { x1: 0, x2: 0, y1: 0, y2: 0, z1: 0, z2: 0 };
 
     this._parseWalls(dungeon);
-    this._parseFloors(dungeon);
+    this._parsePlanes(dungeon);
     this._initSolidMap();
   }
 
@@ -78,16 +78,16 @@ export class SolidMap {
   }
 
   /**
-   * Parses the solid floors of a dungeon
+   * Parses the solid planes of a dungeon
    * 
    * @param dungeon 
    */
-  private _parseFloors(dungeon: DungeonMap) {
-    dungeon.solidFloors.forEach((solidFloor: Floor) => {
-      const f = new SolidFloor(solidFloor.tl, solidFloor.tr, solidFloor.bl, solidFloor.br);
-      const bb = f.boundingBox;
+  private _parsePlanes(dungeon: DungeonMap) {
+    dungeon.solidPlanes.forEach((solidPlane: Plane) => {
+      const p = new SolidPlane(solidPlane.tl, solidPlane.tr, solidPlane.bl, solidPlane.br);
+      const bb = p.boundingBox;
       this._updateBoundingBox(bb.x1, bb.y1, bb.z1, bb.x2, bb.y2, bb.z2);
-      this._floors.push(f);
+      this._planes.push(p);
     });
   }
 
@@ -106,7 +106,7 @@ export class SolidMap {
       this._solidMap[y] = [];
       for (let x=0;x<=PARTITION_SIZE;x++) {
         this._solidMap[y][x] = {
-          floors: [],
+          planes: [],
           walls: []
         };
       }
@@ -128,8 +128,8 @@ export class SolidMap {
       }
     }
 
-    for (let i=0;i<this._floors.length;i++) {
-      const bb = this._floors[i].boundingBox;
+    for (let i=0;i<this._planes.length;i++) {
+      const bb = this._planes[i].boundingBox;
       const x1 = Math.floor((bb.x1 - this._boundingBox.x1) / this._size.x);
       const x2 = Math.floor((bb.x2 - this._boundingBox.x1) / this._size.x);
       const z1 = Math.floor((bb.z1 - this._boundingBox.z1) / this._size.y);
@@ -137,8 +137,8 @@ export class SolidMap {
 
       for (let x=Math.min(x1,x2);x<=Math.max(x1,x2);x++) {
         for (let z=Math.min(z1,z2);z<=Math.max(z1,z2);z++) {
-          if (this._solidMap[z][x].floors.indexOf(i) === -1) {
-            this._solidMap[z][x].floors.push(i);
+          if (this._solidMap[z][x].planes.indexOf(i) === -1) {
+            this._solidMap[z][x].planes.push(i);
           }
         }
       }
@@ -178,50 +178,72 @@ export class SolidMap {
   }
 
   /**
-   * Returns all the floors that might collide with a circle
+   * Returns all the planes that might collide with a circle
    * centered at a position
    * 
    * @param position center of the circle
    * @param radius 
    * @returns 
    */
-  public getOverlappingFloors(position: Vector3, radius: number) {
+  public getOverlappingPlanes(position: Vector3, radius: number) {
     const x1 = Math.floor((position.x - radius - this._boundingBox.x1) / this._size.x);
     const x2 = Math.floor((position.x + radius - this._boundingBox.x1) / this._size.x);
     const z1 = Math.floor((position.z - radius - this._boundingBox.z1) / this._size.y);
     const z2 = Math.floor((position.z + radius - this._boundingBox.z1) / this._size.y);
 
-    const floors: SolidFloor[] = [];
+    const planes: SolidPlane[] = [];
 
     for (let x=Math.min(x1,x2);x<=Math.max(x1,x2);x++) {
       for (let z=Math.min(z1,z2);z<=Math.max(z1,z2);z++) {
-        if (this._solidMap[z] && this._solidMap[z][x]) this._solidMap[z][x].floors.forEach((wallIndex: number) => {
-          const floor = this._floors[wallIndex];
-          if (floors.indexOf(floor) === -1) {
-            floors.push(floor);
+        if (this._solidMap[z] && this._solidMap[z][x]) this._solidMap[z][x].planes.forEach((wallIndex: number) => {
+          const plane = this._planes[wallIndex];
+          if (planes.indexOf(plane) === -1) {
+            planes.push(plane);
           }
         });
       }
     }
 
-    return floors;
+    return planes;
   }
 
   /**
-   * Returns the highest floor at a circled area
+   * Returns the highest plane at a circled area
    * 
    * @param position center of the circle
    * @param radius 
    * @returns Maximum y or -10
    */
-  public getFloorHeight(position: Vector3, radius: number) {
-    const floors = this.getOverlappingFloors(position, radius);
+  public getHighestPlane(position: Vector3, radius: number) {
+    const planes = this.getOverlappingPlanes(position, radius);
     let y = -10;
-    floors.forEach((floor: SolidFloor) => {
-      const floorY = Math.max(y, floor.getYAtPoint(position, radius));
+    planes.forEach((plane: SolidPlane) => {
+      const planeY = Math.max(y, plane.getYAtPoint(position, radius));
 
-      if (floorY <= position.y + Config.slopeHeight) {
-        y = Math.max(floorY, y);
+      if (planeY <= position.y + Config.slopeHeight) {
+        y = Math.max(planeY, y);
+      }
+    });
+
+    return y;
+  }
+
+  /**
+   * Returns the lowest plane at a cylinder
+   * 
+   * @param position bottom center of the cylinder
+   * @param height 
+   * @param radius 
+   * @returns 
+   */
+  public getLowestPlane(position: Vector3, height: number, radius: number) {
+    const planes = this.getOverlappingPlanes(position, radius);
+    let y = 100000;
+    planes.forEach((plane: SolidPlane) => {
+      const planeY = Math.min(y, plane.getYAtPoint(position, radius));
+
+      if (planeY > position.y + height) {
+        y = Math.min(planeY, y);
       }
     });
 

@@ -37,7 +37,7 @@ export class SceneDungeon extends Scene {
   private _loadPLayer() {
     this._player = new Entity(new Vector3(3, 0, 2));
     this._player.addComponent(new CharacterMovement(Config.player.radius, Config.player.height));
-    this._player.addComponent(new FallingEntity(Config.player.radius));
+    this._player.addComponent(new FallingEntity(Config.player.radius, Config.player.height));
 
     this.addEntity(this._player);
 
@@ -46,5 +46,13 @@ export class SceneDungeon extends Scene {
 
   public getDungeon() {
     return this._dungeon;
+  }
+
+  public getHighestPlane(position: Vector3, radius: number) {
+    return this._dungeon.solidMap.getHighestPlane(position, radius);
+  }
+
+  public getLowestPlane(position: Vector3, height: number, radius: number) {
+    return this._dungeon.solidMap.getLowestPlane(position, height, radius);
   }
 }

@@ -13,7 +13,7 @@ interface FloorVertices {
   br: Vector3,
 }
 
-export class SolidFloor {
+export class SolidPlane {
   private _type: FLOOR_TYPE;
   private _vertices: FloorVertices;
   private _tri1: Line[];

@@ -9,22 +9,55 @@ export class FallingEntity extends Component {
   private _scene: SceneDungeon;
   private _isGrounded: boolean;
   private _radius: number;
+  private _height: number;
   private _gravity: number;
 
   public readonly type = 'FallingEntity';
 
-  constructor(radius: number) {
+  constructor(radius: number, height: number) {
     super();
 
     this._radius = radius;
+    this._height = height;
   }
 
   public init(): void {
-    this._entity.position.y = 5;
     this._scene = this._entity.scene as SceneDungeon;
     this._isGrounded = true;
-    this._radius = Config.player.radius;
     this._gravity = Config.gravity;
+  }
+
+  /**
+   * Checks for ground above the entity and if there is collision
+   * then place the entity beneath the ground
+   */
+  private _checkForCeiling() {
+    const ceiling = this._scene.getLowestPlane(this._entity.position, this._height, this._radius);
+
+    if (this._entity.position.y + this._vspeed + this._height >= ceiling) {
+      this._entity.position.y = ceiling - this._height;
+      this._vspeed = 0;
+    }
+  }
+
+  /**
+   * Checks for ground below the entity and if there is collision
+   * then place the entity at the ground
+   */
+  private _checkForGround() {
+    const floorY = this._scene.getHighestPlane(this._entity.position, this._radius);
+
+    if (!this._isGrounded) {
+      if (this._entity.position.y + this._vspeed < floorY) {
+        this._entity.position.y = floorY;
+        this._isGrounded = true;
+        this._vspeed = 0;
+      }
+    }
+
+    if (floorY < this._entity.position.y) {
+      this._isGrounded = false;
+    }
   }
 
   /**
@@ -32,22 +65,15 @@ export class FallingEntity extends Component {
    * then made them fall
    */
   public update(): void {
-    const floorY = this._scene.getDungeon().getFloorHeight(this._entity.position, this._radius);
+    if (this._vspeed <= 0) {
+      this._checkForGround();
+    } else {
+      this._checkForCeiling();
+    }
 
     if (!this._isGrounded) {
       this._vspeed += this._gravity;
-
-      if (this._entity.position.y + this._vspeed < floorY) {
-        this._entity.position.y = floorY;
-        this._isGrounded = true;
-        this._vspeed = 0;
-      } else {
-        this._entity.position.y += this._vspeed;
-      }
-    }
-
-    if (floorY < this._entity.position.y) {
-      this._isGrounded = false;
+      this._entity.position.y += this._vspeed;
     }
 
     // TODO: Temporal for testing
@@ -61,10 +87,17 @@ export class FallingEntity extends Component {
     
   }
 
+  /**
+   * Place the entity on the ground if it's not
+   * falling or jumping, usefull for when moving
+   * on slopes
+   * 
+   * @returns 
+   */
   public placeOnFloor(): void {
     if (this._vspeed !== 0) { return; }
 
-    const floorY = this._scene.getDungeon().getFloorHeight(this._entity.position, this._radius);
+    const floorY = this._scene.getHighestPlane(this._entity.position, this._radius);
 
     if (Math.abs(floorY - this._entity.position.y) <= Config.slopeHeight) {
       this._entity.position.y = floorY;
