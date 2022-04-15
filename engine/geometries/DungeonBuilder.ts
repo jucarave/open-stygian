@@ -13,6 +13,8 @@ export class DungeonBuilder extends Geometry {
    * @param dungeon 
    */
   private _parseMeshes(dungeon: DungeonMap) {
+    this.clearData();
+
     dungeon.instances.forEach((instance: MeshInstance) => {
       const mesh = dungeon.meshes[instance.meshInd];
       const vertexLength = mesh.vertices.length / 3;

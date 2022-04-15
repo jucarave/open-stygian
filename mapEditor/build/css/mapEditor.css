@@ -1,18 +1,22 @@
-body {
+.fullScreen {
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
   margin: 0;
+  white-space: nowrap;
 }
 
 #leftBar {
   width: 25%;
   height: 100%;
+  display: inline-block;
+  vertical-align: top;
+  white-space: normal;
 }
 
-#geometryFileInput {
+.hidden {
   display: none;
 }
 
@@ -31,4 +35,16 @@ body {
   font-size: 12pt;
   margin: 0 auto;
   display: block;
+}
+
+#middleBar {
+  width: 75%;
+  height: 100%;
+  display: inline-block;
+  vertical-align: top;
+  white-space: normal;
+}
+
+#mapEditor {
+  width: 100%;
 }

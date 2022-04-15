@@ -11,11 +11,24 @@
   </head>
 
   <body>
-    <div id="leftBar">
-      <input id="geometryFileInput" type="file" multiple />
-      <button class="addGeometryButton" onclick="document.getElementById('geometryFileInput').click()">Add Geometry</button>
+    <div class="fullScreen">
+      <div id="leftBar">
+        <div>
+          <input id="textureFileInput" class="hidden" type="file" />
+          <button class="addGeometryButton" onclick="document.getElementById('textureFileInput').click()">Set Texture</button>
+        </div>
 
-      <div id="geometryList">
+        <div>
+          <input id="geometryFileInput" class="hidden" type="file" multiple />
+          <button class="addGeometryButton" onclick="document.getElementById('geometryFileInput').click()">Add Geometry</button>
+        </div>
+        
+        <div id="geometryList">
+        </div>
+      </div>
+
+      <div id="middleBar">
+        <canvas id="mapEditor" width="1024" height="576"></canvas>
       </div>
     </div>
   </body>

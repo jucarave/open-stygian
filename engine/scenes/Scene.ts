@@ -75,4 +75,8 @@ export class Scene {
   public set camera(camera: Camera) {
     this._camera = camera;
   }
+
+  public get camera() {
+    return this._camera;
+  }
 }

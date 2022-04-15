@@ -23,6 +23,10 @@ export class Stygian {
     return this._scene as SceneDungeon;
   }
 
+  public loadScene(scene: Scene) {
+    this._scene = scene;
+  }
+
   /**
    * If all the textures are ready then execute the game loop
    */

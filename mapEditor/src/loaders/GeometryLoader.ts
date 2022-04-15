@@ -1,8 +1,13 @@
-import { Geometry } from '../../engine/geometries/Geometry';
+import { Mesh } from '../../../engine/DungeonMap';
 
 export class GeometryLoader {
   private _parseOBJFile(lines: string[]) {
-    const geometry = new Geometry();
+    const mesh: Mesh = {
+      vertices: [],
+      texCoords: [],
+      indices: []
+    };
+
     const vertices: number[][] = [];
     const texCoords: number[][] = [];
     const faces: string[][] = [];
@@ -13,7 +18,7 @@ export class GeometryLoader {
       if (params[0] === 'v') {
         vertices.push([parseFloat(params[1]), parseFloat(params[2]), parseFloat(params[3])]);
       } else if (params[0] === 'vt') {
-        texCoords.push([parseFloat(params[1]), parseFloat(params[2])]);
+        texCoords.push([parseFloat(params[1]), 1-parseFloat(params[2])]);
       } else if (params[0] === 'f') {
         faces.push([params[1], params[2], params[3]]);
       }
@@ -29,19 +34,18 @@ export class GeometryLoader {
       const t2 = texCoords[parseInt(face[1].split(/\//g)[1]) - 1];
       const t3 = texCoords[parseInt(face[2].split(/\//g)[1]) - 1];
 
-      geometry.addVertice(v1[0], v1[1], v1[2]).addTexCoord(t1[0], t1[1])
-        .addVertice(v2[0], v2[1], v2[2]).addTexCoord(t2[0], t2[1])
-        .addVertice(v3[0], v3[1], v3[2]).addTexCoord(t3[0], t3[1])
-        .addTriangle(ind, ind + 1, ind + 2);
+      mesh.vertices.push(...v1, ...v2, ...v3);
+      mesh.texCoords.push(...t1, ...t2, ...t3);
+      mesh.indices.push(ind, ind + 1, ind + 2);
 
       ind += 3;
     });
 
-    return geometry;
+    return mesh;
   }
 
   public async loadOBJ(file: File) {
-    const geometry: Geometry = await new Promise((resolve) => {
+    const mesh: Mesh = await new Promise((resolve) => {
       const reader = new FileReader();
       reader.readAsText(file);
       reader.onload = (e: ProgressEvent<FileReader>) => {
@@ -52,6 +56,6 @@ export class GeometryLoader {
       };
     });
     
-    return geometry;
+    return mesh;
   }
 }

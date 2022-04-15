@@ -1,10 +1,10 @@
 import { Renderer } from '../core/Renderer';
 
 export class Geometry {
-  private _vertexData: number[];
-  private _indexData: number[];
-  private _vertexBuffer: WebGLBuffer;
-  private _indexBuffer: WebGLBuffer;
+  protected _vertexData: number[];
+  protected _indexData: number[];
+  protected _vertexBuffer: WebGLBuffer;
+  protected _indexBuffer: WebGLBuffer;
 
   constructor() {
     this._vertexData = [];
@@ -27,6 +27,16 @@ export class Geometry {
     this._indexData.push(vertex1, vertex2, vertex3);
 
     return this;
+  }
+
+  public clearData() {
+    const gl = Renderer.instance.gl;
+    
+    // Clear previous mesh
+    this._vertexData = [];
+    this._indexData = [];
+    if (this._vertexBuffer) { gl.deleteBuffer(this._vertexBuffer); }
+    if (this._indexBuffer) { gl.deleteBuffer(this._indexBuffer); }
   }
 
   /**
