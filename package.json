@@ -9,6 +9,10 @@
     "watch-game": "node ./scripts/watch.js --project game",
     "build-game-debug": "node ./scripts/build.js debug --project game",
     "watch-game-debug": "node ./scripts/watch.js debug --project game",
+    "build-mapEditor": "node ./scripts/build.js --project mapEditor",
+    "watch-mapEditor": "node ./scripts/watch.js --project mapEditor",
+    "build-mapEditor-debug": "node ./scripts/build.js debug --project mapEditor",
+    "watch-mapEditor-debug": "node ./scripts/watch.js debug --project mapEditor",
     "lint": "eslint ./**/*.ts ./tests/**/*.spec.ts",
     "test": "mocha -r ts-node/register tests/**/*.spec.ts"
   },

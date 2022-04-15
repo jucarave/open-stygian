@@ -15,6 +15,9 @@ function getProjectPath() {
     case 'game':
       return ['./src', './game/src/'];
 
+    case 'mapEditor':
+      return ['./src', './mapEditor/src/'];
+
     default:
       throw new Error(`Invalid project ${args[argInd + 1]}`);
   }
@@ -27,6 +30,9 @@ function getEntriesPath() {
   switch (args[argInd + 1]) {
     case 'game':
       return './game/src/Game.ts';
+
+    case 'mapEditor':
+      return './mapEditor/src/MapEditor.ts';
 
     default:
       throw new Error(`Invalid project ${args[argInd + 1]}`);
@@ -48,6 +54,9 @@ function getDestinyPath() {
   switch (args[argInd + 1]) {
     case 'game':
       return './game/build/js';
+
+    case 'mapEditor':
+      return './mapEditor/build/js';
 
     default:
       throw new Error(`Invalid project ${args[argInd + 1]}`);

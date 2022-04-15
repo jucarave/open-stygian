@@ -1,0 +1,34 @@
+body {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+#leftBar {
+  width: 25%;
+  height: 100%;
+}
+
+#geometryFileInput {
+  display: none;
+}
+
+.geometryElement {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.geometryElement.selected {
+  background-color: #CCC;
+}
+
+.addGeometryButton {
+  padding: 6px;
+  font-family: helvetica;
+  font-size: 12pt;
+  margin: 0 auto;
+  display: block;
+}

@@ -1,3 +1,4 @@
 game/build/js/game.js
+mapEditor/build/js/game.js
 node_modules/*
 .vscode/*
