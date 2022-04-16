@@ -1,10 +1,14 @@
 import { Camera } from '../../engine/core/Camera';
 import { Renderer } from '../../engine/core/Renderer';
 import { Texture } from '../../engine/core/Texture';
-import { DungeonMap, Mesh } from '../../engine/DungeonMap';
+import { createGeometryFromMesh, DungeonMap, Mesh } from '../../engine/DungeonMap';
+import { Entity } from '../../engine/entities/Entity';
+import { Geometry } from '../../engine/geometries/Geometry';
+import { MaterialDungeon } from '../../engine/materials/MaterialDungeon';
 import { degToRad } from '../../engine/math/Math';
 import { Scene } from '../../engine/scenes/Scene';
 import { Stygian } from '../../engine/Stygian';
+import { Input } from '../../engine/system/Input';
 import { DOMBuilder } from './DOMBuilder';
 import { GridEntity } from './entities/GridEntity';
 import { FileLoader, LoadedMesh } from './loaders/FileLoader';
@@ -13,6 +17,7 @@ import { VertexColoredShader } from './shaders/VertexColoredShader';
 interface MeshData {
   name: string;
   mesh: Mesh;
+  geometry: Geometry;
   element: HTMLDivElement;
 }
 
@@ -40,11 +45,9 @@ class MapEditor {
     this._initMap();
     this._initCanvas();
     this._initScene();
+    this._initGrid();
+    this._initConfig();
     this._stygian.play();
-
-    Renderer.instance.loadShader('VERTEX_COLORED', VertexColoredShader);
-
-    this._scene.addEntity(new GridEntity());
   }
 
   private _initMap() {
@@ -55,6 +58,15 @@ class MapEditor {
       solidPlanes: [],
       solidWalls: []
     };
+  }
+
+  private _initConfig() {
+    Input.instance.lockCursor = false;
+  }
+
+  private _initGrid() {
+    Renderer.instance.loadShader('VERTEX_COLORED', VertexColoredShader);
+    this._scene.addEntity(new GridEntity());
   }
 
   private _initCanvas() {
@@ -79,8 +91,16 @@ class MapEditor {
       this._geometries.push({
         name: loaded.name,
         mesh: loaded.mesh,
+        geometry: createGeometryFromMesh(loaded.mesh),
         element: this._DOMBuilder.addGeometryToList(loaded.name, loaded.mesh)
       });
+
+      // TODO: Delete
+      const entity = new Entity();
+      entity.geometry = this._geometries[this._geometries.length - 1].geometry;
+      entity.material = new MaterialDungeon(Texture.getTexture(this._map.texture));
+
+      this._scene.addEntity(entity);
     })
   }
 

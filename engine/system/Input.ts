@@ -14,6 +14,7 @@ export class Input {
 
   public static instance: Input;
 
+  public lockCursor = true;
 
   constructor(canvas: HTMLCanvasElement) {
     Input.instance = this;
@@ -32,6 +33,7 @@ export class Input {
     document.addEventListener('click', (ev: MouseEvent) => {
       this._focused = ev.target === this._canvas;
 
+      if (!this.lockCursor) { return; }
       if (this._focused && this._canvas.requestPointerLock) {
         this._canvas.requestPointerLock();
       }
