@@ -29,6 +29,12 @@ export class Geometry {
     return this;
   }
 
+  public addColor(r: number, g: number, b: number, a: number): Geometry {
+    this._vertexData.push(r, g, b, a);
+
+    return this;
+  }
+
   public clearData() {
     const gl = Renderer.instance.gl;
     

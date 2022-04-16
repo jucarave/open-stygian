@@ -1,11 +1,14 @@
 import { Camera } from '../../engine/core/Camera';
+import { Renderer } from '../../engine/core/Renderer';
 import { Texture } from '../../engine/core/Texture';
 import { DungeonMap, Mesh } from '../../engine/DungeonMap';
 import { degToRad } from '../../engine/math/Math';
 import { Scene } from '../../engine/scenes/Scene';
 import { Stygian } from '../../engine/Stygian';
 import { DOMBuilder } from './DOMBuilder';
+import { GridEntity } from './entities/GridEntity';
 import { FileLoader, LoadedMesh } from './loaders/FileLoader';
+import { VertexColoredShader } from './shaders/VertexColoredShader';
 
 interface MeshData {
   name: string;
@@ -38,6 +41,10 @@ class MapEditor {
     this._initCanvas();
     this._initScene();
     this._stygian.play();
+
+    Renderer.instance.loadShader('VERTEX_COLORED', VertexColoredShader);
+
+    this._scene.addEntity(new GridEntity());
   }
 
   private _initMap() {
@@ -58,10 +65,10 @@ class MapEditor {
   private _initScene() {
     this._scene = new Scene();
     this._scene.camera = Camera.createPerspective(60, this._canvas.width / this._canvas.height, 0.1, 1000);
-    this._scene.camera.position.set(10,10,10);
+    this._scene.camera.position.set(20,10,20);
     this._scene.camera.rotation.local = true;
     this._scene.camera.rotation.rotateY(degToRad(135));
-    this._scene.camera.rotation.rotateX(degToRad(-35));
+    this._scene.camera.rotation.rotateX(degToRad(-19));
 
     this._stygian.loadScene(this._scene);
   }
