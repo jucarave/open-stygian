@@ -4,6 +4,12 @@ interface KeysMap {
   [index: string]: number;
 }
 
+interface MouseButtons {
+  left: number;
+  middle: number;
+  right: number;
+}
+
 export class Input {
   private _canvas: HTMLCanvasElement;
   private _focused: boolean;
@@ -11,6 +17,7 @@ export class Input {
   private _needsUpdate: boolean;
   private _isPointerLocked: boolean;
   private _mouseMovement: Vector2;
+  private _mouseButtons: MouseButtons;
 
   public static instance: Input;
 
@@ -22,6 +29,11 @@ export class Input {
     this._canvas = canvas;
     this._focused = false;
     this._keys = {};
+    this._mouseButtons = {
+      left: 0,
+      middle: 0,
+      right: 0
+    };
     this._needsUpdate = false;
 
     this._mouseMovement = { x: 0, y: 0 };
@@ -49,8 +61,6 @@ export class Input {
     });
 
     document.body.addEventListener('keyup', (ev: KeyboardEvent) => {
-      if (!this._focused) { return; }
-
       this._keys[ev.code] = 0;
     });
 
@@ -59,7 +69,32 @@ export class Input {
 
       this._mouseMovement.x = ev.movementX;
       this._mouseMovement.y = ev.movementY;
-    })
+    });
+
+    this._canvas.addEventListener('mousedown', (ev: MouseEvent) => {
+      if (!this._focused) { return; }
+
+      if (ev.button === 0 && this._mouseButtons.left === 0) {
+        this._mouseButtons.left = 1;
+        this._needsUpdate = true;
+      } else if (ev.button === 1 && this._mouseButtons.middle === 0) {
+        this._mouseButtons.middle = 1;
+        this._needsUpdate = true;
+      } else if (ev.button === 2 && this._mouseButtons.right === 0) {
+        this._mouseButtons.right = 1;
+        this._needsUpdate = true;
+      }
+    });
+
+    this._canvas.addEventListener('mouseup', (ev: MouseEvent) => {
+      if (ev.button === 0) {
+        this._mouseButtons.left = 0;
+      } else if (ev.button === 1) {
+        this._mouseButtons.middle = 0;
+      } else if (ev.button === 2) {
+        this._mouseButtons.right = 0;
+      }
+    });
   }
 
   private _handlePointerLockChange(): void {
@@ -73,6 +108,7 @@ export class Input {
       this._isPointerLocked = true;
     } else {
       this._isPointerLocked = false;
+      this._focused = false;
     }
   }
 
@@ -88,13 +124,24 @@ export class Input {
       }
     }
 
-    this._needsUpdate = false;
-
     return false;
+  }
+
+  /**
+   *  Updates all the mouse button pressed into mouse button press if it needs update
+   */
+  private _updateMouseStatus() {
+    if (!this._needsUpdate) { return; }
+
+    if (this._mouseButtons.left === 1) { this._mouseButtons.left = 2; } else
+    if (this._mouseButtons.middle === 1) { this._mouseButtons.middle = 2; } else
+    if (this._mouseButtons.right === 1) { this._mouseButtons.right = 2; }
   }
 
   public update() {
     this._updateKeysStatus();
+    this._updateMouseStatus();
+    this._needsUpdate = false;
 
     // Cancel last frame mouse movement
     this._mouseMovement.x = 0;
@@ -129,6 +176,36 @@ export class Input {
    */
   public static isKeyUp(key: string) {
     return (Input.instance._keys[key] === 0 || Input.instance._keys[key] === undefined) ? 1 : 0;
+  }
+
+  /**
+   * Checks if the player is pressing a mouse button
+   * 
+   * @param mouseButton 
+   * @returns Returns 1 when a button is being pressed or 0 otherwise
+   */
+  public static isMouseButtonDown(mouseButton: 'left' | 'middle' | 'right') {
+    return Input.instance._mouseButtons[mouseButton] >= 1 ? 1 : 0;
+  }
+
+  /**
+   * Checks if the player has just pressed a mouse button
+   * 
+   * @param mouseButton 
+   * @returns Returns 1 during the first frame of a mouse being pressed or 0 otherwise
+   */
+  public static isMouseButtonPressed(mouseButton: 'left' | 'middle' | 'right') {
+    return Input.instance._mouseButtons[mouseButton] === 1 ? 1 : 0;
+  }
+
+  /**
+   * Checks if the player is not pressing a mouse button
+   * 
+   * @param mouseButton 
+   * @returns Returns 1 if the player is not pressing a mouse button or 0 otherwise
+   */
+  public static isMouseButtonUp(mouseButton: 'left' | 'middle' | 'right') {
+    return Input.instance._mouseButtons[mouseButton] === 0;
   }
 
   public static get mouseMovement() {
