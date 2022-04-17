@@ -2,29 +2,28 @@ import { Vector3 } from './Vector3';
 import { Matrix4 } from './Matrix4';
 import { Signal } from '../system/Signal';
 
+type space = 'local' | 'global';
+
 export class Quaternion {
   private _s: number;
   private _imaginary: Vector3;
-  private _axisX: Vector3;
-  private _axisY: Vector3;
-  private _axisZ: Vector3;
+  private _right: Vector3;
+  private _up: Vector3;
+  private _forward: Vector3;
   private _m4: Matrix4;
   
   public readonly onChange: Signal;
-  public local: boolean;
 
   constructor(scalar = 1, imaginary: Vector3 = new Vector3(0, 0, 0)) {
     this._s = scalar;
     this._imaginary = imaginary;
     this._m4 = Matrix4.createIdentity();
 
-    this._axisX = Vector3.right;
-    this._axisY = Vector3.up;
-    this._axisZ = Vector3.forward;
+    this._right = Vector3.right;
+    this._up = Vector3.up;
+    this._forward = Vector3.forward;
 
     this.onChange = new Signal();
-
-    this.local = false;
   }
 
   public copy(q: Quaternion): Quaternion {
@@ -108,7 +107,12 @@ export class Quaternion {
    * @returns same quaternion for chaining
    */
   public rotate(radians: number, axis: Vector3) {
-    this.multiplyQuaternion(Quaternion.createRotationOnAxis(radians, axis));
+    const rotation = Quaternion.createRotationOnAxis(radians, axis);
+    this.multiplyQuaternion(rotation);
+
+    this._right.rotateOnQuaternion(rotation).normalize();
+    this._up.rotateOnQuaternion(rotation).normalize();
+    this._forward.rotateOnQuaternion(rotation).normalize();
 
     return this;
   }
@@ -121,18 +125,10 @@ export class Quaternion {
    * @param radians angles in radians to rotate
    * @returns same quaternion for chaining
    */
-  public rotateX(radians: number): Quaternion {
-    const axis = (this.local) ? this._axisX : Vector3.right,
-      rotation = Quaternion.createRotationOnAxis(radians, axis);
+  public rotateX(radians: number, space: space = 'global'): Quaternion {
+    const axis = (space === 'local') ? this._right : Vector3.right;
 
-    this.multiplyQuaternion(rotation);
-
-    if (this.local) {
-      this._axisY.rotateOnQuaternion(rotation).normalize();
-      this._axisZ.rotateOnQuaternion(rotation).normalize();
-    }
-
-    return this;
+    return this.rotate(radians, axis);
   }
 
   /**
@@ -143,18 +139,10 @@ export class Quaternion {
    * @param radians angles in radians to rotate
    * @returns same quaternion for chaining
    */
-  public rotateY(radians: number): Quaternion {
-    const axis = (this.local) ? this._axisY : Vector3.up,
-      rotation = Quaternion.createRotationOnAxis(radians, axis);
+  public rotateY(radians: number, space: space = 'global'): Quaternion {
+    const axis = (space === 'local') ? this._up : Vector3.up;
 
-    this.multiplyQuaternion(rotation);
-
-    if (this.local) {
-      this._axisX.rotateOnQuaternion(rotation).normalize();
-      this._axisZ.rotateOnQuaternion(rotation).normalize();
-    }
-
-    return this;
+    return this.rotate(radians, axis);
   }
 
   /**
@@ -165,18 +153,10 @@ export class Quaternion {
    * @param radians angles in radians to rotate
    * @returns same quaternion for chaining
    */
-  public rotateZ(radians: number): Quaternion {
-    const axis = (this.local) ? this._axisZ : Vector3.forward,
-      rotation = Quaternion.createRotationOnAxis(radians, axis);
+  public rotateZ(radians: number, space: space = 'global'): Quaternion {
+    const axis = (space === 'local') ? this._forward : Vector3.forward;
 
-    this.multiplyQuaternion(rotation);
-
-    if (this.local) {
-      this._axisX.rotateOnQuaternion(rotation).normalize();
-      this._axisY.rotateOnQuaternion(rotation).normalize();
-    }
-
-    return this;
+    return this.rotate(radians, axis);
   }
 
   /**
@@ -208,9 +188,9 @@ export class Quaternion {
     this._s = 1;
     this._imaginary.set(0, 0, 0);
 
-    this._axisX = Vector3.right;
-    this._axisY = Vector3.up;
-    this._axisZ = Vector3.forward;
+    this._right = Vector3.right;
+    this._up = Vector3.up;
+    this._forward = Vector3.forward;
 
     this.onChange.dispatch();
 
@@ -266,6 +246,18 @@ export class Quaternion {
 
   public get imaginary(): Vector3 { 
     return this._imaginary; 
+  }
+
+  public get up(): Vector3 {
+    return this._up.clone();
+  }
+
+  public get forward(): Vector3 {
+    return this._forward.clone();
+  }
+
+  public get right(): Vector3 {
+    return this._right.clone();
   }
 
   public static createRotationOnAxis(radians: number, axis: Vector3): Quaternion {

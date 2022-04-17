@@ -5,11 +5,10 @@ import { createGeometryFromMesh, DungeonMap, Mesh } from '../../engine/DungeonMa
 import { Entity } from '../../engine/entities/Entity';
 import { Geometry } from '../../engine/geometries/Geometry';
 import { MaterialDungeon } from '../../engine/materials/MaterialDungeon';
-import { degToRad } from '../../engine/math/Math';
 import { Scene } from '../../engine/scenes/Scene';
 import { Stygian } from '../../engine/Stygian';
-import { Input } from '../../engine/system/Input';
 import { DOMBuilder } from './DOMBuilder';
+import { FlyingCamera } from './entities/FlyingCamera';
 import { GridEntity } from './entities/GridEntity';
 import { FileLoader, LoadedMesh } from './loaders/FileLoader';
 import { VertexColoredShader } from './shaders/VertexColoredShader';
@@ -46,7 +45,6 @@ class MapEditor {
     this._initCanvas();
     this._initScene();
     this._initGrid();
-    this._initConfig();
     this._stygian.play();
   }
 
@@ -58,10 +56,6 @@ class MapEditor {
       solidPlanes: [],
       solidWalls: []
     };
-  }
-
-  private _initConfig() {
-    Input.instance.lockCursor = false;
   }
 
   private _initGrid() {
@@ -77,10 +71,12 @@ class MapEditor {
   private _initScene() {
     this._scene = new Scene();
     this._scene.camera = Camera.createPerspective(60, this._canvas.width / this._canvas.height, 0.1, 1000);
-    this._scene.camera.position.set(20,10,20);
-    this._scene.camera.rotation.local = true;
-    this._scene.camera.rotation.rotateY(degToRad(135));
-    this._scene.camera.rotation.rotateX(degToRad(-19));
+
+    const flyingCamera = new FlyingCamera(this._scene.camera);
+    const camera = new Entity();
+    camera.position.set(20,10,20);
+    camera.addComponent(flyingCamera);
+    this._scene.addEntity(camera);
 
     this._stygian.loadScene(this._scene);
   }
