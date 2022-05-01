@@ -5,27 +5,23 @@ import { Entity } from './Entity';
 import { DungeonBuilder } from '../geometries/DungeonBuilder';
 import { SolidMap } from '../physics/SolidMap';
 import { Cube } from '../math/Cube';
+import { Geometry } from '../geometries/Geometry';
+import { Material } from '../materials/Material';
 
 /**
  * Parses a DungeonMap file and generates a 3D dungeon Entity
  * with geometry and material
  */
 export class Dungeon extends Entity {
-  private _dungeonBuilder: DungeonBuilder;
   private _solidMap: SolidMap;
   private _dungeonMap: DungeonMap;
 
-  constructor(dungeon: DungeonMap) {
+  constructor(geometry: Geometry, material: Material, solidMap: SolidMap) {
     super();
 
-    this._dungeonMap = dungeon;
-
-    this._dungeonBuilder = new DungeonBuilder();
-    this.geometry = this._dungeonBuilder;
-
-    this.rebuild();
-
-    this._solidMap = new SolidMap(dungeon);
+    this.geometry = geometry;
+    this.material = material;
+    this._solidMap = solidMap;
   }
 
   public rebuild() {

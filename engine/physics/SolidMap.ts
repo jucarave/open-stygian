@@ -21,14 +21,10 @@ export class SolidMap {
   private _boundingBox: Cube;
   private _size: Vector2;
 
-  constructor(dungeon: DungeonMap) {
+  constructor() {
     this._walls = [];
     this._planes = [];
     this._boundingBox = { x1: 0, x2: 0, y1: 0, y2: 0, z1: 0, z2: 0 };
-
-    this._parseWalls(dungeon);
-    this._parsePlanes(dungeon);
-    this._initSolidMap();
   }
 
   /**
@@ -248,5 +244,11 @@ export class SolidMap {
     });
 
     return y;
+  }
+
+  public parseGeometryMap(dungeon: DungeonMap) {
+    this._parseWalls(dungeon);
+    this._parsePlanes(dungeon);
+    this._initSolidMap();
   }
 }

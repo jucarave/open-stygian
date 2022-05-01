@@ -1,5 +1,4 @@
 import { Camera } from '../core/Camera';
-import { DungeonMap } from '../DungeonMap';
 import { Dungeon } from '../entities/Dungeon';
 import { Entity } from '../entities/Entity';
 import { Vector3 } from '../math/Vector3';
@@ -9,6 +8,9 @@ import { Scene } from './Scene';
 import { CharacterMovement } from '../components/CharacterMovement';
 import { Config } from '../system/Config';
 import { FallingEntity } from '../components/FallingEntity';
+import { Geometry } from '../geometries/Geometry';
+import { SolidMap } from '../physics/SolidMap';
+import { Material } from '../materials/Material';
 
 export class SceneDungeon extends Scene {
   private _player: Entity;
@@ -16,10 +18,10 @@ export class SceneDungeon extends Scene {
 
   public readonly playerSetup: PlayerSetup;
 
-  constructor(dungeon: DungeonMap) {
+  constructor(level: Geometry, material: Material, solidMap: SolidMap) {
     super();
 
-    this._dungeon = new Dungeon(dungeon);
+    this._dungeon = new Dungeon(level, material, solidMap);
 
     this.addEntity(this._dungeon);
     this._loadCamera();

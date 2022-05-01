@@ -1,9 +1,11 @@
-import { DungeonMap } from './DungeonMap';
 import { Renderer } from './core/Renderer';
 import { Scene } from './scenes/Scene';
 import { SceneDungeon } from './scenes/SceneDungeon';
 import { Input } from './system/Input';
 import { Texture } from './core/Texture';
+import { Geometry } from './geometries/Geometry';
+import { SolidMap } from './physics/SolidMap';
+import { Material } from './materials/Material';
 
 export class Stygian {
   private _renderer: Renderer;
@@ -17,8 +19,8 @@ export class Stygian {
   /**
    * Loads a playable dungeon level
    */
-  public loadLevel(dungeon: DungeonMap) {
-    this._scene = new SceneDungeon(dungeon);
+  public loadLevel(level: Geometry, material: Material, solidMap: SolidMap) {
+    this._scene = new SceneDungeon(level, material, solidMap);
 
     return this._scene as SceneDungeon;
   }
