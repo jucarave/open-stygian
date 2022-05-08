@@ -2,8 +2,10 @@ export interface Tile {
   y: number;
   height: number;
   floorUV?: number[];
-  wallUV?: number[];
   ceilingUV?: number[];
+  wallUV?: number[];
+  lowWallUV?: number[];
+  highWallUV?: number[];
 }
 
 export interface DungeonGrid {

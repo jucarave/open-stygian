@@ -1,5 +1,5 @@
 import { Camera } from '../core/Camera';
-import { FLOAT_SIZE, TEXCOORD_SIZE, VERTICE_SIZE } from '../system/Constants';
+import { FLOAT_SIZE, TEXCOORD_SIZE, UVS_SIZE, VERTICE_SIZE } from '../system/Constants';
 import { Entity } from '../entities/Entity';
 import { Geometry } from '../geometries/Geometry';
 import { Renderer } from '../core/Renderer';
@@ -9,7 +9,8 @@ import { Material } from './Material';
 
 const VERTEX_OFFSET = 0;
 const TEXCOORD_OFFSET = VERTICE_SIZE * FLOAT_SIZE;
-const STRIDE = (VERTICE_SIZE + TEXCOORD_SIZE) * FLOAT_SIZE;
+const UV_OFFSET = (VERTICE_SIZE + TEXCOORD_SIZE) * FLOAT_SIZE;
+const STRIDE = (VERTICE_SIZE + TEXCOORD_SIZE + UVS_SIZE) * FLOAT_SIZE;
 const SHADER_KEY = 'dungeon';
 
 /**
@@ -54,6 +55,7 @@ export class MaterialDungeon extends Material {
     gl.bindBuffer(gl.ARRAY_BUFFER, geometry.vertexBuffer);
     gl.vertexAttribPointer(this._shader.attributes['aPosition'], VERTICE_SIZE, gl.FLOAT, false, STRIDE, VERTEX_OFFSET);
     gl.vertexAttribPointer(this._shader.attributes['aTexCoord'], TEXCOORD_SIZE, gl.FLOAT, false, STRIDE, TEXCOORD_OFFSET);
+    gl.vertexAttribPointer(this._shader.attributes['aUV'], UVS_SIZE, gl.FLOAT, false, STRIDE, UV_OFFSET);
     
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geometry.indexBuffer);
   }

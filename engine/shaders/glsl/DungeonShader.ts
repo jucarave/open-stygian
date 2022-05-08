@@ -6,11 +6,13 @@ export const DungeonShader: ShaderStruct = {
 
     attribute vec3 aPosition;
     attribute vec2 aTexCoord;
+    attribute vec4 aUV;
 
     uniform mat4 uProjection;
     uniform mat4 uView;
 
     varying vec2 vTexCoord;
+    varying vec4 vUV;
 
     void main(void) {
       vec4 position = vec4(aPosition, 1.0);
@@ -18,6 +20,7 @@ export const DungeonShader: ShaderStruct = {
       gl_Position = uProjection * uView * position;
 
       vTexCoord = aTexCoord;
+      vUV = aUV;
     }
   `,
 
@@ -27,9 +30,11 @@ export const DungeonShader: ShaderStruct = {
     uniform sampler2D uTexture;
 
     varying vec2 vTexCoord;
+    varying vec4 vUV;
 
     void main(void) {
-      gl_FragColor = texture2D(uTexture, vTexCoord);
+      vec2 coords = mod(vTexCoord, 1.0) * vUV.zw + vUV.xy;
+      gl_FragColor = texture2D(uTexture, coords);
     }
   `
 };

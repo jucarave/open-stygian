@@ -35,6 +35,12 @@ export class Geometry {
     return this;
   }
 
+  public addUV(x: number, y: number, w: number, h: number): Geometry {
+    this._vertexData.push(x, y, w, h);
+
+    return this;
+  }
+
   public clearData() {
     const gl = Renderer.instance.gl;
     
