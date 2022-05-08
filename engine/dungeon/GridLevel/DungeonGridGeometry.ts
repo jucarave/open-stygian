@@ -184,6 +184,52 @@ export class DungeonGridGeometry extends Geometry {
     }
   }
 
+  private _parseDiagonalWall(x: number, y: number, z: number, h: number, dir: 'tl' | 'tr' | 'bl' | 'br', uv: number[]) {
+    switch (dir) {
+      case 'tl':
+        this.addVertice(x, y, z + 1).addTexCoord(0, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+          .addVertice(x + 1, y, z).addTexCoord(1, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+          .addVertice(x, y + h, z + 1).addTexCoord(0, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+          .addVertice(x + 1, y + h, z).addTexCoord(1, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
+
+        if (!this._isOccludedByWall(x, y, z - 1, h)) this._addBackWall(x, y, z, h, uv);
+        if (!this._isOccludedByWall(x - 1, y, z, h)) this._addLeftWall(x, y, z, h, uv);
+        break;
+
+      case 'tr':
+        this.addVertice(x, y, z).addTexCoord(0, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+          .addVertice(x + 1, y, z + 1).addTexCoord(1, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+          .addVertice(x, y + h, z).addTexCoord(0, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+          .addVertice(x + 1, y + h, z + 1).addTexCoord(1, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
+
+        if (!this._isOccludedByWall(x, y, z - 1, h)) this._addBackWall(x, y, z, h, uv);
+        if (!this._isOccludedByWall(x + 1, y, z, h)) this._addRightWall(x, y, z, h, uv);
+        break;
+
+      case 'bl':
+        this.addVertice(x + 1, y, z + 1).addTexCoord(0, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+          .addVertice(x, y, z).addTexCoord(1, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+          .addVertice(x + 1, y + h, z + 1).addTexCoord(0, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+          .addVertice(x, y + h, z).addTexCoord(1, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
+
+        if (!this._isOccludedByWall(x, y, z + 1, h)) this._addFrontWall(x, y, z, h, uv);
+        if (!this._isOccludedByWall(x - 1, y, z, h)) this._addLeftWall(x, y, z, h, uv);
+        break;
+
+      case 'br':
+        this.addVertice(x + 1, y, z).addTexCoord(0, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+          .addVertice(x, y, z + 1).addTexCoord(1, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+          .addVertice(x + 1, y + h, z).addTexCoord(0, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+          .addVertice(x, y + h, z + 1).addTexCoord(1, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
+
+        if (!this._isOccludedByWall(x, y, z + 1, h)) this._addFrontWall(x, y, z, h, uv);
+        if (!this._isOccludedByWall(x + 1, y, z, h)) this._addRightWall(x, y, z, h, uv);
+        break;
+    }
+
+    this._addQuad();
+  }
+
   public parseMap(level: DungeonGrid) {
     this._level = level;
     const height = level.map.length;
@@ -196,8 +242,10 @@ export class DungeonGridGeometry extends Geometry {
 
         const tile = level.tiles[level.map[z][x] - 1];
 
-        if (tile.wallUV) {
+        if (tile.wallUV && !tile.diagonal) {
           this._parseWalls(x, tile.y, z, tile.height, tile.wallUV);
+        } else if (tile.wallUV && tile.diagonal) {
+          this._parseDiagonalWall(x, tile.y, z, tile.height, tile.diagonal, tile.wallUV);
         }
         
         if (tile.floorUV) {

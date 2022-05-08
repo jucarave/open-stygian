@@ -6,6 +6,7 @@ export interface Tile {
   wallUV?: number[];
   lowWallUV?: number[];
   highWallUV?: number[];
+  diagonal?: 'tl' | 'tr' | 'bl' | 'br';
 }
 
 export interface DungeonGrid {
