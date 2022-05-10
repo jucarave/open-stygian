@@ -33,6 +33,13 @@ export class DungeonGridGeometry extends Geometry {
       .addVertice(x, y + h, z).addTexCoord(1, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
   }
 
+  private _addTriangle() {
+    this.addTriangle(this._indexCount,this._indexCount+1,this._indexCount+2);
+    this._indexCount += 3;
+
+    return this;
+  }
+
   private _addQuad() {
     this.addTriangle(this._indexCount,this._indexCount+1,this._indexCount+2)
       .addTriangle(this._indexCount+1,this._indexCount+3,this._indexCount+2);
@@ -230,6 +237,87 @@ export class DungeonGridGeometry extends Geometry {
     this._addQuad();
   }
 
+  private _parseSlope(x: number, y: number, z: number, slope: 'n' | 's' | 'w' | 'e', floorUV: number[], lowWallUV: number[]) {
+    switch (slope) {
+      case 'w':
+        this.addVertice(x, y + 0.5, z + 1).addTexCoord(0, 1).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+          .addVertice(x + 1, y, z + 1).addTexCoord(1, 1).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+          .addVertice(x, y + 0.5, z).addTexCoord(0, 0).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+          .addVertice(x + 1, y, z).addTexCoord(1, 0).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3]);
+
+        this.addVertice(x, y, z + 1).addTexCoord(0, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+          .addVertice(x + 1, y, z + 1).addTexCoord(1, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+          .addVertice(x, y + 0.5, z + 1).addTexCoord(0, 1-(y+0.5)).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
+
+        this.addVertice(x + 1, y, z).addTexCoord(0, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+          .addVertice(x, y, z).addTexCoord(1, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+          .addVertice(x, y + 0.5, z).addTexCoord(1, 1-(y+0.5)).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
+
+        this._addLeftWall(x, y, z, 0.5, lowWallUV);
+
+        break;
+
+        case 'e':
+          this.addVertice(x, y, z + 1).addTexCoord(0, 1).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+            .addVertice(x + 1, y + 0.5, z + 1).addTexCoord(1, 1).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+            .addVertice(x, y, z).addTexCoord(0, 0).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+            .addVertice(x + 1, y + 0.5, z).addTexCoord(1, 0).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3]);
+  
+          this.addVertice(x, y, z + 1).addTexCoord(0, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+            .addVertice(x + 1, y, z + 1).addTexCoord(1, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+            .addVertice(x + 1, y + 0.5, z + 1).addTexCoord(1, 1-(y+0.5)).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
+  
+          this.addVertice(x + 1, y, z).addTexCoord(0, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+            .addVertice(x, y, z).addTexCoord(1, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+            .addVertice(x + 1, y + 0.5, z).addTexCoord(0, 1-(y+0.5)).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
+  
+          this._addRightWall(x, y, z, 0.5, lowWallUV);
+  
+          break;
+
+        case 'n':
+          this.addVertice(x, y, z + 1).addTexCoord(0, 1).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+            .addVertice(x + 1, y, z + 1).addTexCoord(1, 1).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+            .addVertice(x, y + 0.5, z).addTexCoord(0, 0).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+            .addVertice(x + 1, y + 0.5, z).addTexCoord(1, 0).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3]);
+  
+          this.addVertice(x, y, z).addTexCoord(0, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+            .addVertice(x, y, z + 1).addTexCoord(1, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+            .addVertice(x, y + 0.5, z).addTexCoord(0, 1-(y+0.5)).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
+  
+          this.addVertice(x + 1, y, z + 1).addTexCoord(0, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+            .addVertice(x + 1, y, z).addTexCoord(1, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+            .addVertice(x + 1, y + 0.5, z).addTexCoord(1, 1-(y+0.5)).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
+  
+          this._addBackWall(x, y, z, 0.5, lowWallUV);
+  
+          break;
+
+        case 's':
+          this.addVertice(x, y + 0.5, z + 1).addTexCoord(0, 1).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+            .addVertice(x + 1, y + 0.5, z + 1).addTexCoord(1, 1).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+            .addVertice(x, y, z).addTexCoord(0, 0).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+            .addVertice(x + 1, y, z).addTexCoord(1, 0).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3]);
+  
+          this.addVertice(x, y, z).addTexCoord(0, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+            .addVertice(x, y, z + 1).addTexCoord(1, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+            .addVertice(x, y + 0.5, z + 1).addTexCoord(1, 1-(y+0.5)).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
+  
+          this.addVertice(x + 1, y, z + 1).addTexCoord(0, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+            .addVertice(x + 1, y, z).addTexCoord(1, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+            .addVertice(x + 1, y + 0.5, z + 1).addTexCoord(0, 1-(y+0.5)).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
+  
+          this._addFrontWall(x, y, z, 0.5, lowWallUV);
+  
+          break;
+    }
+
+    this._addQuad();
+    this._addTriangle();
+    this._addTriangle();
+    this._addQuad();
+  }
+
   public parseMap(level: DungeonGrid) {
     this._level = level;
     const height = level.map.length;
@@ -248,8 +336,10 @@ export class DungeonGridGeometry extends Geometry {
           this._parseDiagonalWall(x, tile.y, z, tile.height, tile.diagonal, tile.wallUV);
         }
         
-        if (tile.floorUV) {
+        if (tile.floorUV && !tile.slope) {
           this._parseFloor(x, tile.y, z, tile.floorUV);
+        } else if (tile.floorUV && tile.slope) {
+          this._parseSlope(x, tile.y, z, tile.slope, tile.floorUV, tile.lowWallUV);
         }
         
         if (tile.ceilingUV) {
