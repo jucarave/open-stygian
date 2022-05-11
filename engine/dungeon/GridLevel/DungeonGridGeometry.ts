@@ -199,8 +199,8 @@ export class DungeonGridGeometry extends Geometry {
           .addVertice(x, y + h, z + 1).addTexCoord(0, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
           .addVertice(x + 1, y + h, z).addTexCoord(1, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
 
-        if (!this._isOccludedByWall(x, y, z - 1, h)) this._addBackWall(x, y, z, h, uv);
-        if (!this._isOccludedByWall(x - 1, y, z, h)) this._addLeftWall(x, y, z, h, uv);
+        if (!this._isOccludedByWall(x, y, z - 1, h)) { this._addBackWall(x, y, z, h, uv); this._addQuad(); }
+        if (!this._isOccludedByWall(x - 1, y, z, h)) { this._addLeftWall(x, y, z, h, uv); this._addQuad(); }
         break;
 
       case 'tr':
@@ -209,8 +209,8 @@ export class DungeonGridGeometry extends Geometry {
           .addVertice(x, y + h, z).addTexCoord(0, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
           .addVertice(x + 1, y + h, z + 1).addTexCoord(1, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
 
-        if (!this._isOccludedByWall(x, y, z - 1, h)) this._addBackWall(x, y, z, h, uv);
-        if (!this._isOccludedByWall(x + 1, y, z, h)) this._addRightWall(x, y, z, h, uv);
+        if (!this._isOccludedByWall(x, y, z - 1, h)) { this._addBackWall(x, y, z, h, uv); this._addQuad(); }
+        if (!this._isOccludedByWall(x + 1, y, z, h)) { this._addRightWall(x, y, z, h, uv); this._addQuad(); }
         break;
 
       case 'bl':
@@ -219,8 +219,8 @@ export class DungeonGridGeometry extends Geometry {
           .addVertice(x + 1, y + h, z + 1).addTexCoord(0, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
           .addVertice(x, y + h, z).addTexCoord(1, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
 
-        if (!this._isOccludedByWall(x, y, z + 1, h)) this._addFrontWall(x, y, z, h, uv);
-        if (!this._isOccludedByWall(x - 1, y, z, h)) this._addLeftWall(x, y, z, h, uv);
+        if (!this._isOccludedByWall(x, y, z + 1, h)) { this._addFrontWall(x, y, z, h, uv); this._addQuad(); }
+        if (!this._isOccludedByWall(x - 1, y, z, h)) { this._addLeftWall(x, y, z, h, uv); this._addQuad(); }
         break;
 
       case 'br':
@@ -229,8 +229,8 @@ export class DungeonGridGeometry extends Geometry {
           .addVertice(x + 1, y + h, z).addTexCoord(0, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
           .addVertice(x, y + h, z + 1).addTexCoord(1, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
 
-        if (!this._isOccludedByWall(x, y, z + 1, h)) this._addFrontWall(x, y, z, h, uv);
-        if (!this._isOccludedByWall(x + 1, y, z, h)) this._addRightWall(x, y, z, h, uv);
+        if (!this._isOccludedByWall(x, y, z + 1, h)) { this._addFrontWall(x, y, z, h, uv); this._addQuad(); }
+        if (!this._isOccludedByWall(x + 1, y, z, h)) { this._addRightWall(x, y, z, h, uv); this._addQuad(); }
         break;
     }
 
