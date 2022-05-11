@@ -10,17 +10,24 @@ export class SolidGridMap extends SolidMap {
   private _wallsMap: SolidWall[][][];
 
   public getOverlappingWalls(cube: Cube): SolidWall[] {
-    const x1 = Math.floor(cube.x1);
-    const x2 = Math.floor(cube.x2);
-    const z1 = Math.floor(cube.z1);
-    const z2 = Math.floor(cube.z2);
+    const height = this._wallsMap.length;
+    const width = this._wallsMap.length;
 
-    let walls: SolidWall[] = [];
+    const x1 = Math.max(Math.floor(cube.x1), 0);
+    const x2 = Math.min(Math.floor(cube.x2), width - 1);
+    const z1 = Math.max(Math.floor(cube.z1), 0);
+    const z2 = Math.min(Math.floor(cube.z2), height - 1);
+
+    const walls: SolidWall[] = [];
     
     for (let z=z1;z<=z2;z++) {
       for (let x=x1;x<=x2;x++) {
         if (this._wallsMap[z][x] != null) {
-          walls = walls.concat(this._wallsMap[z][x]);
+          this._wallsMap[z][x].forEach((wall: SolidWall) => {
+            if (wall.collidesWithCube(cube)) {
+              walls.push(wall);
+            }
+          })
         }
       }
     }
