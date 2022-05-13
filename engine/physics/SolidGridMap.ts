@@ -73,10 +73,7 @@ export class SolidGridMap extends SolidMap {
       const y = Math.min(wall.y, sWall.y);
       const h = Math.max(wall.y+wall.height, sWall.y+sWall.height) - y;
 
-      const solidWall = new SolidWall(x, y, h, z + 1, x + 1, y, h, z + 1);
-      solidWall.calculateNormal();
-
-      this._addSolidWall(x, z, solidWall);
+      this._addSolidWall(x, z, new SolidWall(x, y, h, z + 1, x + 1, y, h, z + 1));
     }
 
     const nWall = this._getTileAt(x, z - 1);
@@ -84,10 +81,7 @@ export class SolidGridMap extends SolidMap {
       const y = Math.min(wall.y, nWall.y);
       const h = Math.max(wall.y+wall.height, nWall.y+nWall.height) - y;
 
-      const solidWall = new SolidWall(x + 1, y, h, z, x, y, h, z);
-      solidWall.calculateNormal();
-
-      this._addSolidWall(x, z, solidWall);
+      this._addSolidWall(x, z, new SolidWall(x + 1, y, h, z, x, y, h, z));
     }
 
     const wWall = this._getTileAt(x + 1, z);
@@ -95,10 +89,7 @@ export class SolidGridMap extends SolidMap {
       const y = Math.min(wall.y, wWall.y);
       const h = Math.max(wall.y+wall.height, wWall.y+wWall.height) - y;
 
-      const solidWall = new SolidWall(x + 1, y, h, z + 1, x + 1, y, h, z);
-      solidWall.calculateNormal();
-
-      this._addSolidWall(x, z, solidWall);
+      this._addSolidWall(x, z, new SolidWall(x + 1, y, h, z + 1, x + 1, y, h, z));
     }
 
     const eWall = this._getTileAt(x - 1, z);
@@ -106,10 +97,7 @@ export class SolidGridMap extends SolidMap {
       const y = Math.min(wall.y, eWall.y);
       const h = Math.max(wall.y+wall.height, eWall.y+eWall.height) - y;
 
-      const solidWall = new SolidWall(x, y, h, z, x, y, h, z + 1);
-      solidWall.calculateNormal();
-
-      this._addSolidWall(x, z, solidWall);
+      this._addSolidWall(x, z, new SolidWall(x, y, h, z, x, y, h, z + 1));
     }
   }
 
@@ -118,95 +106,60 @@ export class SolidGridMap extends SolidMap {
     const y1 = wall.y;
     const y2 = wall.y + wall.height;
 
-    let solidWall;
-    let nWall: Tile;
-
     switch (wall.diagonal) {
       case 'tl': 
-        solidWall = new SolidWall(x, wall.y, wall.height, z + 1, x + 1, wall.y, wall.height, z);
-        solidWall.calculateNormal();
-        this._addSolidWall(x, z, solidWall);
+        this._addSolidWall(x, z, new SolidWall(x, wall.y, wall.height, z + 1, x + 1, wall.y, wall.height, z));
 
         // West wall
-        nWall = this._getTileAt(x - 1, z);
-        if (nWall != null && !this._isOccludedByWall(y1, y2, nWall)) {
-          solidWall = new SolidWall(x, wall.y, wall.height, z, x, wall.y, wall.height, z + 1);
-          solidWall.calculateNormal();
-          this._addSolidWall(x, z, solidWall);
+        if (!this._isOccludedByWall(y1, y2, this._getTileAt(x - 1, z))) {
+          this._addSolidWall(x, z, new SolidWall(x, wall.y, wall.height, z, x, wall.y, wall.height, z + 1));
         }
 
         // North wall
-        nWall = this._getTileAt(x, z - 1);
-        if (nWall != null && !this._isOccludedByWall(y1, y2, nWall)) {
-          solidWall = new SolidWall(x + 1, wall.y, wall.height, z, x, wall.y, wall.height, z);
-          solidWall.calculateNormal();
-          this._addSolidWall(x, z, solidWall);
+        if (!this._isOccludedByWall(y1, y2, this._getTileAt(x, z - 1))) {
+          this._addSolidWall(x, z, new SolidWall(x + 1, wall.y, wall.height, z, x, wall.y, wall.height, z));
         }
         break;
 
       case 'tr': 
-        solidWall = new SolidWall(x, wall.y, wall.height, z, x + 1, wall.y, wall.height, z + 1);
-        solidWall.calculateNormal();
-        this._addSolidWall(x, z, solidWall);
+        this._addSolidWall(x, z, new SolidWall(x, wall.y, wall.height, z, x + 1, wall.y, wall.height, z + 1));
 
         // East wall
-        nWall = this._getTileAt(x + 1, z);
-        if (nWall != null && !this._isOccludedByWall(y1, y2, nWall)) {
-          solidWall = new SolidWall(x + 1, wall.y, wall.height, z + 1, x + 1, wall.y, wall.height, z);
-          solidWall.calculateNormal();
-          this._addSolidWall(x, z, solidWall);
+        if (!this._isOccludedByWall(y1, y2, this._getTileAt(x + 1, z))) {
+          this._addSolidWall(x, z, new SolidWall(x + 1, wall.y, wall.height, z + 1, x + 1, wall.y, wall.height, z));
         }
 
         // North wall
-        nWall = this._getTileAt(x, z - 1);
-        if (nWall != null && !this._isOccludedByWall(y1, y2, nWall)) {
-          solidWall = new SolidWall(x + 1, wall.y, wall.height, z, x, wall.y, wall.height, z);
-          solidWall.calculateNormal();
-          this._addSolidWall(x, z, solidWall);
+        if (!this._isOccludedByWall(y1, y2, this._getTileAt(x, z - 1))) {
+          this._addSolidWall(x, z, new SolidWall(x + 1, wall.y, wall.height, z, x, wall.y, wall.height, z));
         }
         break;
 
       case 'bl': 
-        solidWall = new SolidWall(x + 1, wall.y, wall.height, z + 1, x, wall.y, wall.height, z);
-        solidWall.calculateNormal();
-        this._addSolidWall(x, z, solidWall);
+        this._addSolidWall(x, z, new SolidWall(x + 1, wall.y, wall.height, z + 1, x, wall.y, wall.height, z));
 
         // West wall
-        nWall = this._getTileAt(x - 1, z);
-        if (nWall != null && !this._isOccludedByWall(y1, y2, nWall)) {
-          solidWall = new SolidWall(x, wall.y, wall.height, z, x, wall.y, wall.height, z + 1);
-          solidWall.calculateNormal();
-          this._addSolidWall(x, z, solidWall);
+        if (!this._isOccludedByWall(y1, y2, this._getTileAt(x - 1, z))) {
+          this._addSolidWall(x, z, new SolidWall(x, wall.y, wall.height, z, x, wall.y, wall.height, z + 1));
         }
 
         // South wall
-        nWall = this._getTileAt(x, z + 1);
-        if (nWall != null && !this._isOccludedByWall(y1, y2, nWall)) {
-          solidWall = new SolidWall(x, wall.y, wall.height, z + 1, x + 1, wall.y, wall.height, z + 1);
-          solidWall.calculateNormal();
-          this._addSolidWall(x, z, solidWall);
+        if (!this._isOccludedByWall(y1, y2, this._getTileAt(x, z + 1))) {
+          this._addSolidWall(x, z, new SolidWall(x, wall.y, wall.height, z + 1, x + 1, wall.y, wall.height, z + 1));
         }
         break;
 
       case 'br': 
-        solidWall = new SolidWall(x + 1, wall.y, wall.height, z, x, wall.y, wall.height, z + 1);
-        solidWall.calculateNormal();
-        this._addSolidWall(x, z, solidWall);
+        this._addSolidWall(x, z, new SolidWall(x + 1, wall.y, wall.height, z, x, wall.y, wall.height, z + 1));
 
         // East wall
-        nWall = this._getTileAt(x + 1, z);
-        if (nWall != null && !this._isOccludedByWall(y1, y2, nWall)) {
-          solidWall = new SolidWall(x + 1, wall.y, wall.height, z + 1, x + 1, wall.y, wall.height, z);
-          solidWall.calculateNormal();
-          this._addSolidWall(x, z, solidWall);
+        if (!this._isOccludedByWall(y1, y2, this._getTileAt(x + 1, z))) {
+          this._addSolidWall(x, z, new SolidWall(x + 1, wall.y, wall.height, z + 1, x + 1, wall.y, wall.height, z));
         }
 
         // South wall
-        nWall = this._getTileAt(x, z + 1);
-        if (nWall != null && !this._isOccludedByWall(y1, y2, nWall)) {
-          solidWall = new SolidWall(x, wall.y, wall.height, z + 1, x + 1, wall.y, wall.height, z + 1);
-          solidWall.calculateNormal();
-          this._addSolidWall(x, z, solidWall);
+        if (!this._isOccludedByWall(y1, y2, this._getTileAt(x, z + 1))) {
+          this._addSolidWall(x, z, new SolidWall(x, wall.y, wall.height, z + 1, x + 1, wall.y, wall.height, z + 1));
         }
         break;
     }
@@ -220,10 +173,7 @@ export class SolidGridMap extends SolidMap {
       const y = sTile.y;
       const h = tile.y - sTile.y;
 
-      const solidWall = new SolidWall(x, y, h, z + 1, x + 1, y, h, z + 1);
-      solidWall.calculateNormal();
-
-      this._addSolidWall(x, z, solidWall);
+      this._addSolidWall(x, z, new SolidWall(x, y, h, z + 1, x + 1, y, h, z + 1));
     }
 
     const nTile = this._getTileAt(x, z - 1);
@@ -231,10 +181,7 @@ export class SolidGridMap extends SolidMap {
       const y = nTile.y;
       const h = tile.y - nTile.y;
 
-      const solidWall = new SolidWall(x + 1, y, h, z, x, y, h, z);
-      solidWall.calculateNormal();
-
-      this._addSolidWall(x, z, solidWall);
+      this._addSolidWall(x, z, new SolidWall(x + 1, y, h, z, x, y, h, z));
     }
 
     const wTile = this._getTileAt(x - 1, z);
@@ -242,10 +189,7 @@ export class SolidGridMap extends SolidMap {
       const y = wTile.y;
       const h = tile.y - wTile.y;
 
-      const solidWall = new SolidWall(x, y, h, z, x, y, h, z + 1);
-      solidWall.calculateNormal();
-
-      this._addSolidWall(x, z, solidWall);
+      this._addSolidWall(x, z, new SolidWall(x, y, h, z, x, y, h, z + 1));
     }
 
     const eTile = this._getTileAt(x + 1, z);
@@ -253,10 +197,7 @@ export class SolidGridMap extends SolidMap {
       const y = eTile.y;
       const h = tile.y - eTile.y;
 
-      const solidWall = new SolidWall(x + 1, y, h, z + 1, x + 1, y, h, z);
-      solidWall.calculateNormal();
-
-      this._addSolidWall(x, z, solidWall);
+      this._addSolidWall(x, z, new SolidWall(x + 1, y, h, z + 1, x + 1, y, h, z));
     }
   }
 
@@ -268,10 +209,7 @@ export class SolidGridMap extends SolidMap {
       const y = sTile.y + sTile.height;
       const h = (tile.y + tile.height) - y;
 
-      const solidWall = new SolidWall(x + 1, y, h, z + 1, x, y, h, z + 1);
-      solidWall.calculateNormal();
-
-      this._addSolidWall(x, z, solidWall);
+      this._addSolidWall(x, z, new SolidWall(x + 1, y, h, z + 1, x, y, h, z + 1));
     }
 
     const nTile = this._getTileAt(x, z - 1);
@@ -279,10 +217,7 @@ export class SolidGridMap extends SolidMap {
       const y = nTile.y + nTile.height;
       const h = (tile.y + tile.height) - y;
 
-      const solidWall = new SolidWall(x, y, h, z, x + 1, y, h, z);
-      solidWall.calculateNormal();
-
-      this._addSolidWall(x, z, solidWall);
+      this._addSolidWall(x, z, new SolidWall(x, y, h, z, x + 1, y, h, z));
     }
 
     const wTile = this._getTileAt(x - 1, z);
@@ -290,10 +225,7 @@ export class SolidGridMap extends SolidMap {
       const y = wTile.y + wTile.height;
       const h = (tile.y + tile.height) - y;
 
-      const solidWall = new SolidWall(x, y, h, z + 1, x, y, h, z);
-      solidWall.calculateNormal();
-
-      this._addSolidWall(x, z, solidWall);
+      this._addSolidWall(x, z, new SolidWall(x, y, h, z + 1, x, y, h, z));
     }
 
     const eTile = this._getTileAt(x + 1, z);
@@ -301,10 +233,73 @@ export class SolidGridMap extends SolidMap {
       const y = eTile.y + eTile.height;
       const h = (tile.y + tile.height) - y;
 
-      const solidWall = new SolidWall(x + 1, y, h, z, x + 1, y, h, z + 1);
-      solidWall.calculateNormal();
+      this._addSolidWall(x, z, new SolidWall(x + 1, y, h, z, x + 1, y, h, z + 1));
+    }
+  }
 
-      this._addSolidWall(x, z, solidWall);
+  private _parseSlopeWalls(x: number, z: number) {
+    const tile = this._getTileAt(x, z);
+
+    if (tile.slope === 'w') {
+      // South Wall
+      if (!this._isOccludedByWall(tile.y, tile.y + 0.5, this._getTileAt(x, z + 1))) {
+        this._addSolidWall(x, z, new SolidWall(x, tile.y, 0.5, z + 1, x + 1, tile.y, 0, z + 1));
+      }
+
+      // North Wall
+      if (!this._isOccludedByWall(tile.y, tile.y + 0.5, this._getTileAt(x, z - 1))) {
+        this._addSolidWall(x, z, new SolidWall(x + 1, tile.y, 0, z, x, tile.y, 0.5, z));
+      }
+
+      // West Wall
+      if (!this._isOccludedByWall(tile.y, tile.y + 0.5, this._getTileAt(x - 1, z))) {
+        this._addSolidWall(x, z, new SolidWall(x, tile.y, 0.5, z, x, tile.y, 0.5, z + 1));
+      }
+    } else if (tile.slope === 'e') {
+      // South Wall
+      if (!this._isOccludedByWall(tile.y, tile.y + 0.5, this._getTileAt(x, z + 1))) {
+        this._addSolidWall(x, z, new SolidWall(x, tile.y, 0, z + 1, x + 1, tile.y, 0.5, z + 1));
+      }
+
+      // North Wall
+      if (!this._isOccludedByWall(tile.y, tile.y + 0.5, this._getTileAt(x, z - 1))) {
+        this._addSolidWall(x, z, new SolidWall(x + 1, tile.y, 0.5, z, x, tile.y, 0, z));
+      }
+
+      // East Wall
+      if (!this._isOccludedByWall(tile.y, tile.y + 0.5, this._getTileAt(x + 1, z))) {
+        this._addSolidWall(x, z, new SolidWall(x + 1, tile.y, 0.5, z + 1, x + 1, tile.y, 0.5, z));
+      }
+    } else if (tile.slope === 'n') {
+      // West Wall
+      if (!this._isOccludedByWall(tile.y, tile.y + 0.5, this._getTileAt(x - 1, z))) {
+        this._addSolidWall(x, z, new SolidWall(x, tile.y, 0.5, z, x, tile.y, 0, z + 1));
+      }
+
+      // East Wall
+      if (!this._isOccludedByWall(tile.y, tile.y + 0.5, this._getTileAt(x + 1, z))) {
+        this._addSolidWall(x, z, new SolidWall(x + 1, tile.y, 0, z + 1, x + 1, tile.y, 0.5, z));
+      }
+
+      // North Wall
+      if (!this._isOccludedByWall(tile.y, tile.y + 0.5, this._getTileAt(x, z - 1))) {
+        this._addSolidWall(x, z, new SolidWall(x + 1, tile.y, 0.5, z, x, tile.y, 0.5, z));
+      }
+    } else if (tile.slope === 's') {
+      // West Wall
+      if (!this._isOccludedByWall(tile.y, tile.y + 0.5, this._getTileAt(x - 1, z))) {
+        this._addSolidWall(x, z, new SolidWall(x, tile.y, 0, z, x, tile.y, 0.5, z + 1));
+      }
+
+      // East Wall
+      if (!this._isOccludedByWall(tile.y, tile.y + 0.5, this._getTileAt(x + 1, z))) {
+        this._addSolidWall(x, z, new SolidWall(x + 1, tile.y, 0.5, z + 1, x + 1, tile.y, 0, z));
+      }
+
+      // South Wall
+      if (!this._isOccludedByWall(tile.y, tile.y + 0.5, this._getTileAt(x, z + 1))) {
+        this._addSolidWall(x, z, new SolidWall(x, tile.y, 0.5, z + 1, x + 1, tile.y, 0.5, z + 1));
+      }
     }
   }
 
@@ -329,6 +324,10 @@ export class SolidGridMap extends SolidMap {
           this._parseWall(x, z);
         } else if (tile.wallUV && tile.diagonal) {
           this._parseDiagonalWall(x, z);
+        }
+
+        if (tile.floorUV && tile.slope) {
+          this._parseSlopeWalls(x, z);
         }
 
         this._parseLowWalls(x, z);

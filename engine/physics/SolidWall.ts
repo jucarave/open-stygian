@@ -35,6 +35,8 @@ export class SolidWall {
       y2: Math.max(y1+h1, y2+h2),
       z2: Math.max(z1, z2)
     };
+
+    this.calculateNormal();
   }
 
   /**
