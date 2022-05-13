@@ -212,6 +212,102 @@ export class SolidGridMap extends SolidMap {
     }
   }
 
+  private _parseLowWalls(x: number, z: number) {
+    const tile = this._getTileAt(x, z);
+
+    const sTile = this._getTileAt(x, z + 1);
+    if (sTile != null && sTile.y <= tile.y) {
+      const y = sTile.y;
+      const h = tile.y - sTile.y;
+
+      const solidWall = new SolidWall(x, y, h, z + 1, x + 1, y, h, z + 1);
+      solidWall.calculateNormal();
+
+      this._addSolidWall(x, z, solidWall);
+    }
+
+    const nTile = this._getTileAt(x, z - 1);
+    if (nTile != null && nTile.y <= tile.y) {
+      const y = nTile.y;
+      const h = tile.y - nTile.y;
+
+      const solidWall = new SolidWall(x + 1, y, h, z, x, y, h, z);
+      solidWall.calculateNormal();
+
+      this._addSolidWall(x, z, solidWall);
+    }
+
+    const wTile = this._getTileAt(x - 1, z);
+    if (wTile != null && wTile.y <= tile.y) {
+      const y = wTile.y;
+      const h = tile.y - wTile.y;
+
+      const solidWall = new SolidWall(x, y, h, z, x, y, h, z + 1);
+      solidWall.calculateNormal();
+
+      this._addSolidWall(x, z, solidWall);
+    }
+
+    const eTile = this._getTileAt(x + 1, z);
+    if (eTile != null && eTile.y <= tile.y) {
+      const y = eTile.y;
+      const h = tile.y - eTile.y;
+
+      const solidWall = new SolidWall(x + 1, y, h, z + 1, x + 1, y, h, z);
+      solidWall.calculateNormal();
+
+      this._addSolidWall(x, z, solidWall);
+    }
+  }
+
+  private _parseHighWalls(x: number, z: number) {
+    const tile = this._getTileAt(x, z);
+
+    const sTile = this._getTileAt(x, z + 1);
+    if (sTile != null && sTile.y+sTile.height <= tile.y+tile.height) {
+      const y = sTile.y + sTile.height;
+      const h = (tile.y + tile.height) - y;
+
+      const solidWall = new SolidWall(x + 1, y, h, z + 1, x, y, h, z + 1);
+      solidWall.calculateNormal();
+
+      this._addSolidWall(x, z, solidWall);
+    }
+
+    const nTile = this._getTileAt(x, z - 1);
+    if (nTile != null && nTile.y+nTile.height <= tile.y+tile.height) {
+      const y = nTile.y + nTile.height;
+      const h = (tile.y + tile.height) - y;
+
+      const solidWall = new SolidWall(x, y, h, z, x + 1, y, h, z);
+      solidWall.calculateNormal();
+
+      this._addSolidWall(x, z, solidWall);
+    }
+
+    const wTile = this._getTileAt(x - 1, z);
+    if (wTile != null && wTile.y+wTile.height <= tile.y+tile.height) {
+      const y = wTile.y + wTile.height;
+      const h = (tile.y + tile.height) - y;
+
+      const solidWall = new SolidWall(x, y, h, z + 1, x, y, h, z);
+      solidWall.calculateNormal();
+
+      this._addSolidWall(x, z, solidWall);
+    }
+
+    const eTile = this._getTileAt(x + 1, z);
+    if (eTile != null && eTile.y+eTile.height <= tile.y+tile.height) {
+      const y = eTile.y + eTile.height;
+      const h = (tile.y + tile.height) - y;
+
+      const solidWall = new SolidWall(x + 1, y, h, z, x + 1, y, h, z + 1);
+      solidWall.calculateNormal();
+
+      this._addSolidWall(x, z, solidWall);
+    }
+  }
+
   public parseGridDungeon(dungeon: DungeonGrid) {
     const height = dungeon.map.length;
     const width = dungeon.map[0].length;
@@ -234,6 +330,9 @@ export class SolidGridMap extends SolidMap {
         } else if (tile.wallUV && tile.diagonal) {
           this._parseDiagonalWall(x, z);
         }
+
+        this._parseLowWalls(x, z);
+        this._parseHighWalls(x, z);
       }
     }
 
