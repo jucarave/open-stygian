@@ -178,37 +178,48 @@ export class SolidPlane {
    * @returns 
    */
   private _getPolygonYAtPoint(position: Vector3, radius: number) {
-    const tlToP = { x: position.x - this._vertices.tl.x, y: position.z - this._vertices.tl.z };
+    const points = [
+      new Vector3(position.x - radius, position.y, position.z - radius),
+      new Vector3(position.x + radius, position.y, position.z - radius),
+      new Vector3(position.x - radius, position.y, position.z + radius),
+      new Vector3(position.x + radius, position.y, position.z + radius)
+    ];
+    
+    let maxY = MIN_FLOOR;
 
     // Is the point inside one of the triangles
-    if (this._isPointInTriangle(this._tri1, position)) {
-      const fy1 = this._getTriangleYAtPoint(this._vertices.tl, this._vertices.bl, tlToP);
-      const fy2 = this._getTriangleYAtPoint(this._vertices.bl, this._vertices.br, tlToP);
+    points.forEach((point) => {
+      const tlToP = { x: point.x - this._vertices.tl.x, y: point.z - this._vertices.tl.z };
 
-      return this._vertices.tl.y + fy1 + fy2;
-    }
+      if (this._isPointInTriangle(this._tri1, point)) {
+        const fy1 = this._getTriangleYAtPoint(this._vertices.tl, this._vertices.bl, tlToP);
+        const fy2 = this._getTriangleYAtPoint(this._vertices.bl, this._vertices.br, tlToP);
 
-    if (this._isPointInTriangle(this._tri2, position)) {
-      const fy1 = this._getTriangleYAtPoint(this._vertices.tl, this._vertices.tr, tlToP);
-      const fy2 = this._getTriangleYAtPoint(this._vertices.tr, this._vertices.br, tlToP);
+        maxY = Math.max(this._vertices.tl.y + fy1 + fy2, maxY);
+      }
 
-      return this._vertices.tl.y + fy1 + fy2;
-    }
+      if (this._isPointInTriangle(this._tri2, point)) {
+        const fy1 = this._getTriangleYAtPoint(this._vertices.tl, this._vertices.tr, tlToP);
+        const fy2 = this._getTriangleYAtPoint(this._vertices.tr, this._vertices.br, tlToP);
 
+        maxY = Math.max(this._vertices.tl.y + fy1 + fy2, maxY);
+      }
+    });
+    
     // Or does the point collides with one of the edges
     const topEdge = this._doesCollidesWithEdge(this._vertices.tl, this._vertices.tr, position, radius);
-    if (topEdge !== MIN_FLOOR) { return topEdge; }
+    maxY = Math.max(topEdge, maxY);
 
     const bottomEdge = this._doesCollidesWithEdge(this._vertices.bl, this._vertices.br, position, radius);
-    if (bottomEdge !== MIN_FLOOR) { return bottomEdge; }
+    maxY = Math.max(bottomEdge, maxY);
 
     const leftEdge = this._doesCollidesWithEdge(this._vertices.tl, this._vertices.bl, position, radius);
-    if (leftEdge !== MIN_FLOOR) { return leftEdge; }
+    maxY = Math.max(leftEdge, maxY);
 
     const rightEdge = this._doesCollidesWithEdge(this._vertices.tr, this._vertices.br, position, radius);
-    if (rightEdge !== MIN_FLOOR) { return rightEdge; }
+    maxY = Math.max(rightEdge, maxY);
 
-    return MIN_FLOOR;
+    return maxY;
   }
 
   /**

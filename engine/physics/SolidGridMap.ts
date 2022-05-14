@@ -8,6 +8,7 @@ import { SolidWall } from './SolidWall';
 export class SolidGridMap extends SolidMap {
   private _level: DungeonGrid;
   private _wallsMap: SolidWall[][][];
+  private _planesMap: SolidPlane[][][];
 
   public getOverlappingWalls(cube: Cube): SolidWall[] {
     const height = this._wallsMap.length;
@@ -35,8 +36,25 @@ export class SolidGridMap extends SolidMap {
     return walls;
   }
   public getOverlappingPlanes(position: Vector3, radius: number): SolidPlane[] {
-    position; radius;
-    return this._planes;
+    const height = this._planesMap.length;
+    const width = this._planesMap.length;
+
+    const x1 = Math.max(Math.floor(position.x - radius), 0);
+    const x2 = Math.min(Math.floor(position.x + radius), width - 1);
+    const z1 = Math.max(Math.floor(position.z - radius), 0);
+    const z2 = Math.min(Math.floor(position.z + radius), height - 1);
+
+    let planes: SolidPlane[] = [];
+    
+    for (let z=z1;z<=z2;z++) {
+      for (let x=x1;x<=x2;x++) {
+        if (this._planesMap[z][x] != null) {
+          planes = planes.concat(this._planesMap[z][x]);
+        }
+      }
+    }
+
+    return planes;
   }
 
   private _getTileAt(x: number, z: number) {
@@ -303,6 +321,36 @@ export class SolidGridMap extends SolidMap {
     }
   }
 
+  private _parsePlane(x: number, y: number, z: number) {
+    const plane = new SolidPlane(new Vector3(x, y, z), new Vector3(x + 1, y, z), new Vector3(x, y, z + 1), new Vector3(x + 1, y, z + 1));
+
+    if (this._planesMap[z][x] === null) { 
+      this._planesMap[z][x] = []; 
+    }
+
+    this._planesMap[z][x].push(plane);
+  }
+
+  private _parseSlope(x: number, y: number, z: number, slope: 'n' | 'w' | 's' | 'e') {
+    let plane;
+
+    if (slope === 'w') {
+      plane = new SolidPlane(new Vector3(x, y + 0.5, z), new Vector3(x + 1, y, z), new Vector3(x, y + 0.5, z + 1), new Vector3(x + 1, y, z + 1));
+    } else if (slope === 'e') {
+      plane = new SolidPlane(new Vector3(x, y, z), new Vector3(x + 1, y + 0.5, z), new Vector3(x, y, z + 1), new Vector3(x + 1, y + 0.5, z + 1));
+    } else if (slope === 'n') {
+      plane = new SolidPlane(new Vector3(x, y + 0.5, z), new Vector3(x + 1, y + 0.5, z), new Vector3(x, y, z + 1), new Vector3(x + 1, y, z + 1));
+    } else if (slope === 's') {
+      plane = new SolidPlane(new Vector3(x, y, z), new Vector3(x + 1, y, z), new Vector3(x, y + 0.5, z + 1), new Vector3(x + 1, y + 0.5, z + 1));
+    }
+
+    if (this._planesMap[z][x] === null) { 
+      this._planesMap[z][x] = []; 
+    }
+
+    this._planesMap[z][x].push(plane);
+  }
+
   public parseGridDungeon(dungeon: DungeonGrid) {
     const height = dungeon.map.length;
     const width = dungeon.map[0].length;
@@ -310,10 +358,14 @@ export class SolidGridMap extends SolidMap {
     this._level = dungeon;
     
     this._wallsMap = [];
+    this._planesMap = [];
     for (let z=0;z<height;z++) {
       this._wallsMap[z] = [];
+      this._planesMap[z] = [];
+
       for (let x=0;x<width;x++) {
         this._wallsMap[z][x] = null;
+        this._planesMap[z][x] = null;
 
         const tileId = dungeon.map[z][x];
         if (tileId === 0) { continue; }
@@ -326,15 +378,18 @@ export class SolidGridMap extends SolidMap {
           this._parseDiagonalWall(x, z);
         }
 
-        if (tile.floorUV && tile.slope) {
+        if (tile.floorUV && !tile.slope) {
+          this._parsePlane(x, tile.y, z);
+        } else if (tile.floorUV && tile.slope) {
+          this._parseSlope(x, tile.y, z, tile.slope);
           this._parseSlopeWalls(x, z);
         }
+
+        this._parsePlane(x, tile.y + tile.height, z);
 
         this._parseLowWalls(x, z);
         this._parseHighWalls(x, z);
       }
     }
-
-    this._planes = [new SolidPlane(new Vector3(0,0,0), new Vector3(10,0,0), new Vector3(0,0,10), new Vector3(10,0,10))];
   }
 }
