@@ -1,5 +1,6 @@
 import { Geometry } from '../../geometries/Geometry';
 import { degToRad } from '../../math/Math';
+import { Vector3 } from '../../math/Vector3';
 import { DungeonGrid } from './DungeonGrid';
 
 export class DungeonGridGeometry extends Geometry {
@@ -392,8 +393,9 @@ export class DungeonGridGeometry extends Geometry {
   }
 
   private _parseSlope(x: number, y: number, z: number, slope: 'n' | 's' | 'w' | 'e', floorUV: number[], lowWallUV: number[]) {
-    const C = Math.cos(degToRad(45));
-    const S = Math.sin(degToRad(45));
+    const cross = Vector3.cross(new Vector3(1, 0, 0), new Vector3(0, 0.5, -1)).normalize();
+    const C = cross.z;
+    const S = cross.y;
 
     switch (slope) {
       case 'w':

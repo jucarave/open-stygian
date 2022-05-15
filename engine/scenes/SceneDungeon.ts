@@ -12,6 +12,7 @@ import { Geometry } from '../geometries/Geometry';
 import { SolidMap } from '../physics/SolidMap';
 import { Material } from '../materials/Material';
 import { PointLight } from '../lights/PointLight';
+import { LightComponent } from '../components/LightComponent';
 
 export class SceneDungeon extends Scene {
   private _player: Entity;
@@ -34,9 +35,7 @@ export class SceneDungeon extends Scene {
     this.playerSetup = new PlayerSetup(this._player, this._camera);
 
     this.v4AmbientLight = [0/255,0/255,0/255,1];
-    this.lights = [
-      new PointLight(new Vector3(4, 0.5, 4), [1, 1, 1, 1], 5.0)
-    ];
+    this.lights = [];
   }
 
   private _loadCamera() {
@@ -49,6 +48,7 @@ export class SceneDungeon extends Scene {
     this._player = new Entity(new Vector3(3, 0, 2));
     this._player.addComponent(new CharacterMovement(Config.player.radius, Config.player.height));
     this._player.addComponent(new FallingEntity(Config.player.radius, Config.player.height));
+    this._player.addComponent(new LightComponent(new Vector3(0, 0.5, 0)));
 
     this.addEntity(this._player);
 
@@ -65,5 +65,9 @@ export class SceneDungeon extends Scene {
 
   public getLowestPlane(position: Vector3, height: number, radius: number) {
     return this._dungeon.solidMap.getLowestPlane(position, height, radius);
+  }
+
+  public addLight(light: PointLight) {
+    this.lights.push(light);
   }
 }
