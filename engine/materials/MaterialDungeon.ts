@@ -1,5 +1,5 @@
 import { Camera } from '../core/Camera';
-import { FLOAT_SIZE, TEXCOORD_SIZE, UVS_SIZE, VERTICE_SIZE } from '../system/Constants';
+import { FLOAT_SIZE, NORMAL_SIZE, TEXCOORD_SIZE, UVS_SIZE, VERTICE_SIZE } from '../system/Constants';
 import { Entity } from '../entities/Entity';
 import { Geometry } from '../geometries/Geometry';
 import { Renderer } from '../core/Renderer';
@@ -7,11 +7,13 @@ import { Shader } from '../shaders/Shader';
 import { Texture } from '../core/Texture';
 import { Material } from './Material';
 import { SceneDungeon } from '../scenes/SceneDungeon';
+import { PointLight } from '../lights/PointLight';
 
 const VERTEX_OFFSET = 0;
 const TEXCOORD_OFFSET = VERTICE_SIZE * FLOAT_SIZE;
-const UV_OFFSET = (VERTICE_SIZE + TEXCOORD_SIZE) * FLOAT_SIZE;
-const STRIDE = (VERTICE_SIZE + TEXCOORD_SIZE + UVS_SIZE) * FLOAT_SIZE;
+const NORMAL_OFFSET = (VERTICE_SIZE + TEXCOORD_SIZE) * FLOAT_SIZE;
+const UV_OFFSET = (VERTICE_SIZE + TEXCOORD_SIZE + NORMAL_SIZE) * FLOAT_SIZE;
+const STRIDE = (VERTICE_SIZE + TEXCOORD_SIZE + NORMAL_SIZE + UVS_SIZE) * FLOAT_SIZE;
 const SHADER_KEY = 'dungeon';
 
 /**
@@ -50,6 +52,7 @@ export class MaterialDungeon extends Material {
     gl.bindBuffer(gl.ARRAY_BUFFER, geometry.vertexBuffer);
     gl.vertexAttribPointer(this._shader.attributes['aPosition'], VERTICE_SIZE, gl.FLOAT, false, STRIDE, VERTEX_OFFSET);
     gl.vertexAttribPointer(this._shader.attributes['aTexCoord'], TEXCOORD_SIZE, gl.FLOAT, false, STRIDE, TEXCOORD_OFFSET);
+    gl.vertexAttribPointer(this._shader.attributes['aNormal'], NORMAL_SIZE, gl.FLOAT, false, STRIDE, NORMAL_OFFSET);
     gl.vertexAttribPointer(this._shader.attributes['aUV'], UVS_SIZE, gl.FLOAT, false, STRIDE, UV_OFFSET);
     
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geometry.indexBuffer);
@@ -82,6 +85,12 @@ export class MaterialDungeon extends Material {
     const gl = this._gl;
 
     gl.uniform4fv(this._shader.uniforms['uAmbientLight'], scene.v4AmbientLight);
+
+    scene.lights.forEach((light: PointLight, index: number) => {
+      gl.uniform3f(this._shader.uniforms[`uLights[${index}].position`], light.position.x, light.position.y, light.position.z);
+      gl.uniform4fv(this._shader.uniforms[`uLights[${index}].color`], light.color);
+      gl.uniform1f(this._shader.uniforms[`uLights[${index}].radius`], light.radius);
+    });
   }
 
   /**

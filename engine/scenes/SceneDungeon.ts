@@ -11,6 +11,7 @@ import { FallingEntity } from '../components/FallingEntity';
 import { Geometry } from '../geometries/Geometry';
 import { SolidMap } from '../physics/SolidMap';
 import { Material } from '../materials/Material';
+import { PointLight } from '../lights/PointLight';
 
 export class SceneDungeon extends Scene {
   private _player: Entity;
@@ -19,6 +20,7 @@ export class SceneDungeon extends Scene {
   public readonly playerSetup: PlayerSetup;
 
   public v4AmbientLight: number[];
+  public lights: PointLight[];
 
   constructor(level: Geometry, material: Material, solidMap: SolidMap) {
     super();
@@ -31,7 +33,10 @@ export class SceneDungeon extends Scene {
 
     this.playerSetup = new PlayerSetup(this._player, this._camera);
 
-    this.v4AmbientLight = [20/255,30/255,50/255,1];
+    this.v4AmbientLight = [0/255,0/255,0/255,1];
+    this.lights = [
+      new PointLight(new Vector3(4, 0.5, 4), [1, 1, 1, 1], 5.0)
+    ];
   }
 
   private _loadCamera() {

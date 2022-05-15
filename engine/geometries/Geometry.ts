@@ -17,6 +17,11 @@ export class Geometry {
     return this;
   }
 
+  public addNormal(x: number, y: number, z: number): Geometry {
+    this._vertexData.push(x, y, z);
+    return this;
+  }
+
   public addTexCoord(u: number, v: number): Geometry {
     this._vertexData.push(u, v);
 

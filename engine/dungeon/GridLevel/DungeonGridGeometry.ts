@@ -1,4 +1,5 @@
 import { Geometry } from '../../geometries/Geometry';
+import { degToRad } from '../../math/Math';
 import { DungeonGrid } from './DungeonGrid';
 
 export class DungeonGridGeometry extends Geometry {
@@ -6,31 +7,91 @@ export class DungeonGridGeometry extends Geometry {
   private _level: DungeonGrid;
 
   private _addFrontWall(x: number, y: number, z: number, h: number, uv: number[]) {
-    return this.addVertice(x, y, z + 1).addTexCoord(0, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-      .addVertice(x + 1, y, z + 1).addTexCoord(1, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-      .addVertice(x, y + h, z + 1).addTexCoord(0, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-      .addVertice(x + 1, y + h, z + 1).addTexCoord(1, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
+    return this.addVertice(x, y, z + 1)
+          .addTexCoord(0, 1-y)
+          .addNormal(0, 0, 1)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+      .addVertice(x + 1, y, z + 1)
+          .addTexCoord(1, 1-y)
+          .addNormal(0, 0, 1)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+      .addVertice(x, y + h, z + 1)
+          .addTexCoord(0, 1-(y+h))
+          .addNormal(0, 0, 1)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+      .addVertice(x + 1, y + h, z + 1)
+          .addTexCoord(1, 1-(y+h))
+          .addNormal(0, 0, 1)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
   }
 
   private _addLeftWall(x: number, y: number, z: number, h: number, uv: number[]) {
-    return this.addVertice(x, y, z).addTexCoord(0, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-      .addVertice(x, y, z + 1).addTexCoord(1, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-      .addVertice(x, y + h, z).addTexCoord(0, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-      .addVertice(x, y + h, z + 1).addTexCoord(1, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
+    return this.addVertice(x, y, z)
+          .addTexCoord(0, 1-y)
+          .addNormal(-1, 0, 0)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+      .addVertice(x, y, z + 1)
+          .addTexCoord(1, 1-y)
+          .addNormal(-1, 0, 0)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+      .addVertice(x, y + h, z)
+          .addTexCoord(0, 1-(y+h))
+          .addNormal(-1, 0, 0)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+      .addVertice(x, y + h, z + 1)
+          .addTexCoord(1, 1-(y+h))
+          .addNormal(-1, 0, 0)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
   }
 
   private _addRightWall(x: number, y: number, z: number, h: number, uv: number[]) {
-    return this.addVertice(x + 1, y, z + 1).addTexCoord(0, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-      .addVertice(x + 1, y, z).addTexCoord(1, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-      .addVertice(x + 1, y + h, z + 1).addTexCoord(0, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-      .addVertice(x + 1, y + h, z).addTexCoord(1, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
+    return this.addVertice(x + 1, y, z + 1)
+          .addTexCoord(0, 1-y)
+          .addNormal(1, 0, 0)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+      .addVertice(x + 1, y, z)
+          .addTexCoord(1, 1-y)
+          .addNormal(1, 0, 0)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+      .addVertice(x + 1, y + h, z + 1)
+          .addTexCoord(0, 1-(y+h))
+          .addNormal(1, 0, 0)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+      .addVertice(x + 1, y + h, z)
+          .addTexCoord(1, 1-(y+h))
+          .addNormal(1, 0, 0)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
   }
 
   private _addBackWall(x: number, y: number, z: number, h: number, uv: number[]) {
-    return this.addVertice(x + 1, y, z).addTexCoord(0, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-      .addVertice(x, y, z).addTexCoord(1, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-      .addVertice(x + 1, y + h, z).addTexCoord(0, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-      .addVertice(x, y + h, z).addTexCoord(1, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
+    return this.addVertice(x + 1, y, z)
+          .addTexCoord(0, 1-y)
+          .addNormal(0, 0, -1)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+      .addVertice(x, y, z)
+          .addTexCoord(1, 1-y)
+          .addNormal(0, 0, -1)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+      .addVertice(x + 1, y + h, z)
+          .addTexCoord(0, 1-(y+h))
+          .addNormal(0, 0, -1)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+      .addVertice(x, y + h, z)
+          .addTexCoord(1, 1-(y+h))
+          .addNormal(0, 0, -1)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
   }
 
   private _addTriangle() {
@@ -91,19 +152,49 @@ export class DungeonGridGeometry extends Geometry {
   }
 
   private _parseFloor(x: number, y: number, z: number, uv: number[]) {
-    this.addVertice(x, y, z + 1).addTexCoord(0, 1).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-      .addVertice(x + 1, y, z + 1).addTexCoord(1, 1).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-      .addVertice(x, y, z).addTexCoord(0, 0).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-      .addVertice(x + 1, y, z).addTexCoord(1, 0).addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
+    this.addVertice(x, y, z + 1)
+          .addTexCoord(0, 1)
+          .addNormal(0, 1, 0)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+      .addVertice(x + 1, y, z + 1)
+          .addTexCoord(1, 1)
+          .addNormal(0, 1, 0)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+      .addVertice(x, y, z)
+          .addTexCoord(0, 0)
+          .addNormal(0, 1, 0)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+      .addVertice(x + 1, y, z)
+          .addTexCoord(1, 0)
+          .addNormal(0, 1, 0)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
 
     this._addQuad();
   }
 
   private _parseCeil(x: number, y: number, z: number, uv: number[]) {
-    this.addVertice(x, y, z).addTexCoord(0, 1).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-      .addVertice(x + 1, y, z).addTexCoord(1, 1).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-      .addVertice(x, y, z + 1).addTexCoord(0, 0).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-      .addVertice(x + 1, y, z + 1).addTexCoord(1, 0).addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
+    this.addVertice(x, y, z)
+          .addTexCoord(0, 1)
+          .addNormal(0, -1, 0)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+      .addVertice(x + 1, y, z)
+          .addTexCoord(1, 1)
+          .addNormal(0, -1, 0)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+      .addVertice(x, y, z + 1)
+          .addTexCoord(0, 0)
+          .addNormal(0, -1, 0)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+      .addVertice(x + 1, y, z + 1)
+          .addTexCoord(1, 0)
+          .addNormal(0, -1, 0)
+          .addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
 
     this._addQuad();
   }
@@ -192,42 +283,105 @@ export class DungeonGridGeometry extends Geometry {
   }
 
   private _parseDiagonalWall(x: number, y: number, z: number, h: number, dir: 'tl' | 'tr' | 'bl' | 'br', uv: number[]) {
+    const C = Math.cos(degToRad(45));
+    const S = Math.sin(degToRad(45));
+
     switch (dir) {
       case 'tl':
-        this.addVertice(x, y, z + 1).addTexCoord(0, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-          .addVertice(x + 1, y, z).addTexCoord(1, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-          .addVertice(x, y + h, z + 1).addTexCoord(0, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-          .addVertice(x + 1, y + h, z).addTexCoord(1, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
+        this.addVertice(x, y, z + 1)
+              .addTexCoord(0, 1-y)
+              .addNormal(C, 0, S)
+              .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+          .addVertice(x + 1, y, z)
+              .addTexCoord(1, 1-y)
+              .addNormal(C, 0, S)
+              .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+          .addVertice(x, y + h, z + 1)
+              .addTexCoord(0, 1-(y+h))
+              .addNormal(C, 0, S)
+              .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+          .addVertice(x + 1, y + h, z)
+              .addTexCoord(1, 1-(y+h))
+              .addNormal(C, 0, S)
+              .addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
 
         if (!this._isOccludedByWall(x, y, z - 1, h)) { this._addBackWall(x, y, z, h, uv); this._addQuad(); }
         if (!this._isOccludedByWall(x - 1, y, z, h)) { this._addLeftWall(x, y, z, h, uv); this._addQuad(); }
         break;
 
       case 'tr':
-        this.addVertice(x, y, z).addTexCoord(0, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-          .addVertice(x + 1, y, z + 1).addTexCoord(1, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-          .addVertice(x, y + h, z).addTexCoord(0, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-          .addVertice(x + 1, y + h, z + 1).addTexCoord(1, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
+        this.addVertice(x, y, z)
+              .addTexCoord(0, 1-y)
+              .addNormal(-C, 0, S)
+              .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+          .addVertice(x + 1, y, z + 1)
+              .addTexCoord(1, 1-y)
+              .addNormal(-C, 0, S)
+              .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+          .addVertice(x, y + h, z)
+              .addTexCoord(0, 1-(y+h))
+              .addNormal(-C, 0, S)
+              .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+          .addVertice(x + 1, y + h, z + 1)
+              .addTexCoord(1, 1-(y+h))
+              .addNormal(-C, 0, S)
+              .addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
 
         if (!this._isOccludedByWall(x, y, z - 1, h)) { this._addBackWall(x, y, z, h, uv); this._addQuad(); }
         if (!this._isOccludedByWall(x + 1, y, z, h)) { this._addRightWall(x, y, z, h, uv); this._addQuad(); }
         break;
 
       case 'bl':
-        this.addVertice(x + 1, y, z + 1).addTexCoord(0, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-          .addVertice(x, y, z).addTexCoord(1, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-          .addVertice(x + 1, y + h, z + 1).addTexCoord(0, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-          .addVertice(x, y + h, z).addTexCoord(1, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
+        this.addVertice(x + 1, y, z + 1)
+              .addTexCoord(0, 1-y)
+              .addNormal(C, 0, -S)
+              .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+          .addVertice(x, y, z)
+              .addTexCoord(1, 1-y)
+              .addNormal(C, 0, -S)
+              .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+          .addVertice(x + 1, y + h, z + 1)
+              .addTexCoord(0, 1-(y+h))
+              .addNormal(C, 0, -S)
+              .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+          .addVertice(x, y + h, z)
+              .addTexCoord(1, 1-(y+h))
+              .addNormal(C, 0, -S)
+              .addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
 
         if (!this._isOccludedByWall(x, y, z + 1, h)) { this._addFrontWall(x, y, z, h, uv); this._addQuad(); }
         if (!this._isOccludedByWall(x - 1, y, z, h)) { this._addLeftWall(x, y, z, h, uv); this._addQuad(); }
         break;
 
       case 'br':
-        this.addVertice(x + 1, y, z).addTexCoord(0, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-          .addVertice(x, y, z + 1).addTexCoord(1, 1-y).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-          .addVertice(x + 1, y + h, z).addTexCoord(0, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3])
-          .addVertice(x, y + h, z + 1).addTexCoord(1, 1-(y+h)).addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
+        this.addVertice(x + 1, y, z)
+              .addTexCoord(0, 1-y)
+              .addNormal(-C, 0, -S)
+              .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+          .addVertice(x, y, z + 1)
+              .addTexCoord(1, 1-y)
+              .addNormal(-C, 0, -S)
+              .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+          .addVertice(x + 1, y + h, z)
+              .addTexCoord(0, 1-(y+h))
+              .addNormal(-C, 0, -S)
+              .addUV(uv[0], 1-uv[1], uv[2], -uv[3])
+
+          .addVertice(x, y + h, z + 1)
+              .addTexCoord(1, 1-(y+h))
+              .addNormal(-C, 0, -S)
+              .addUV(uv[0], 1-uv[1], uv[2], -uv[3]);
 
         if (!this._isOccludedByWall(x, y, z + 1, h)) { this._addFrontWall(x, y, z, h, uv); this._addQuad(); }
         if (!this._isOccludedByWall(x + 1, y, z, h)) { this._addRightWall(x, y, z, h, uv); this._addQuad(); }
@@ -238,74 +392,237 @@ export class DungeonGridGeometry extends Geometry {
   }
 
   private _parseSlope(x: number, y: number, z: number, slope: 'n' | 's' | 'w' | 'e', floorUV: number[], lowWallUV: number[]) {
+    const C = Math.cos(degToRad(45));
+    const S = Math.sin(degToRad(45));
+
     switch (slope) {
       case 'w':
-        this.addVertice(x, y + 0.5, z + 1).addTexCoord(0, 1).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
-          .addVertice(x + 1, y, z + 1).addTexCoord(1, 1).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
-          .addVertice(x, y + 0.5, z).addTexCoord(0, 0).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
-          .addVertice(x + 1, y, z).addTexCoord(1, 0).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3]);
+        // Slope
+        this.addVertice(x, y + 0.5, z + 1)
+              .addTexCoord(0, 1)
+              .addNormal(C, S, 0)
+              .addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
 
-        this.addVertice(x, y, z + 1).addTexCoord(0, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
-          .addVertice(x + 1, y, z + 1).addTexCoord(1, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
-          .addVertice(x, y + 0.5, z + 1).addTexCoord(0, 1-(y+0.5)).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
+          .addVertice(x + 1, y, z + 1)
+              .addTexCoord(1, 1)
+              .addNormal(C, S, 0)
+              .addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
 
-        this.addVertice(x + 1, y, z).addTexCoord(0, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
-          .addVertice(x, y, z).addTexCoord(1, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
-          .addVertice(x, y + 0.5, z).addTexCoord(1, 1-(y+0.5)).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
+          .addVertice(x, y + 0.5, z)
+              .addTexCoord(0, 0)
+              .addNormal(C, S, 0)
+              .addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+
+          .addVertice(x + 1, y, z)
+              .addTexCoord(1, 0)
+              .addNormal(C, S, 0)
+              .addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3]);
+
+        // South Wall
+        this.addVertice(x, y, z + 1)
+              .addTexCoord(0, 1-y)
+              .addNormal(0, 0, 1)
+              .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+
+          .addVertice(x + 1, y, z + 1)
+              .addTexCoord(1, 1-y)
+              .addNormal(0, 0, 1)
+              .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+
+          .addVertice(x, y + 0.5, z + 1)
+              .addTexCoord(0, 1-(y+0.5))
+              .addNormal(0, 0, 1)
+              .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
+
+        // North Wall
+        this.addVertice(x + 1, y, z)
+              .addTexCoord(0, 1-y)
+              .addNormal(0, 0, -1)
+              .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+
+          .addVertice(x, y, z)
+              .addTexCoord(1, 1-y)
+              .addNormal(0, 0, -1)
+              .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+
+          .addVertice(x, y + 0.5, z)
+              .addTexCoord(1, 1-(y+0.5))
+              .addNormal(0, 0, -1)
+              .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
 
         this._addLeftWall(x, y, z, 0.5, lowWallUV);
 
         break;
 
         case 'e':
-          this.addVertice(x, y, z + 1).addTexCoord(0, 1).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
-            .addVertice(x + 1, y + 0.5, z + 1).addTexCoord(1, 1).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
-            .addVertice(x, y, z).addTexCoord(0, 0).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
-            .addVertice(x + 1, y + 0.5, z).addTexCoord(1, 0).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3]);
+          // Slope
+          this.addVertice(x, y, z + 1)
+                .addTexCoord(0, 1)
+                .addNormal(-C, S, 0)
+                .addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+
+            .addVertice(x + 1, y + 0.5, z + 1)
+                .addTexCoord(1, 1)
+                .addNormal(-C, S, 0)
+                .addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+
+            .addVertice(x, y, z)
+                .addTexCoord(0, 0)
+                .addNormal(-C, S, 0)
+                .addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+
+            .addVertice(x + 1, y + 0.5, z)
+                .addTexCoord(1, 0)
+                .addNormal(-C, S, 0)
+                .addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3]);
   
-          this.addVertice(x, y, z + 1).addTexCoord(0, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
-            .addVertice(x + 1, y, z + 1).addTexCoord(1, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
-            .addVertice(x + 1, y + 0.5, z + 1).addTexCoord(1, 1-(y+0.5)).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
+          // South Wall
+          this.addVertice(x, y, z + 1)
+                .addTexCoord(0, 1-y)
+                .addNormal(0, 0, 1)
+                .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+
+            .addVertice(x + 1, y, z + 1)
+                .addTexCoord(1, 1-y)
+                .addNormal(0, 0, 1)
+                .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+
+            .addVertice(x + 1, y + 0.5, z + 1)
+                .addTexCoord(1, 1-(y+0.5))
+                .addNormal(0, 0, 1)
+                .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
   
-          this.addVertice(x + 1, y, z).addTexCoord(0, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
-            .addVertice(x, y, z).addTexCoord(1, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
-            .addVertice(x + 1, y + 0.5, z).addTexCoord(0, 1-(y+0.5)).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
+          // North Wall
+          this.addVertice(x + 1, y, z)
+                .addTexCoord(0, 1-y)
+                .addNormal(0, 0, -1)
+                .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+
+            .addVertice(x, y, z)
+                .addTexCoord(1, 1-y)
+                .addNormal(0, 0, -1)
+                .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+
+            .addVertice(x + 1, y + 0.5, z)
+                .addTexCoord(0, 1-(y+0.5))
+                .addNormal(0, 0, -1)
+                .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
   
           this._addRightWall(x, y, z, 0.5, lowWallUV);
   
           break;
 
         case 'n':
-          this.addVertice(x, y, z + 1).addTexCoord(0, 1).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
-            .addVertice(x + 1, y, z + 1).addTexCoord(1, 1).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
-            .addVertice(x, y + 0.5, z).addTexCoord(0, 0).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
-            .addVertice(x + 1, y + 0.5, z).addTexCoord(1, 0).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3]);
+          // Slope
+          this.addVertice(x, y, z + 1)
+                .addTexCoord(0, 1)
+                .addNormal(0, S, C)
+                .addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+
+            .addVertice(x + 1, y, z + 1)
+                .addTexCoord(1, 1)
+                .addNormal(0, S, C)
+                .addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+
+            .addVertice(x, y + 0.5, z)
+                .addTexCoord(0, 0)
+                .addNormal(0, S, C)
+                .addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+
+            .addVertice(x + 1, y + 0.5, z)
+                .addTexCoord(1, 0)
+                .addNormal(0, S, C)
+                .addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3]);
   
-          this.addVertice(x, y, z).addTexCoord(0, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
-            .addVertice(x, y, z + 1).addTexCoord(1, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
-            .addVertice(x, y + 0.5, z).addTexCoord(0, 1-(y+0.5)).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
+          // West wall
+          this.addVertice(x, y, z)
+                .addTexCoord(0, 1-y)
+                .addNormal(-1, 0, 0)
+                .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+
+            .addVertice(x, y, z + 1)
+                .addTexCoord(1, 1-y)
+                .addNormal(-1, 0, 0)
+                .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+
+            .addVertice(x, y + 0.5, z)
+                .addTexCoord(0, 1-(y+0.5))
+                .addNormal(-1, 0, 0)
+                .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
   
-          this.addVertice(x + 1, y, z + 1).addTexCoord(0, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
-            .addVertice(x + 1, y, z).addTexCoord(1, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
-            .addVertice(x + 1, y + 0.5, z).addTexCoord(1, 1-(y+0.5)).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
+          // East wall
+          this.addVertice(x + 1, y, z + 1)
+                .addTexCoord(0, 1-y)
+                .addNormal(1, 0, 0)
+                .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+
+            .addVertice(x + 1, y, z)
+                .addTexCoord(1, 1-y)
+                .addNormal(1, 0, 0)
+                .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+
+            .addVertice(x + 1, y + 0.5, z)
+                .addTexCoord(1, 1-(y+0.5))
+                .addNormal(1, 0, 0)
+                .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
   
           this._addBackWall(x, y, z, 0.5, lowWallUV);
   
           break;
 
         case 's':
-          this.addVertice(x, y + 0.5, z + 1).addTexCoord(0, 1).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
-            .addVertice(x + 1, y + 0.5, z + 1).addTexCoord(1, 1).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
-            .addVertice(x, y, z).addTexCoord(0, 0).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
-            .addVertice(x + 1, y, z).addTexCoord(1, 0).addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3]);
+          // Slope
+          this.addVertice(x, y + 0.5, z + 1)
+                .addTexCoord(0, 1)
+                .addNormal(0, S, -C)
+                .addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+
+            .addVertice(x + 1, y + 0.5, z + 1)
+                .addTexCoord(1, 1)
+                .addNormal(0, S, -C)
+                .addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+
+            .addVertice(x, y, z)
+                .addTexCoord(0, 0)
+                .addNormal(0, S, -C)
+                .addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3])
+
+            .addVertice(x + 1, y, z)
+                .addTexCoord(1, 0)
+                .addNormal(0, S, -C)
+                .addUV(floorUV[0], 1-floorUV[1], floorUV[2], -floorUV[3]);
   
-          this.addVertice(x, y, z).addTexCoord(0, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
-            .addVertice(x, y, z + 1).addTexCoord(1, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
-            .addVertice(x, y + 0.5, z + 1).addTexCoord(1, 1-(y+0.5)).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
+          // West Wall
+          this.addVertice(x, y, z)
+                .addTexCoord(0, 1-y)
+                .addNormal(-1, 0, 0)
+                .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+
+            .addVertice(x, y, z + 1)
+                .addTexCoord(1, 1-y)
+                .addNormal(-1, 0, 0)
+                .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+
+            .addVertice(x, y + 0.5, z + 1)
+                .addTexCoord(1, 1-(y+0.5))
+                .addNormal(-1, 0, 0)
+                .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
   
-          this.addVertice(x + 1, y, z + 1).addTexCoord(0, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
-            .addVertice(x + 1, y, z).addTexCoord(1, 1-y).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
-            .addVertice(x + 1, y + 0.5, z + 1).addTexCoord(0, 1-(y+0.5)).addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
+          // East Wall
+          this.addVertice(x + 1, y, z + 1)
+                .addTexCoord(0, 1-y)
+                .addNormal(1, 0, 0)
+                .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+
+            .addVertice(x + 1, y, z)
+                .addTexCoord(1, 1-y)
+                .addNormal(1, 0, 0)
+                .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3])
+
+            .addVertice(x + 1, y + 0.5, z + 1)
+                .addTexCoord(0, 1-(y+0.5))
+                .addNormal(1, 0, 0)
+                .addUV(lowWallUV[0], 1-lowWallUV[1], lowWallUV[2], -lowWallUV[3]);
   
           this._addFrontWall(x, y, z, 0.5, lowWallUV);
   
