@@ -6,6 +6,7 @@ import { Renderer } from '../core/Renderer';
 import { Shader } from '../shaders/Shader';
 import { Texture } from '../core/Texture';
 import { Material } from './Material';
+import { SceneDungeon } from '../scenes/SceneDungeon';
 
 const VERTEX_OFFSET = 0;
 const TEXCOORD_OFFSET = VERTICE_SIZE * FLOAT_SIZE;
@@ -24,9 +25,6 @@ export class MaterialDungeon extends Material {
   private _renderer: Renderer;
   private _texture: Texture;
 
-  public v4UV: number[];
-  public v2Repeat: number[];
-
   constructor(texture: Texture) {
     super();
 
@@ -36,9 +34,6 @@ export class MaterialDungeon extends Material {
     this._shader = this._renderer.getShader(SHADER_KEY);
 
     this._texture = texture;
-
-    this.v4UV = [0, 0, 1, 1];
-    this.v2Repeat = [1, 1];
   }
 
   /**
@@ -81,13 +76,22 @@ export class MaterialDungeon extends Material {
   }
 
   /**
+   * Uploads the light information of the level, up to 8 lights are supported
+   */
+  private _uploadLightData(scene: SceneDungeon) {
+    const gl = this._gl;
+
+    gl.uniform4fv(this._shader.uniforms['uAmbientLight'], scene.v4AmbientLight);
+  }
+
+  /**
    * Renders a geometry from an entity position and a camera perspective
    * 
    * @param entity Entity where the geometry is
    * @param camera Point of view to render the geometry
    * @param geometry Geometry to render
    */
-  public override render(entity: Entity, camera: Camera, geometry: Geometry) {
+  public override render(scene: SceneDungeon, entity: Entity, camera: Camera, geometry: Geometry) {
     const gl = this._gl;
 
     this._renderer.useShader(SHADER_KEY);
@@ -95,6 +99,7 @@ export class MaterialDungeon extends Material {
     this._uploadGeometryData(geometry);
     this._uploadCameraData(entity, camera);
     this._uploadTexture();
+    this._uploadLightData(scene);
 
     gl.drawElements(gl.TRIANGLES, geometry.indicesLength, gl.UNSIGNED_SHORT, 0);
   }

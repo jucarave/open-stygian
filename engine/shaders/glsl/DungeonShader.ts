@@ -28,13 +28,18 @@ export const DungeonShader: ShaderStruct = {
     precision mediump float;
 
     uniform sampler2D uTexture;
+    uniform vec4 uAmbientLight;
 
     varying vec2 vTexCoord;
     varying vec4 vUV;
 
     void main(void) {
       vec2 coords = mod(vTexCoord, 1.0) * vUV.zw + vUV.xy;
-      gl_FragColor = texture2D(uTexture, coords);
+      vec4 color = texture2D(uTexture, coords);
+
+      color *= uAmbientLight;
+
+      gl_FragColor = color;
     }
   `
 };

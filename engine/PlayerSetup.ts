@@ -17,7 +17,7 @@ export class PlayerSetup {
     this._movement = null;
   }
 
-  addSmoothMovement(movementSpeed = 0.1) {
+  addSmoothMovement(movementSpeed = 0.04) {
     // Can only have a movement component at the time
     if (this._movement !== null) {
       this._player.removeComponent(this._movement);

@@ -3,6 +3,7 @@ import { Renderer } from '../../../engine/core/Renderer';
 import { Entity } from '../../../engine/entities/Entity';
 import { Geometry } from '../../../engine/geometries/Geometry';
 import { Material } from '../../../engine/materials/Material';
+import { Scene } from '../../../engine/scenes/Scene';
 import { Shader } from '../../../engine/shaders/Shader';
 import { COLOR_SIZE, FLOAT_SIZE, VERTICE_SIZE } from '../../../engine/system/Constants';
 
@@ -66,7 +67,7 @@ export class VertexColoredMaterial extends Material {
    * @param camera Point of view to render the geometry
    * @param geometry Geometry to render
    */
-  public render(entity: Entity, camera: Camera, geometry: Geometry): void {
+  public render(scene: Scene, entity: Entity, camera: Camera, geometry: Geometry): void {
     const gl = this._gl;
     this._renderer.useShader(SHADER_KEY);
 
@@ -74,6 +75,8 @@ export class VertexColoredMaterial extends Material {
     this._uploadCameraData(entity, camera);
 
     gl.drawArrays(gl.LINES, 0, geometry.vertexLength);
+
+    scene;
   }
 
 }

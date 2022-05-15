@@ -141,7 +141,7 @@ export class Entity {
    */
   public render(camera: Camera) {
     if (this.material && this.geometry) {
-      this.material.render(this, camera, this.geometry);
+      this.material.render(this.scene, this, camera, this.geometry);
     }
   }
 

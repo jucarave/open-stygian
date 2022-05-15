@@ -18,6 +18,8 @@ export class SceneDungeon extends Scene {
 
   public readonly playerSetup: PlayerSetup;
 
+  public v4AmbientLight: number[];
+
   constructor(level: Geometry, material: Material, solidMap: SolidMap) {
     super();
 
@@ -28,6 +30,8 @@ export class SceneDungeon extends Scene {
     this._loadPLayer();
 
     this.playerSetup = new PlayerSetup(this._player, this._camera);
+
+    this.v4AmbientLight = [20/255,30/255,50/255,1];
   }
 
   private _loadCamera() {
