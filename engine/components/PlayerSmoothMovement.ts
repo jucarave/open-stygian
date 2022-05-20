@@ -31,8 +31,8 @@ export class PlayerSmoothMovement extends Component {
    * moves the player in that direction
    */
   private updateMovement() {
-    const ver = Input.isKeyDown(Config.input.up) - Input.isKeyDown(Config.input.down);
-    const hor = Input.isKeyDown(Config.input.left) - Input.isKeyDown(Config.input.right);
+    const ver = Input.isKeyDown(Config.input.down) - Input.isKeyDown(Config.input.up);
+    const hor = Input.isKeyDown(Config.input.right) - Input.isKeyDown(Config.input.left);
 
     if (hor != 0 || ver != 0) {
       const dir = this._entity.rotation.forward.multiplyScalar(ver).sum(this._entity.rotation.right.multiplyScalar(hor));

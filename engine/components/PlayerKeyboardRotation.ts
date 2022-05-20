@@ -29,7 +29,7 @@ export class PlayerKeyboardRotation extends Component {
   }
 
   private _updateVerticalRotation() {
-    const ver = Input.isKeyDown(Config.input.lookUp) - Input.isKeyDown(Config.input.lookDown);
+    const ver = Input.isKeyDown(Config.input.lookDown) - Input.isKeyDown(Config.input.lookUp);
 
     if (ver !== 0) {
       this._camera.rotateVertically(ver * this.sensitivity.y);

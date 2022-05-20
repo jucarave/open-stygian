@@ -1,6 +1,7 @@
 import { Shader, ShaderStruct } from '../shaders/Shader';
 import { DungeonShader } from '../shaders/glsl/DungeonShader';
 import { Texture } from './Texture';
+import { ColorShader } from '../shaders/glsl/ColorShader';
 
 interface ShadersMap {
   [index: string]: Shader
@@ -55,6 +56,7 @@ export class Renderer {
   private _initShaders() {
     this._shaders = {};
     this.loadShader('dungeon', DungeonShader);
+    this.loadShader('color', ColorShader);
   }
 
   /**

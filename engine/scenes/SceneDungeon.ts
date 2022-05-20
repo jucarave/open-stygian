@@ -13,10 +13,12 @@ import { SolidMap } from '../physics/SolidMap';
 import { Material } from '../materials/Material';
 import { PointLight } from '../lights/PointLight';
 import { LightComponent } from '../components/LightComponent';
+import { degToRad } from '../math/Math';
 
 export class SceneDungeon extends Scene {
   private _player: Entity;
   private _dungeon: Dungeon;
+  private _ui: Scene;
 
   public readonly playerSetup: PlayerSetup;
 
@@ -50,6 +52,8 @@ export class SceneDungeon extends Scene {
     this._player.addComponent(new FallingEntity(Config.player.radius, Config.player.height));
     this._player.addComponent(new LightComponent(new Vector3(0, 0.5, 0)));
 
+    this._player.rotation.rotateY(degToRad(180));
+
     this.addEntity(this._player);
 
     this._camera.parent = this._player;
@@ -69,5 +73,27 @@ export class SceneDungeon extends Scene {
 
   public addLight(light: PointLight) {
     this.lights.push(light);
+  }
+
+  public setUI(scene: Scene) {
+    this._ui = scene;
+  }
+
+  public override init() {
+    super.init();
+
+    if (this._ui) { this._ui.init(); }
+  }
+
+  public override update() {
+    super.update();
+
+    if (this._ui) { this._ui.update(); }
+  }
+
+  public override render() {
+    super.render();
+
+    if (this._ui) { this._ui.render(); }
   }
 }

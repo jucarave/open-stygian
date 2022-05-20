@@ -22,7 +22,6 @@ export class PlayerMouseRotation extends Component {
     const hor = Input.mouseMovement.x;
 
     if (hor !== 0) {
-      // Update the player and camera rotation so that I don't have to do parenting just for the rotation
       this._entity.rotation.rotateY(hor * this.sensitivity.x);
     }
   }
@@ -31,7 +30,7 @@ export class PlayerMouseRotation extends Component {
     const ver = Input.mouseMovement.y;
 
     if (ver !== 0) {
-      this._camera.rotateVertically(-ver * this.sensitivity.y);
+      this._camera.rotateVertically(ver * this.sensitivity.y);
     }
   }
 

@@ -4,6 +4,7 @@ import { DungeonGridGeometry } from '../../engine/dungeon/GridLevel/DungeonGridG
 import { gridLevel } from './GridLevel';
 import { MaterialDungeon } from '../../engine/materials/MaterialDungeon';
 import { SolidGridMap } from '../../engine/physics/SolidGridMap';
+import { SceneUI } from './scenes/SceneUI';
 
 class Game {
   constructor() {
@@ -24,6 +25,8 @@ class Game {
       .addSmoothMovement()
       .addKeyboardFirsPersonLook()
       .addMouseFirstPersonLook();
+
+    level.setUI(new SceneUI());
 
     stygian.play();
   }

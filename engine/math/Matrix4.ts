@@ -204,4 +204,18 @@ export class Matrix4 {
         0, 0, B, 0
     );
   }
+
+  public static createOrthogonal(width: number, height: number, znear: number, zfar: number): Matrix4 {
+    const C = 2.0 / width;
+    const R = 2.0 / height;
+    const A = -2.0 / (zfar - znear);
+    const B = -(zfar + znear) / (zfar - znear);
+    
+    return new Matrix4(
+      C, 0, 0, 0,
+      0, R, 0, 0,
+      0, 0, A, B,
+      0, 0, 0, 1
+    );
+  }
 }

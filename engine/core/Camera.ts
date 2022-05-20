@@ -11,9 +11,6 @@ export class Camera {
   private _maxVerticalAngle: number;
   private _parent: Entity;
   
-  // This is so that the camera looks at +z as it's "forward"
-  private static readonly _baseTransform = Matrix4.createIdentity().setRotationY(180);
-  
   public readonly projectionMatrix: Matrix4;
   public readonly position: Vector3;
   public readonly rotation: Quaternion;
@@ -96,7 +93,6 @@ export class Camera {
 
     this._viewMatrix
       .setIdentity()
-      .multiply(Camera._baseTransform)
       .multiply(this.rotation.getRotationMatrix())
       .multiply(Matrix4.createIdentity().translate(this.position.x, this.position.y, this.position.z, false));
 
@@ -111,6 +107,10 @@ export class Camera {
     return this._viewMatrix;
   }
 
+  /**
+   * Allows the camera to be parented to an entity to inherit
+   * the position and rotation of the entity
+   */
   public set parent(parent: Entity) {
     if (this._parent !== null) {
       this._parent.position.onChange.remove(this._setDirtyFlag);
@@ -138,5 +138,19 @@ export class Camera {
    */
   public static createPerspective(fov: number, ratio: number, znear: number, zfar: number): Camera {
     return new Camera(Matrix4.createPerspective(fov, ratio, znear, zfar));
+  }
+
+  /**
+   * Creates a camera using an orthogonal projection
+   * 
+   * @param width
+   * @param height 
+   * @param znear 
+   * @param zfar 
+   * 
+   * @returns a new Camera instance
+   */
+  public static createOrthogonal(width: number, height: number, znear: number, zfar: number): Camera {
+    return new Camera(Matrix4.createOrthogonal(width, height, znear, zfar));
   }
 }

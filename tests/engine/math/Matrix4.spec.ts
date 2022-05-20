@@ -174,4 +174,25 @@ describe('Matrix4 class', () => {
       expect(matrix.inverse.data[i]).closeTo(inverted.data[i], 0.0000000000000005);
     }
   });
+
+  it('Can create an orthogonal matrix', () => {
+    const width = 320;
+    const height = 180;
+    const znear = 0.1;
+    const zfar = 1000;
+
+    const C = 2.0 / width;
+    const R = 2.0 / height;
+    const A = -2.0 / (zfar - znear);
+    const B = -(zfar + znear) / (zfar - znear);
+    
+    const data = [
+      C, 0, 0, 0,
+      0, R, 0, 0,
+      0, 0, A, B,
+      0, 0, 0, 1
+    ];
+
+    expect(Matrix4.createOrthogonal(width, height, znear, zfar).data).to.deep.equal(data);
+  });
 });
