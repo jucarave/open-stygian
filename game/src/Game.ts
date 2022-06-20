@@ -5,10 +5,12 @@ import { gridLevel } from './GridLevel';
 import { MaterialDungeon } from '../../engine/materials/MaterialDungeon';
 import { SolidGridMap } from '../../engine/physics/SolidGridMap';
 import { SceneUI } from './scenes/SceneUI';
+import { Font } from '../../engine/core/Font';
 
 class Game {
   constructor() {
     const texture = new Texture('texture', 'img/texture.png')
+    new Font('font', 'img/font.png', 'abcdefghijklmnñopqrstuvxyzáéíóúABCDEFGHIJKLMNÑOPQRSTUVXYZÁÉÍÓÚ0123456789!¡?¿()-=/', {x: 6, y: 9});
 
     const canvas = document.getElementById('openStygianCanvas') as HTMLCanvasElement;
     

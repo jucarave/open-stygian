@@ -189,8 +189,8 @@ describe('Matrix4 class', () => {
     const data = [
       C, 0, 0, 0,
       0, R, 0, 0,
-      0, 0, A, B,
-      0, 0, 0, 1
+      0, 0, A, 0,
+      -0, -0, B, 1
     ];
 
     expect(Matrix4.createOrthogonal(width, height, znear, zfar).data).to.deep.equal(data);

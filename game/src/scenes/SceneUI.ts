@@ -1,28 +1,31 @@
 import { Camera } from '../../../engine/core/Camera';
+import { Font } from '../../../engine/core/Font';
 import { Renderer } from '../../../engine/core/Renderer';
-import { Entity } from '../../../engine/entities/Entity';
-import { GeometryQuad } from '../../../engine/geometries/GeometryQuad';
-import { MaterialColor } from '../../../engine/materials/MaterialColor';
-import { Vector3 } from '../../../engine/math/Vector3';
+import { Text } from '../../../engine/entities/Text';
 import { Scene } from '../../../engine/scenes/Scene';
 
 export class SceneUI extends Scene {
+  private _gl: WebGLRenderingContext;
+
   constructor() {
     super();
 
-    this._camera = Camera.createOrthogonal(480, 270, 0.1, 1000);
-    this._camera.position.set(0, 0, 1);
+    const width = Renderer.instance.gl.canvas.width / 2.0;
+    const height = Renderer.instance.gl.canvas.height / 2.0;
 
-    const quad = new Entity(new Vector3(0, 0, 0));
-    quad.geometry = new GeometryQuad(32, 32);
-    quad.material = new MaterialColor([1,1,1,1]);
+    this._camera = Camera.createOrthogonal(width, height, 0.1, 1000);
+    this._camera.position.set(width / 2.0, height / 2.0, 1);
+
+    const text = new Text('Lorem ipsum', Font.getFont('font'));
+    text.position.set(32, 32, 0);
     
-    this.addEntity(quad);
+    this.addEntity(text);
+
+    this._gl = Renderer.instance.gl;
   }
 
   public override render(): void {
-    const gl = Renderer.instance.gl;
-    gl.clear(gl.DEPTH_BUFFER_BIT);
+    this._gl.clear(this._gl.DEPTH_BUFFER_BIT);
 
     super.render();
   }

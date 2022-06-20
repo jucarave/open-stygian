@@ -25,15 +25,19 @@ export const ColorShader: ShaderStruct = {
     precision mediump float;
 
     uniform vec4 uColor;
+    uniform sampler2D uTexture;
 
     varying vec2 vTexCoord;
 
     void main(void) {
-      /*vec4 color = texture2D(uTexture, vTexCoord);
+      vec4 color = texture2D(uTexture, vTexCoord);
+      if (color.a <= 0.0) {
+        discard;
+      }
 
-      gl_FragColor = color * uColor;*/
+      gl_FragColor = color * uColor;
 
-      gl_FragColor = uColor;
+      // gl_FragColor = uColor;
     }
   `
 };

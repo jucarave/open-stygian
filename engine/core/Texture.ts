@@ -1,3 +1,4 @@
+import { Signal } from '../system/Signal';
 import { Renderer } from './Renderer';
 
 interface TexturesMap {
@@ -12,6 +13,7 @@ export class Texture {
   private static textures: TexturesMap = {};
 
   public readonly key: string;
+  public readonly onReady: Signal;
 
   constructor(key: string, src: string) {
     this.key = key;
@@ -19,6 +21,8 @@ export class Texture {
     this._img = new Image();
     this._img.src = src;
     this._img.onload = () => this._processTexture();
+
+    this.onReady = new Signal();
 
     Texture.textures[key] = this;
   }
@@ -43,6 +47,8 @@ export class Texture {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
     gl.bindTexture(gl.TEXTURE_2D, null);
+
+    this.onReady.dispatch();
   }
 
   public get isReady() {
@@ -51,6 +57,14 @@ export class Texture {
 
   public get texture() {
     return this._texture;
+  }
+
+  public get width() {
+    return this._img.width;
+  }
+
+  public get height() {
+    return this._img.height;
   }
 
   /**

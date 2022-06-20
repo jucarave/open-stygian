@@ -7,6 +7,7 @@ import { Shader } from '../shaders/Shader';
 //import { Texture } from '../core/Texture';
 import { Material } from './Material';
 import { SceneDungeon } from '../scenes/SceneDungeon';
+import { Texture } from '../core/Texture';
 
 const VERTEX_OFFSET = 0;
 const TEXCOORD_OFFSET = VERTICE_SIZE * FLOAT_SIZE;
@@ -21,10 +22,10 @@ export class MaterialColor extends Material {
   private _gl: WebGLRenderingContext;
   private _shader: Shader;
   private _renderer: Renderer;
-  //private _texture: Texture;
+  private _texture: Texture;
   private _color: number[];
 
-  constructor(/*texture: Texture, */color: number[]) {
+  constructor(texture: Texture, color: number[]) {
     super();
 
     this._renderer = Renderer.instance;
@@ -32,7 +33,7 @@ export class MaterialColor extends Material {
     this._gl = this._renderer.gl;
     this._shader = this._renderer.getShader(SHADER_KEY);
 
-    //this._texture = texture;
+    this._texture = texture;
     this._color = color;
   }
 
@@ -70,7 +71,7 @@ export class MaterialColor extends Material {
    * Upload the texture to the GPU.
    */
   private _uploadTexture() {
-    //this._renderer.bindTexture(this._texture, this._shader.uniforms['uTexture']);
+    this._renderer.bindTexture(this._texture, this._shader.uniforms['uTexture']);
   }
 
   private _uploadUniforms() {
