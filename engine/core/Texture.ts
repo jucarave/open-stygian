@@ -67,6 +67,10 @@ export class Texture {
     return this._img.height;
   }
 
+  public get image() {
+    return this._img;
+  }
+
   /**
    * Look for all the created textures to see if all the images
    * are loaded into the webpage

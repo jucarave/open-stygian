@@ -58,7 +58,7 @@ export class Text extends Entity {
         .addTriangle(this._geometryIndex + 1, this._geometryIndex + 3, this._geometryIndex + 2);
 
     this._geometryIndex += 4;
-    this._horizontalOffset += width;
+    this._horizontalOffset += width + 1;
   }
 
   public override render(camera: Camera) {
